@@ -1,0 +1,9 @@
+{% if commits_list %}
+    <ul>
+    {% for commit in commits_list %}
+        <li><a href="{% url 'detail' commit.id %}">{{ commit.project }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No commit are available.</p>
+{% endif %}
