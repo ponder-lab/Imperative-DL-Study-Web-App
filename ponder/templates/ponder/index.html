@@ -1,9 +1,16 @@
-{% if commits_list %}
-    <ul>
-    {% for commit in commits_list %}
-        <li><a href="{% url 'detail' commit.id %}">{{ commit.project }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No commit are available.</p>
-{% endif %}
+{% extends "ponder/base.html" %}
+{% load static %}
+{% block body_block %}
+<div class="container">
+  <div class="jumbotron">
+  	<a href="/" class="ponder-logo">
+      <img src="{% static 'logo.png'%}">
+    </a>
+    <center></center><h1>Welcome to the Ponder's Web App !</h1></center>
+    {% if user.is_authenticated %}
+        <h2>Hello, {{ user.username }}! </h2>
+    {% else %}
+        <h2>Register or Login if you'd like to</h2>
+    {% endif %}
+  </div>
+</div>{% endblock %}
