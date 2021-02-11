@@ -83,7 +83,8 @@ DATABASES = {
         'NAME': 'heroku_4ac11fb2946b4e7',
         'USER': 'be05ffb901b132',
         'PASSWORD': '3d94000c',
-        'HOST': 'us-cdbr-east-03.cleardb.com'
+        'HOST': 'us-cdbr-east-03.cleardb.com',
+        'OPTIONS': {'ssl_mode': 'DISABLED'}
     }
 }
 
