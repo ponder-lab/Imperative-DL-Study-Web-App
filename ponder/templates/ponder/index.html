@@ -13,4 +13,34 @@
         <h2>Register or Login if you'd like to</h2>
     {% endif %}
   </div>
-</div>{% endblock %}
+{% if user.is_authenticated %}
+<h1>Tables</h1>
+<div class="row">
+  {% for project in projects %}
+      <div class="col-md-4">
+          <div class="card mb-2">
+              <div class="card-body">
+                  <h2 class="card-title">{{ project }}</h2>
+                  {% if project == "categorizations" %}
+                    <a href="/ponder/view_categorizations"
+                     class="btn btn-primary">
+                      View table
+                    </a>
+                  {% elif project == "bug_fixes" %}
+                    <a href="/ponder/view_bugfixes"
+                     class="btn btn-primary">
+                      View table
+                    </a>
+                  {% else %}
+                    <a href=""
+                     class="btn btn-primary">
+                      View table
+                    </a>
+                  {% endif %}
+              </div>
+          </div>
+      </div>
+  {% endfor %}
+{% endif %}
+</div>
+{% endblock %}
