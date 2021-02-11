@@ -1,15 +1,26 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Commits
+from .models import Commits, Categorizations, User, BugFixes
 from django.http import Http404
-from ponder.forms import UserForm, UserProfileInfoForm, CategorizationForm
+from ponder.forms import UserForm, CategorizationForm
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView
+from django_tables2 import SingleTableView
+from .tables import CategorizationsTable, BugFixesTable
+from django.apps import apps 
+from django.contrib import admin 
+from django.contrib.admin.sites import AlreadyRegistered 
 
 def index(request):
-	commits_list = Commits.objects.order_by('-commit_date')
-	context = {'commits_list': commits_list}
+	table_names = []
+	app_models = apps.get_app_config('ponder').get_models()
+	for c in apps.get_app_configs():
+		for m in c.get_models():
+			 table_names.append(m._meta.db_table)
+	print(table_names)
+	context = {'projects': table_names}
 	return render(request, 'ponder/index.html', context)
 
 @login_required
@@ -36,26 +47,17 @@ def register(request):
 	registered = False
 	if request.method == 'POST':
 		user_form = UserForm(data=request.POST)
-		profile_form = UserProfileInfoForm(data=request.POST)
-		if user_form.is_valid() and profile_form.is_valid():
+		if user_form.is_valid():
 			user = user_form.save()
 			user.set_password(user.password)
 			user.save()
-			profile = profile_form.save(commit=False)
-			profile.user = user
-			if 'profile_pic' in request.FILES:
-				print('found it')
-				profile.profile_pic = request.FILES['profile_pic']
-			profile.save()
 			registered = True
 		else:
-			print(user_form.errors,profile_form.errors)
+			print(user_form.errors)
 	else:
 		user_form = UserForm()
-		profile_form = UserProfileInfoForm()
 	return render(request,'ponder/registration.html',
 						  {'user_form':user_form,
-						   'profile_form':profile_form,
 						   'registered':registered})
 def user_login(request):
 	if request.method == 'POST':
@@ -74,3 +76,13 @@ def user_login(request):
 			return HttpResponse("Invalid login details given")
 	else:
 		return render(request, 'ponder/login.html', {})
+
+class CategorizationsListView(SingleTableView):
+    model = Categorizations
+    table_class = CategorizationsTable
+    template_name = 'ponder/categorizations_table.html'
+
+class BugFixesListView(SingleTableView):
+    model = BugFixes
+    table_class = BugFixesTable
+    template_name = 'ponder/bugfixes_table.html'  

@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 from django import forms
-from ponder.models import UserProfileInfo, Categorizations
+from ponder.models import Categorizations
 from django.contrib.auth.models import User
 
 class UserForm(forms.ModelForm):
@@ -33,8 +33,3 @@ class CategorizationForm(forms.ModelForm):
 			'cause_comment','problem_symptom', 'symptom_comment',
 			'problem_fix', 'fix_comment', 'categorizer',
 			'should_discuss', 'bug_fix')
-
-class UserProfileInfoForm(forms.ModelForm):
-	 class Meta():
-		 model = UserProfileInfo
-		 fields = ('portofolio_site',)

@@ -158,8 +158,4 @@ class Repositories(models.Model):
 		managed = False
 		db_table = 'repositories'
 
-class UserProfileInfo(models.Model):
-	user = models.OneToOneField(User, on_delete=models.CASCADE)
-	portofolio_site = models.URLField(blank=True)
-	def __str__(self):
-		return self.user.username
+
