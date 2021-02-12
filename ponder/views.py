@@ -14,13 +14,8 @@ from django.contrib import admin
 from django.contrib.admin.sites import AlreadyRegistered 
 
 def index(request):
-	table_names = []
-	app_models = apps.get_app_config('ponder').get_models()
-	for c in apps.get_app_configs():
-		for m in c.get_models():
-			 table_names.append(m._meta.db_table)
-	print(table_names)
-	context = {'projects': table_names}
+	parts = ['Categorizations','Reconciliation','Visualization of Data']
+	context = {'projects': parts}
 	return render(request, 'ponder/index.html', context)
 
 @login_required
@@ -42,7 +37,7 @@ def categorizations(request):
 	else:
 		cat_form = CategorizationForm()
 	return render(request,'ponder/categorizations.html', {'cat_form':cat_form})
-
+"""
 def register(request):
 	registered = False
 	if request.method == 'POST':
@@ -59,6 +54,7 @@ def register(request):
 	return render(request,'ponder/registration.html',
 						  {'user_form':user_form,
 						   'registered':registered})
+"""
 def user_login(request):
 	if request.method == 'POST':
 		username = request.POST.get('username')
