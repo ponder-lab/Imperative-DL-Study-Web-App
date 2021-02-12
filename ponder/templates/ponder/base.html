@@ -8,10 +8,9 @@
   <body>
     <nav class="navbar navbar-default navbar-static-top">
       <div class="container">
-        <ul class="nav navbar-nav">{# PONDER Home Link# / Admin Link# / Register Link#}
+        <ul class="nav navbar-nav">{# PONDER Home Link# / Admin Link#}
           <li><a class="navbar-brand" href="{% url 'index' %}">PONDER</a></li>
           <li><a class="navbar-link" href="{% url 'admin:index' %}">Admin</a></li>
-          <li><a class="navbar-link" href="{% url 'ponder:register' %}">Register</a></li>     
           {# Some logic on what to display for last item#}
           {% if user.is_authenticated %}
             <li><a href="{% url 'ponder:categorizations' %}">Categorizations</a></li>
