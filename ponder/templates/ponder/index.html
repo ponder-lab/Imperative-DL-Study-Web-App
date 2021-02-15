@@ -10,31 +10,34 @@
     {% if user.is_authenticated %}
         <h2>Hello, {{ user.username }}! </h2>
     {% else %}
-        <h2>Register or Login if you'd like to</h2>
+        <h2>Login if you'd like to</h2>
     {% endif %}
   </div>
 {% if user.is_authenticated %}
-<h1>Tables</h1>
+<center><h1>Use cases:</h1></center>
 <div class="row">
   {% for project in projects %}
       <div class="col-md-4">
           <div class="card mb-2">
               <div class="card-body">
                   <h2 class="card-title">{{ project }}</h2>
-                  {% if project == "categorizations" %}
-                    <a href="/ponder/view_categorizations"
+                  {% if project == "Categorizations" %}
+                    <p class="card-text">Make your categorizations for each round.</p>
+                    <a href="{% url 'ponder:categorizations' %}"
                      class="btn btn-primary">
-                      View table
+                      Create categorizations
                     </a>
-                  {% elif project == "bug_fixes" %}
-                    <a href="/ponder/view_bugfixes"
-                     class="btn btn-primary">
-                      View table
-                    </a>
-                  {% else %}
+                  {% elif project == "Reconciliation" %}
+                    <p class="card-text">Discuss each round and agree upon a categorization.</p>
                     <a href=""
                      class="btn btn-primary">
-                      View table
+                      Meeting
+                    </a>
+                  {% else %}
+                  <p class="card-text">View the data aand its details.</p>
+                    <a href=""
+                     class="btn btn-primary">
+                      View tables
                     </a>
                   {% endif %}
               </div>
