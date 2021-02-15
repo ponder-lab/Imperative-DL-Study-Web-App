@@ -11,9 +11,7 @@
         <ul class="nav navbar-nav">{# PONDER Home Link# / Admin Link#}
           <li><a class="navbar-brand" href="{% url 'index' %}">PONDER</a></li>
           <li><a class="navbar-link" href="{% url 'admin:index' %}">Admin</a></li>
-          {# Some logic on what to display for last item#}
           {% if user.is_authenticated %}
-            <li><a href="{% url 'ponder:categorizations' %}">Categorizations</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
           {% else %}
             <li><a class="navbar-link" href="{% url 'ponder:user_login' %}">Login</a></li>
