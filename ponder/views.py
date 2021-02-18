@@ -16,6 +16,8 @@ from django_tables2 import views
 from django_tables2 import MultiTableMixin
 from django_tables2   import RequestConfig
 from django.views.generic.base import TemplateView
+from django.views.generic import ListView, CreateView, UpdateView
+from django.urls import reverse_lazy
 
 def index(request):
 	parts = ['Categorizations','Reconciliation','Visualization of Data']
@@ -30,6 +32,7 @@ def special(request):
 def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect(reverse('index'))
+
 def problem_details(request):
 
 	if request.method == 'POST':
@@ -62,13 +65,13 @@ def problem_details(request):
 		#'values_ps': ProblemSymptoms.objects.all(),
 		}
 	return render(request, 'ponder/categorizations_problem.html', context)
-
+"""
 def categorizations(request):
 	if request.method == 'POST':
 		round_form = RoundForm(data=request.POST)
-
 		if round_form.is_valid():
 			current_round = round_form.cleaned_data['rounds']
+			print(current_round)
 
 		cat_form = CategorizationForm(rounds=current_round)
 		if cat_form.is_valid():
@@ -83,25 +86,21 @@ def categorizations(request):
 		'round_form': round_form,
 		}
 	return render(request,'ponder/categorizations.html',context)
+"""
+class CategorizationsCreateView(CreateView):
+	model = Categorizations
+	form_class = CategorizationForm
+	sucess_url = reverse_lazy('categorization_changelist')
 
-"""
-def register(request):
-	registered = False
-	if request.method == 'POST':
-		user_form = UserForm(data=request.POST)
-		if user_form.is_valid():
-			user = user_form.save()
-			user.set_password(user.password)
-			user.save()
-			registered = True
-		else:
-			print(user_form.errors)
-	else:
-		user_form = UserForm()
-	return render(request,'ponder/registration.html',
-						  {'user_form':user_form,
-						   'registered':registered})
-"""
+class CategorizationsListView(ListView):
+	model = Categorizations
+	context_object_name = 'categorizations'
+
+def load_shas(request):
+	rounds = request.GET.get('rounds')
+	commits = Commits.objects.filter(rounds=rounds)
+	return render(request, 'ponder/shas_options.html', {'commits': commits})
+
 def user_login(request):
 	if request.method == 'POST':
 		username = request.POST.get('username')
@@ -119,12 +118,12 @@ def user_login(request):
                         return HttpResponse("Invalid login details given")
 	else:
 		return render(request, 'ponder/login.html', {})
-
+"""
 class CategorizationsListView(SingleTableView):
     model = Categorizations
     table_class = CategorizationsTable
     template_name = 'ponder/categorizations_table.html'
-
+"""
 class BugFixesListView(SingleTableView):
     model = BugFixes
     table_class = BugFixesTable
