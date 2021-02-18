@@ -3,3 +3,4 @@ mysqlclient
 gunicorn
 django-tables2
 django-crispy-forms
+whitenoise
