@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 from django import forms
-from ponder.models import Categorizations
+from ponder.models import Categorizations, ProblemCategories, ProblemCauses, ProblemFixes, ProblemSymptoms, Commits
 from django.contrib.auth.models import User
 
 class UserForm(forms.ModelForm):
@@ -10,26 +10,44 @@ class UserForm(forms.ModelForm):
 		fields = ('username','password','email')
 
 class CategorizationForm(forms.ModelForm):
-	'''
-	sha = forms.CharField(label='sha', max_length=40)
-	is_func_fix = forms.IntegerField(label='is_func_fix')
-	func_fix_comment = forms.CharField(label='func_fix_comment', max_length=100)
-	problem_category = forms.IntegerField(label='problem_category')
-	problem_cause = forms.IntegerField(label='problem_cause')
-	problem_symptom = forms.IntegerField(label='problem_symptom')
-	problem_fix = forms.IntegerField(label='problem_fix')
-	categorizer = forms.IntegerField(label='categorizer')
-	bug_fix_id = forms.IntegerField(label='bug_fix_id')
-	category_comment = forms.CharField(label='category_comment', max_length=140)
-	cause_comment = forms.CharField(label='cause_comment', max_length=140)
-	symptom_comment = forms.CharField(label='symptom_comment', max_length=140)
-	fix_comment = forms.CharField(label='fix_comment', max_length=140)
-	should_discuss = forms.IntegerField(label='sha')
-	'''
+	CHOICES = [('0', 'True'), ('1', 'False')]
+	is_func_fix = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
 	class Meta():
 		model = Categorizations
-		fields = ('sha', 'is_func_fix', 'func_fix_comment', 'problem_category',
+		fields = ('sha', 'is_func_fix', 'func_fix_comment', 'problem_category', 
 			'category_comment','problem_cause','cause_comment',
-			'cause_comment','problem_symptom', 'symptom_comment',
+			'problem_symptom', 'symptom_comment',
 			'problem_fix', 'fix_comment', 'categorizer',
-			'should_discuss', 'bug_fix')
+			'should_discuss')
+		exclude = ('categorizer',)
+	def __init__(self, user=None, rounds=None, **kwargs):
+		super(CategorizationForm, self).__init__(**kwargs)
+		if user and rounds:
+			self.fields['sha'].queryset = models.Commits.objects.filter(rounds=rounds)
+			self.fields['categorizer'].queryset = models.Categorizer.objects.filter(categorizer=user)
+
+
+class ProblemCategoryForm(forms.ModelForm):
+	class Meta(): 
+		model = ProblemCategories
+		fields = ('category','description')
+
+class ProblemCausesForm(forms.ModelForm):
+	class Meta(): 
+		model = ProblemCauses
+		fields = ('cause','description')
+
+class ProblemFixesForm(forms.ModelForm):
+	class Meta(): 
+		model = ProblemFixes
+		fields = ('fix',)
+
+class ProblemSymptomsForm(forms.ModelForm):
+	class Meta(): 
+		model = ProblemSymptoms
+		fields = ('symptom',)
+
+class RoundForm(forms.ModelForm):
+	class Meta(): 
+		model = Commits
+		fields = ('rounds',)
