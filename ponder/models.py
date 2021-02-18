@@ -78,18 +78,18 @@ class CommitDetails(models.Model):
 
 class Commits(models.Model):
 	project = models.CharField(max_length=41)
-	sha = models.OneToOneField(CommitDetails, models.DO_NOTHING, db_column='sha')
+	sha = models.CharField(max_length=40, blank=False, null=False)
 	author = models.CharField(max_length=25, blank=True, null=True)
 	author_email = models.CharField(max_length=47, blank=True, null=True)
 	commit_date = models.DateField(blank=True, null=True)
 	dataset = models.ForeignKey('Datasets', models.DO_NOTHING, db_column='dataset')
-	round = models.IntegerField(blank=True, null=True)
+	rounds = models.IntegerField(blank=True, null=True)
 
 	class Meta:
 		managed = False
 		db_table = 'commits'
-	#def __str__(self):
-	#	return self.sha
+	def __str__(self):
+		return self.sha
 
 class Datasets(models.Model):
 	id = models.OneToOneField(Commits, models.DO_NOTHING, db_column='id', primary_key=True)
@@ -157,5 +157,3 @@ class Repositories(models.Model):
 	class Meta:
 		managed = False
 		db_table = 'repositories'
-
-
