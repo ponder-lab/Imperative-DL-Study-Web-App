@@ -17,7 +17,7 @@ class CategorizationForm(forms.ModelForm):
 	CHOICES = [('0', 'True'), ('1', 'False')]
 	is_func_fix = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
 	rounds = forms.ChoiceField(choices=[(x, x) for x in rounds_options])
-
+	should_discuss = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
 	class Meta():
 		model = Categorizations
 		fields = ('rounds', 'sha', 'is_func_fix', 'func_fix_comment', 'problem_category', 
@@ -30,7 +30,6 @@ class CategorizationForm(forms.ModelForm):
 		super(CategorizationForm, self).__init__(*args,**kwargs)
 		self.fields['sha'].queryset = Commits.objects.none()
 		#self.fields['categorizer'].queryset = Categorizers.objects.filter(categorizer=request.user)
-
 
 class ProblemCategoryForm(forms.ModelForm):
 	class Meta(): 
