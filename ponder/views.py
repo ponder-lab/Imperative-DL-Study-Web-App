@@ -69,7 +69,6 @@ def categorizations(request):
 
 		if round_form.is_valid():
 			current_round = round_form.cleaned_data['rounds']
-			print(current_round)
 
 		cat_form = CategorizationForm(rounds=current_round)
 		if cat_form.is_valid():
