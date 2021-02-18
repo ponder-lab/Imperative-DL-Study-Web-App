@@ -99,6 +99,8 @@ class Datasets(models.Model):
 	class Meta:
 		managed = False
 		db_table = 'datasets'
+	def __str__(self):
+		return self.name
 
 
 class ProblemCategories(models.Model):
@@ -157,3 +159,6 @@ class Repositories(models.Model):
 	class Meta:
 		managed = False
 		db_table = 'repositories'
+
+	def __str__(self):
+		return self.project
