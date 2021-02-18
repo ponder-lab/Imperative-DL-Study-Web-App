@@ -1,0 +1,38 @@
+{% extends "ponder/base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block body_block %}
+<div class="container">
+  <div class="jumbotron">
+  <h2>Categorizations Form</h2>
+  <form enctype="multipart/form-data" method="post" id="categorizationForm" data-shas-url="{% url 'ponder:ajax_load_shas' %}" novalidate>
+    {% csrf_token %}
+    <table>
+      {{ form.as_p }}
+    </table>
+    <button type="submit">Save</button>
+    <a href="{% url 'ponder:categorizations_changelist' %}">Nevermind</a>
+  </form>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script>
+    $("#id_rounds").change(function () {
+      var url = $("#categorizationForm").attr("data-shas-url");  
+      var roundsId = $(this).val();  
+
+      $.ajax({                       
+        url: url,                    
+        data: {
+          'rounds': roundsId       
+        },
+        success: function (data) {   
+          $("#id_sha").html(data);  
+        }
+      });
+
+    });
+  </script>
+</div>
+</div>
+
+{% endblock %}
