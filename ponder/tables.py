@@ -30,24 +30,34 @@ class DatasetsTable(tables.Table):
     class Meta:
         model = Datasets
         template_name = "django_tables2/bootstrap-responsive.html"
-
+        
 class ProblemCategoriesTable(tables.Table):
-    class Meta:
-        model = ProblemCategories
-        template_name = "django_tables2/bootstrap-responsive.html"
+	id = tables.Column(linkify=True)
+	category = tables.Column(linkify=True)
+	description = tables.Column(linkify=True)
+	class Meta:
+		model = ProblemCategories
+		template_name = "django_tables2/bootstrap-responsive.html"
 
 class ProblemCausesTable(tables.Table):
-    class Meta:
-        model = ProblemCauses
-        template_name = "django_tables2/bootstrap-responsive.html"
+	id = tables.Column(linkify=True)
+	cause = tables.Column(linkify=True)
+	description = tables.Column(linkify=True)
+	class Meta:
+		model = ProblemCauses
+		template_name = "django_tables2/bootstrap-responsive.html"
 
 class ProblemFixesTable(tables.Table):
-    class Meta:
-        model = ProblemFixes
-        template_name = "django_tables2/bootstrap-responsive.html"
+	id = tables.Column(linkify=True)
+	fix = tables.Column(linkify=True)
+	class Meta:
+		model = ProblemFixes
+		template_name = "django_tables2/bootstrap-responsive.html"
 
 class ProblemSymptomsTable(tables.Table):
-    class Meta:
-        model = ProblemSymptoms
-        template_name = "django_tables2/bootstrap-responsive.html"
-
+	id = tables.Column(linkify=True)
+	symptom = tables.Column(linkify=True)
+	class Meta:
+		model = ProblemSymptoms
+		template_name = "django_tables2/bootstrap-responsive.html"
+		
