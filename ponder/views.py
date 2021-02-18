@@ -77,7 +77,7 @@ def categorizations(request):
 			print(round_form.errors, cat_form.errors)
 	else:
 		round_form = RoundForm()
-		cat_form = CategorizationForm(rounds=round_form.cleaned_data['rounds'])
+		cat_form = CategorizationForm()
 	context = {
 		'cat_form': cat_form,
 		'round_form': round_form,
