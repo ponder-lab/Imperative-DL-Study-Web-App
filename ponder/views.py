@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Commits, Categorizations, User, BugFixes, Categorizers, CommitDetails, Commits, Datasets, ProblemCategories, ProblemCauses, ProblemFixes, ProblemSymptoms
 from django.http import Http404
-from ponder.forms import UserForm, CategorizationForm
+from ponder.forms import UserForm, CategorizationForm, ProblemCategoryForm, ProblemCausesForm, ProblemFixesForm, ProblemSymptomsForm, RoundForm
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -12,6 +12,10 @@ from .tables import CategorizationsTable, BugFixesTable, CategorizersTable, Comm
 from django.apps import apps 
 from django.contrib import admin 
 from django.contrib.admin.sites import AlreadyRegistered 
+from django_tables2 import views
+from django_tables2 import MultiTableMixin
+from django_tables2   import RequestConfig
+from django.views.generic.base import TemplateView
 
 def index(request):
 	parts = ['Categorizations','Reconciliation','Visualization of Data']
@@ -26,18 +30,62 @@ def special(request):
 def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect(reverse('index'))
+def problem_details(request):
+
+	if request.method == 'POST':
+		p_categoryF = ProblemCategoryForm(data=request.POST)
+		p_fixF = ProblemFixesForm(data=request.POST)
+		p_causeF = ProblemCausesForm(data=request.POST)
+		p_symptomF = ProblemSymptomsForm(data=request.POST)
+
+		if p_categoryF.is_valid() and p_fixF.is_valid() and p_causeF.is_valid() and p_symptomF.is_valid(): 
+			p_category = p_categoryF.save()
+			p_fix = p_fixF.save()
+			p_cause = p_causeF.save()
+			p_symptom = p_symptomF.save()
+		else:
+			print(p_categoryF.errors,p_fixF.errors, p_causeF.errors, p_symptomF.errors)
+	else: 
+		p_categoryF = ProblemCategoryForm()
+		p_fixF = ProblemFixesForm()
+		p_causeF = ProblemCausesForm()
+		p_symptomF = ProblemSymptomsForm()
+
+	context = {
+		'p_category': p_categoryF,
+		'p_fix': p_fixF,
+		'p_cause': p_causeF,
+		'p_symptom': p_symptomF,
+		#'values_pcat': ProblemCategories.objects.all(),
+		#'values_pf': ProblemFixes.objects.all(),
+		#'values_pcause': ProblemCauses.objects.all(),
+		#'values_ps': ProblemSymptoms.objects.all(),
+		}
+	return render(request, 'ponder/categorizations_problem.html', context)
 
 def categorizations(request):
 	if request.method == 'POST':
-		cat_form = CategorizationForm(data=request.POST)
+		round_form = RoundForm(data=request.POST)
+
+		if round_form.is_valid():
+			current_round = round_form.cleaned_data['rounds']
+			print(current_round)
+
+		cat_form = CategorizationForm(rounds=current_round)
 		if cat_form.is_valid():
 			categorization = cat_form.save()
 		else: 
-			print(cat_form.errors)
+			print(round_form.errors, cat_form.errors)
 	else:
-		cat_form = CategorizationForm()
-	return render(request,'ponder/categorizations.html', {'cat_form':cat_form})
+		round_form = RoundForm()
+		cat_form = CategorizationForm(rounds=round_form.cleaned_data['rounds'])
+	context = {
+		'cat_form': cat_form,
+		'round_form': round_form,
+		}
+	return render(request,'ponder/categorizations.html',context)
 
+"""
 def register(request):
 	registered = False
 	if request.method == 'POST':
@@ -54,7 +102,7 @@ def register(request):
 	return render(request,'ponder/registration.html',
 						  {'user_form':user_form,
 						   'registered':registered})
-
+"""
 def user_login(request):
 	if request.method == 'POST':
 		username = request.POST.get('username')
