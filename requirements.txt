@@ -2,4 +2,4 @@ Django
 mysqlclient
 gunicorn
 django-tables2
-crispy_forms_tags
+django-crispy-forms
