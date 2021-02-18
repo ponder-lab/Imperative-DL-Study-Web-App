@@ -18,6 +18,7 @@ from django_tables2   import RequestConfig
 from django.views.generic.base import TemplateView
 from django.views.generic import ListView, CreateView, UpdateView
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 def index(request):
 	parts = ['Categorizations','Reconciliation','Visualization of Data']
@@ -87,7 +88,10 @@ def categorizations(request):
 		}
 	return render(request,'ponder/categorizations.html',context)
 """
-class CategorizationsCreateView(CreateView):
+
+class CategorizationsCreateView(LoginRequiredMixin, CreateView):
+	login_url = '/login/'
+	redirect_field_name = 'redirect_to'
 	model = Categorizations
 	form_class = CategorizationForm
 	sucess_url = reverse_lazy('categorization_changelist')
