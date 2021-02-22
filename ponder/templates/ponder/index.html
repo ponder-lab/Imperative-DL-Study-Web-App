@@ -23,7 +23,7 @@
                   <h2 class="card-title">{{ project }}</h2>
                   {% if project == "Commits" %}
                     <p class="card-text">See the commits being considered in this study, as well as adding categorizations for each one.</p>
-                    <a href=""
+                    <a href="{% url 'ponder:commits_table' %}"
                      class="btn btn-primary">
                       View commits
                     </a>
