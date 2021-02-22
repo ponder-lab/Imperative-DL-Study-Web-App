@@ -4,3 +4,4 @@ gunicorn
 django-tables2
 django-crispy-forms
 whitenoise
+django-bootstrap3
