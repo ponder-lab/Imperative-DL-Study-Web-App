@@ -22,9 +22,10 @@ class CommitDetailsTable(tables.Table):
         template_name = "django_tables2/bootstrap-responsive.html"
 
 class CommitsTable(tables.Table):
-    class Meta:
-        model = Commits
-        template_name = "django_tables2/bootstrap-responsive.html"
+	class Meta:
+		model = Commits
+		exclude = ('author_email',)
+		template_name = "django_tables2/bootstrap-responsive.html"
 
 class DatasetsTable(tables.Table):
     class Meta:
