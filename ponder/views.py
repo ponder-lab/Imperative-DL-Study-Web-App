@@ -21,7 +21,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 def index(request):
-	parts = ['Categorizations','Reconciliation','Visualization of Data']
+	parts = ['Commits','Categorizations','Bug Fixes']
 	context = {'projects': parts}
 	return render(request, 'ponder/index.html', context)
 
