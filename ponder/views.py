@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 from django_tables2 import SingleTableView
 from .tables import CategorizationsTable, BugFixesTable, CategorizersTable, CommitDetailsTable, CommitsTable, DatasetsTable, ProblemCategoriesTable, ProblemCausesTable, ProblemFixesTable, ProblemSymptomsTable
+from .filters import RoundFilter
 from django.apps import apps 
 from django.contrib import admin 
 from django.contrib.admin.sites import AlreadyRegistered 
@@ -19,6 +20,8 @@ from django.views.generic.base import TemplateView
 from django.views.generic import ListView, CreateView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django_filters.views import FilterView
+from django_tables2.views import SingleTableMixin
 
 def index(request):
 	parts = ['Commits','Categorizations','Bug Fixes']
@@ -122,12 +125,19 @@ def user_login(request):
                         return HttpResponse("Invalid login details given")
 	else:
 		return render(request, 'ponder/login.html', {})
+
+class CommitsTableView(SingleTableMixin, FilterView):
+    model = Commits
+    table_class = CommitsTable
+    template_name = 'ponder/commits_table.html'
+    filterset_class = RoundFilter
+	
 """
 class CategorizationsListView(SingleTableView):
     model = Categorizations
     table_class = CategorizationsTable
     template_name = 'ponder/categorizations_table.html'
-"""
+
 class BugFixesListView(SingleTableView):
     model = BugFixes
     table_class = BugFixesTable
@@ -172,3 +182,5 @@ class ProblemSymptomsListView(SingleTableView):
     model = ProblemSymptoms
     table_class = ProblemSymptomsTable
     template_name = 'ponder/problemsymptoms_table.html' 
+    
+"""
