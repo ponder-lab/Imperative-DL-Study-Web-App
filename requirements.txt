@@ -5,3 +5,4 @@ django-tables2
 django-crispy-forms
 whitenoise
 django-bootstrap3
+django-filter
