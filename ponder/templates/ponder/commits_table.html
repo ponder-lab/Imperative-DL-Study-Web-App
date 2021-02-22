@@ -1,5 +1,7 @@
 {% extends "ponder/base.html" %}
 {% load render_table from django_tables2 %}
+{% load bootstrap3 %}
+
 <!doctype html>
 <html>
 {% block body_block %}
@@ -8,6 +10,12 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     </head>
     <body>
+    	{% if filter %}
+    	<form action="" method="get" class="form form-inline">
+        {% bootstrap_form filter.form layout='inline' %}
+        {% bootstrap_button 'Choose your round' %}
+    </form>
+{% endif %}
         {% render_table table %}
     </body>
 </html>
