@@ -1,4 +1,5 @@
 import django_tables2 as tables
+from django_tables2 import TemplateColumn
 from .models import Categorizations, BugFixes, Categorizers, CommitDetails, Commits, Datasets, ProblemCategories, ProblemCauses, ProblemFixes, ProblemSymptoms
 
 class CategorizationsTable(tables.Table):
@@ -26,6 +27,7 @@ class CommitsTable(tables.Table):
 		model = Commits
 		exclude = ('author_email',)
 		template_name = "django_tables2/bootstrap-responsive.html"
+	add_form = TemplateColumn(template_name='ponder/add_a_categorization.html')
 
 class DatasetsTable(tables.Table):
     class Meta:
