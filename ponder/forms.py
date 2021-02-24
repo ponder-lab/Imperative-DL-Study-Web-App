@@ -13,23 +13,23 @@ class UserForm(forms.ModelForm):
 		fields = ('username','password','email')
 
 class CategorizationForm(forms.ModelForm):
-	rounds_options = list(Commits.objects.order_by().values_list('rounds',flat=True).distinct())
 	CHOICES = [('0', 'True'), ('1', 'False')]
 	is_func_fix = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
-	rounds = forms.ChoiceField(choices=[(x, x) for x in rounds_options])
 	should_discuss = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
+
 	class Meta():
 		model = Categorizations
-		fields = ('rounds', 'sha', 'is_func_fix', 'func_fix_comment', 'problem_category', 
+		fields = ('sha','is_func_fix', 'func_fix_comment', 'problem_category', 
 			'category_comment','problem_cause','cause_comment',
 			'problem_symptom', 'symptom_comment',
-			'problem_fix', 'fix_comment', 'categorizer',
+			'problem_fix', 'fix_comment',
 			'should_discuss')
-		exclude = ('categorizer',)
-	def __init__(self, *args, **kwargs):
-		super(CategorizationForm, self).__init__(*args,**kwargs)
-		self.fields['sha'].queryset = Commits.objects.none()
-		#self.fields['categorizer'].queryset = Categorizers.objects.filter(categorizer=request.user)
+	def __init__(self,*args,**kwargs):
+		sha = kwargs.pop('sha')
+		user = kwargs.pop('user')
+		commit_choice = [(Commits.objects.get(sha=sha), Commits.objects.get(sha=sha))]
+		super(CategorizationForm,self).__init__(*args,**kwargs)
+		self.fields['sha'] = forms.ChoiceField(choices=commit_choice)
 
 class ProblemCategoryForm(forms.ModelForm):
 	class Meta(): 
