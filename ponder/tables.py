@@ -18,16 +18,19 @@ class CategorizersTable(tables.Table):
         template_name = "django_tables2/bootstrap-responsive.html"
 
 class CommitDetailsTable(tables.Table):
-    class Meta:
-        model = CommitDetails
-        template_name = "django_tables2/bootstrap-responsive.html"
+	sha = tables.Column(linkify=True)
+	class Meta:
+		model = CommitDetails
+		template_name = "django_tables2/bootstrap-responsive.html"
 
 class CommitsTable(tables.Table):
+	add_form = TemplateColumn(template_name='ponder/add_a_categorization.html')
+	go_to_details = TemplateColumn(template_name='ponder/go_to_details.html', verbose_name="Sha")
 	class Meta:
 		model = Commits
-		exclude = ('author_email',)
+		exclude = ('author_email','sha')
 		template_name = "django_tables2/bootstrap-responsive.html"
-	add_form = TemplateColumn(template_name='ponder/add_a_categorization.html')
+		sequence = ('id','project', 'go_to_details', 'author', 'commit_date', 'dataset', 'rounds', 'add_form')
 
 class DatasetsTable(tables.Table):
     class Meta:
