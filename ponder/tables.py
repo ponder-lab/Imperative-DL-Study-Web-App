@@ -18,7 +18,6 @@ class CategorizersTable(tables.Table):
         template_name = "django_tables2/bootstrap-responsive.html"
 
 class CommitDetailsTable(tables.Table):
-	sha = tables.Column(linkify=True)
 	class Meta:
 		model = CommitDetails
 		template_name = "django_tables2/bootstrap-responsive.html"
