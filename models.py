@@ -6,6 +6,7 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+from django.contrib.auth.models import User
 
 class BugFixes(models.Model):
 	sha = models.OneToOneField('Commits', models.DO_NOTHING, db_column='sha')
@@ -26,7 +27,7 @@ class BugFixes(models.Model):
 
 
 class Categorizations(models.Model):
-	sha = models.ForeignKey('Commits', models.DO_NOTHING, db_column='sha')
+	sha = models.CharField(max_length=40, blank=False, null=False)
 	is_func_fix = models.IntegerField()
 	func_fix_comment = models.TextField(blank=True, null=True)
 	problem_category = models.ForeignKey('ProblemCategories', models.DO_NOTHING, db_column='problem_category', blank=True, null=True)
@@ -54,10 +55,12 @@ class Categorizers(models.Model):
 	class Meta:
 		managed = False
 		db_table = 'categorizers'
+	def __str__(self):
+		return self.user
 
 
 class CommitDetails(models.Model):
-	sha = models.ForeignKey('Commits', models.DO_NOTHING, db_column='sha', blank=True, null=True)
+	sha = models.CharField(max_length=40, blank=False, null=False)
 	language = models.CharField(max_length=2, blank=True, null=True)
 	file_name = models.CharField(max_length=100, blank=True, null=True)
 	is_test = models.IntegerField(blank=True, null=True)
@@ -75,16 +78,18 @@ class CommitDetails(models.Model):
 
 class Commits(models.Model):
 	project = models.CharField(max_length=41)
-	sha = models.OneToOneField(CommitDetails, models.DO_NOTHING, db_column='sha')
+	sha = models.CharField(max_length=40, blank=False, null=False)
 	author = models.CharField(max_length=25, blank=True, null=True)
 	author_email = models.CharField(max_length=47, blank=True, null=True)
 	commit_date = models.DateField(blank=True, null=True)
 	dataset = models.ForeignKey('Datasets', models.DO_NOTHING, db_column='dataset')
-	round = models.IntegerField(blank=True, null=True)
+	rounds = models.IntegerField(blank=True, null=True)
 
 	class Meta:
 		managed = False
 		db_table = 'commits'
+	def __str__(self):
+		return self.sha
 
 class Datasets(models.Model):
 	id = models.OneToOneField(Commits, models.DO_NOTHING, db_column='id', primary_key=True)
@@ -94,6 +99,8 @@ class Datasets(models.Model):
 	class Meta:
 		managed = False
 		db_table = 'datasets'
+	def __str__(self):
+		return self.name
 
 
 class ProblemCategories(models.Model):
@@ -103,6 +110,8 @@ class ProblemCategories(models.Model):
 	class Meta:
 		managed = False
 		db_table = 'problem_categories'
+	def __str__(self):
+		return self.category
 
 
 class ProblemCauses(models.Model):
@@ -113,6 +122,9 @@ class ProblemCauses(models.Model):
 		managed = False
 		db_table = 'problem_causes'
 
+	def __str__(self):
+		return self.cause
+
 
 class ProblemFixes(models.Model):
 	fix = models.CharField(unique=True, max_length=512)
@@ -120,6 +132,8 @@ class ProblemFixes(models.Model):
 	class Meta:
 		managed = False
 		db_table = 'problem_fixes'
+	def __str__(self):
+		return self.fix
 
 
 class ProblemSymptoms(models.Model):
@@ -128,6 +142,9 @@ class ProblemSymptoms(models.Model):
 	class Meta:
 		managed = False
 		db_table = 'problem_symptoms'
+
+	def __str__(self):
+		return self.symptom
 
 
 class Repositories(models.Model):
@@ -142,3 +159,6 @@ class Repositories(models.Model):
 	class Meta:
 		managed = False
 		db_table = 'repositories'
+
+	def __str__(self):
+		return self.project
