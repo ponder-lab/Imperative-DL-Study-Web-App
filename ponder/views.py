@@ -69,29 +69,26 @@ def problem_details(request):
 		#'values_ps': ProblemSymptoms.objects.all(),
 		}
 	return render(request, 'ponder/categorizations_problem.html', context)
-"""
-def categorizations(request):
-	if request.method == 'POST':
-		round_form = RoundForm(data=request.POST)
-		if round_form.is_valid():
-			current_round = round_form.cleaned_data['rounds']
-			print(current_round)
 
-		cat_form = CategorizationForm(rounds=current_round)
+@login_required
+def categorizations(request,pk):
+	sha_commits=Commits(sha=pk)
+	if request.method == 'POST':
+		cat_form = CategorizationForm(request.POST,sha=sha_commits, user = request.user)
 		if cat_form.is_valid():
-			categorization = cat_form.save()
+			categorization = cat_form.save(commit=False)
+			categorization.categorizer = Categorizers.objects.get(id=request.user.id)
+			categorization.save()
 		else: 
-			print(round_form.errors, cat_form.errors)
+			print(cat_form.errors)
 	else:
-		round_form = RoundForm()
-		cat_form = CategorizationForm()
+		cat_form = CategorizationForm(sha=sha_commits,user=request.user)
 	context = {
 		'cat_form': cat_form,
-		'round_form': round_form,
+		'sha': sha_commits
 		}
 	return render(request,'ponder/categorizations.html',context)
 """
-
 class CategorizationsCreateView(LoginRequiredMixin, CreateView):
 	login_url = '/login/'
 	redirect_field_name = 'redirect_to'
@@ -107,6 +104,7 @@ def load_shas(request):
 	rounds = request.GET.get('rounds')
 	commits = Commits.objects.filter(rounds=rounds)
 	return render(request, 'ponder/shas_options.html', {'commits': commits})
+"""
 
 def user_login(request):
 	if request.method == 'POST':
@@ -125,12 +123,17 @@ def user_login(request):
                         return HttpResponse("Invalid login details given")
 	else:
 		return render(request, 'ponder/login.html', {})
-
+		
 class CommitsTableView(SingleTableMixin, FilterView):
     model = Commits
     table_class = CommitsTable
     template_name = 'ponder/commits_table.html'
     filterset_class = RoundFilter
+
+class CommitDetailsTableView(SingleTableView):
+    model = CommitDetails
+    table_class = CommitDetailsTable
+    template_name = 'ponder/commit_details_table.html'
 	
 """
 class CategorizationsListView(SingleTableView):
