@@ -131,9 +131,14 @@ class CommitsTableView(SingleTableMixin, FilterView):
     filterset_class = RoundFilter
 
 class CommitDetailsTableView(SingleTableView):
-    model = CommitDetails
-    table_class = CommitDetailsTable
-    template_name = 'ponder/commit_details_table.html'
+	model = CommitDetails
+	table_class = CommitDetailsTable
+	template_name = 'ponder/commit_details_table.html'
+
+	def get_queryset(self):
+		print("this is it: "+str(self.kwargs['pk']))
+		print(CommitDetails.objects.filter(sha=self.kwargs['pk']))
+		return CommitDetails.objects.filter(sha=self.kwargs['pk'])
 	
 """
 class CategorizationsListView(SingleTableView):
