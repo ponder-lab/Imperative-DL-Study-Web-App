@@ -27,7 +27,7 @@ class BugFixes(models.Model):
 
 
 class Categorizations(models.Model):
-	sha = models.ForeignKey('Commits', models.DO_NOTHING, db_column='sha')
+	sha = models.CharField(max_length=40, blank=False, null=False)
 	is_func_fix = models.IntegerField()
 	func_fix_comment = models.TextField(blank=True, null=True)
 	problem_category = models.ForeignKey('ProblemCategories', models.DO_NOTHING, db_column='problem_category', blank=True, null=True)
@@ -60,7 +60,7 @@ class Categorizers(models.Model):
 
 
 class CommitDetails(models.Model):
-	sha = models.ForeignKey('Commits', models.DO_NOTHING, db_column='sha', blank=True, null=True)
+	sha = models.CharField(max_length=40, blank=False, null=False)
 	language = models.CharField(max_length=2, blank=True, null=True)
 	file_name = models.CharField(max_length=100, blank=True, null=True)
 	is_test = models.IntegerField(blank=True, null=True)
