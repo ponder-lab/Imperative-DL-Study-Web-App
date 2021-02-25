@@ -11,12 +11,15 @@ class UserForm(forms.ModelForm):
 	class Meta():
 		model = User
 		fields = ('username','password','email')
-
+		
 class CategorizationForm(forms.ModelForm):
-	CHOICES = [('1', 'True'), ('0', 'False')]
+	CHOICES = [('0', 'False'), ('1', 'True')]
 	is_func_fix = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
 	should_discuss = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
-
+	problem_category = forms.CharField(max_length=512,required=False)
+	problem_cause = forms.CharField(max_length=512,required=False)
+	problem_fix = forms.CharField(max_length=512,required=False)
+	problem_symptom = forms.CharField(max_length=512,required=False)
 	class Meta():
 		model = Categorizations
 		fields = ('sha','is_func_fix', 'func_fix_comment', 'problem_category', 
