@@ -13,7 +13,7 @@ class UserForm(forms.ModelForm):
 		fields = ('username','password','email')
 
 class CategorizationForm(forms.ModelForm):
-	CHOICES = [('0', 'True'), ('1', 'False')]
+	CHOICES = [('1', 'True'), ('0', 'False')]
 	is_func_fix = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
 	should_discuss = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
 
