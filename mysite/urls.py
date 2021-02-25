@@ -24,4 +24,5 @@ urlpatterns = [
     url(r'^special/',views.special,name='special'),
     url(r'^ponder/',include('ponder.urls')),
     url(r'^logout/$', views.user_logout, name='logout'),
+    url(r'^ponder/bug_fixes/', views.id, name='id'),
 ]

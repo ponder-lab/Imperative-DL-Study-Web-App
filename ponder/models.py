@@ -9,7 +9,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class BugFixes(models.Model):
-	sha = models.OneToOneField('Commits', models.DO_NOTHING, db_column='sha')
+	sha = models.CharField(max_length=40, blank=False, null=False)
 	is_func_fix = models.TextField(blank=True, null=True)  # This field type is a guess.
 	problem_category = models.ForeignKey('ProblemCategories', models.DO_NOTHING, db_column='problem_category', blank=True, null=True)
 	category_comment = models.CharField(max_length=512, blank=True, null=True)
@@ -24,6 +24,9 @@ class BugFixes(models.Model):
 	class Meta:
 		managed = False
 		db_table = 'bug_fixes'
+
+	def get_absolute_url(self):
+		return "%i/" % self.id
 
 
 class Categorizations(models.Model):
