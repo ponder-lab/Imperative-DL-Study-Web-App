@@ -28,20 +28,19 @@ class BugFixes(models.Model):
 	def get_absolute_url(self):
 		return "%i/" % self.id
 
-
 class Categorizations(models.Model):
 	sha = models.CharField(max_length=40, blank=False, null=False)
 	is_func_fix = models.IntegerField()
 	func_fix_comment = models.TextField(blank=True, null=True)
-	problem_category = models.ForeignKey('ProblemCategories', models.DO_NOTHING, db_column='problem_category', blank=True, null=True)
+	problem_category = models.CharField(max_length=512, blank=False, null=False)
 	category_comment = models.TextField(blank=True, null=True)
-	problem_cause = models.ForeignKey('ProblemCauses', models.DO_NOTHING, db_column='problem_cause', blank=True, null=True)
+	problem_cause = models.CharField(max_length=512, blank=False, null=False)
 	cause_comment = models.TextField(blank=True, null=True)
-	problem_symptom = models.ForeignKey('ProblemSymptoms', models.DO_NOTHING, db_column='problem_symptom', blank=True, null=True)
+	problem_symptom = models.CharField(max_length=512, blank=False, null=False)
 	symptom_comment = models.TextField(blank=True, null=True)
-	problem_fix = models.ForeignKey('ProblemFixes', models.DO_NOTHING, db_column='problem_fix', blank=True, null=True)
+	problem_fix = models.CharField(max_length=512, blank=False, null=False)
 	fix_comment = models.TextField(blank=True, null=True)
-	categorizer = models.ForeignKey('Categorizers', models.DO_NOTHING, db_column='categorizer')
+	categorizer = models.CharField(max_length=256)
 	should_discuss = models.IntegerField(blank=True, null=True)
 	bug_fix = models.ForeignKey(BugFixes, models.DO_NOTHING, blank=True, null=True)
 
