@@ -124,13 +124,15 @@ def user_login(request):
 	else:
 		return render(request, 'ponder/login.html', {})
 		
-class CommitsTableView(SingleTableMixin, FilterView):
-    model = Commits
-    table_class = CommitsTable
-    template_name = 'ponder/commits_table.html'
-    filterset_class = RoundFilter
+class CommitsTableView(LoginRequiredMixin, SingleTableMixin, FilterView):
+	login_url = 'ponder:user_login'
+	model = Commits
+	table_class = CommitsTable
+	template_name = 'ponder/commits_table.html'
+	filterset_class = RoundFilter
 
-class CommitDetailsTableView(SingleTableView):
+class CommitDetailsTableView(LoginRequiredMixin, SingleTableView):
+	login_url = 'ponder:user_login'
 	model = CommitDetails
 	table_class = CommitDetailsTable
 	template_name = 'ponder/commit_details_table.html'
