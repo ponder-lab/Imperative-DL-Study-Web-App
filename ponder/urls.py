@@ -9,7 +9,7 @@ urlpatterns=[
     #url(r'^register/$',views.register,name='register'),
     url(r'^user_login/$',views.user_login,name='user_login'),
     #path('categorizations/', views.CategorizationsListView.as_view(), name='categorizations_changelist'),
-    path('categorizations/add=<str:pk>', views.categorizations, name='categorizations_add'),
+    path('categorizations/add?commit=<str:pk>', views.categorizations, name='categorizations_add'),
     path("problem_detail/", views.problem_details, name='categorizations_table'),
     path("commits", views.CommitsTableView.as_view(), name='commits_table'),
     path("commits/<str:pk>", views.CommitDetailsTableView.as_view(), name='commits_details'),
