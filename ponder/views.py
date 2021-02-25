@@ -73,6 +73,9 @@ def problem_details(request):
 @login_required
 def categorizations(request,pk):
 	sha_commits=Commits(sha=pk)
+	project = Commits.objects.values('project').filter(sha=pk)[0]
+	general_url = "https://github.com/"+str(project['project'])+"/search?q="+str(sha_commits)
+	commit_url = "https://github.com/"+str(project['project'])+"/commit/"+str(sha_commits)
 	if request.method == 'POST':
 		cat_form = CategorizationForm(request.POST,sha=sha_commits, user = request.user)
 		if cat_form.is_valid():
@@ -85,7 +88,9 @@ def categorizations(request,pk):
 		cat_form = CategorizationForm(sha=sha_commits,user=request.user)
 	context = {
 		'cat_form': cat_form,
-		'sha': sha_commits
+		'sha': sha_commits,
+		'general_url': general_url,
+		'commit_url': commit_url
 		}
 	return render(request,'ponder/categorizations.html',context)
 """
