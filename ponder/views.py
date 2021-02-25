@@ -71,6 +71,23 @@ def problem_details(request):
 	return render(request, 'ponder/categorizations_problem.html', context)
 
 @login_required
+def id(request):
+	s = request.path_info
+	s = s. replace('/ponder/bug_fixes/', '')
+	s = s. replace('/', '')
+	id_value = int(s)
+	id_qs = BugFixes.objects.filter(id=id_value)
+	sha = id_qs.values_list('sha', flat=True).get(pk=id_value)
+	fix_details = Categorizations.objects.filter(sha=sha)
+	return render(request, 'ponder/categorizations_filter1.html', {'fix_details': fix_details})
+
+@login_required
+def search(request):
+   # if request.user.is_authenticated:
+	categories = Categorizations.objects.filter(categorizer=request.user.pk)
+	return render(request, 'ponder/categorizations_filter2.html', {'categories': categories})
+
+@login_required
 def categorizations(request,pk):
 	sha_commits=Commits(sha=pk)
 	project = Commits.objects.values('project').filter(sha=pk)[0]
@@ -146,17 +163,17 @@ class CommitDetailsTableView(LoginRequiredMixin, SingleTableView):
 		print("this is it: "+str(self.kwargs['pk']))
 		print(CommitDetails.objects.filter(sha=self.kwargs['pk']))
 		return CommitDetails.objects.filter(sha=self.kwargs['pk'])
+
+class BugFixesTableView(LoginRequiredMixin, SingleTableView):
+    model = BugFixes
+    table_class = BugFixesTable
+    template_name = 'ponder/bugfixes_table.html' 
 	
 """
 class CategorizationsListView(SingleTableView):
     model = Categorizations
     table_class = CategorizationsTable
-    template_name = 'ponder/categorizations_table.html'
-
-class BugFixesListView(SingleTableView):
-    model = BugFixes
-    table_class = BugFixesTable
-    template_name = 'ponder/bugfixes_table.html'  
+    template_name = 'ponder/categorizations_table.html' 
 
 class CategorizersListView(SingleTableView):
     model = Categorizers

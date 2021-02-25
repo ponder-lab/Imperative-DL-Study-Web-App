@@ -3,7 +3,7 @@
 {% block body_block %}
 <div class="container">
   <div class="jumbotron">
-  	<a href="/" class="ponder-logo">
+    <a href="/" class="ponder-logo">
       <img src="{% static 'logo.png'%}">
     </a>
     <center></center><h1>Welcome to the Ponder's Web App !</h1></center>
@@ -29,13 +29,13 @@
                     </a>
                   {% elif project == "Categorizations" %}
                     <p class="card-text">View {{ user.username }} categorizations.</p>
-                    <a href=""
+                    <a href="{% url 'ponder:categorizations_filter' %}"
                      class="btn btn-primary">
                       View your categorizations
                     </a>
                   {% else %}
                   <p class="card-text">View the agreed upon categorizations for each sha.</p>
-                    <a href=""
+                    <a href="{% url 'ponder:bugfixes_table' %}"
                      class="btn btn-primary">
                       View agreed categorizations
                     </a>

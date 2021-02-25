@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+   <head>
+      <title>Categorizations</title>
+
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  </head>
+
+<body>
+<h1>&nbsp; Categorizations for user ID {{user.pk}}</h1>
+   
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Sha</th>
+      <th scope="col">Is Function Fix</th>
+      <th scope="col">Problem Category</th>
+      <th scope="col">Category Comment</th>
+      <th scope="col">Problem Cause</th>
+      <th scope="col">Cause Comment</th>
+      <th scope="col">Problem Symptom</th>
+      <th scope="col">Symptom Comment</th>
+      <th scope="col">Problem Fix</th>
+      <th scope="col">Fix Comment</th>
+      <th scope="col">Categorizer</th>
+      <th scope="col">Should Discuss</th>
+      <th scope="col">Bug Fix</th>
+    </tr>
+  </thead>
+  <tbody>
+    
+        {% for category in categories %}
+        <tr>
+    <td>{{ category.id}}</td>
+    <td>{{ category.sha}}</td>
+    <td>{{ category.is_func_fix}}</td>
+    <td>{{ category.problem_category}}</td>
+    <td>{{ category.category_comment}}</td>
+    <td>{{ category.problem_cause}}</td>
+    <td>{{ category.cause_comment}}</td>
+    <td>{{ category.problem_symptom}}</td>
+    <td>{{ category.symptom_comment}}</td>
+    <td>{{ category.problem_fix}}</td>
+    <td>{{ category.fix_comment}}</td>
+    <td>{{ category.categorizer}}</td>
+    <td>{{ category.should_discuss}}</td>
+    <td>{{ category.bug_fix}}</td>
+  </tr>
+{% endfor %}
+      
+    </tr>
+   
+  </tbody>
+</table>
+</body>
+</html>
+
+

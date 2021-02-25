@@ -8,6 +8,7 @@ class CategorizationsTable(tables.Table):
         template_name = "django_tables2/bootstrap-responsive.html"
 
 class BugFixesTable(tables.Table):
+    id = tables.Column(linkify=True)
     class Meta:
         model = BugFixes
         template_name = "django_tables2/bootstrap-responsive.html"
