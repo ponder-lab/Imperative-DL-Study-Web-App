@@ -100,31 +100,35 @@ def categorizations(request,pk):
 			categorization.categorizer = request.user.id
 			if not ProblemCategories.objects.filter(category=cat_form.cleaned_data['problem_category']).exists():
 				ProblemCategories.objects.create(category=cat_form.cleaned_data['problem_category'])
-				problem_category = ProblemCategories.objects.values('id').filter(category=cat_form.cleaned_data['problem_category'])[0]
-				categorization.problem_category = problem_category['id']
 			elif not cat_form.cleaned_data['problem_category']: 
 				categorization.problem_category = None
+			else:
+				problem_category = ProblemCategories.objects.values('id').filter(category=cat_form.cleaned_data['problem_category'])[0]
+				categorization.problem_category = problem_category['id'] 
 
 			if not ProblemCauses.objects.filter(cause=cat_form.cleaned_data['problem_cause']).exists() and len(cat_form.cleaned_data['problem_cause'])>=1:
 				ProblemCauses.objects.create(cause=cat_form.cleaned_data['problem_cause'])
-				problem_cause = ProblemCauses.objects.values('id').filter(cause=cat_form.cleaned_data['problem_cause'])[0]
-				categorization.problem_cause = problem_cause['id']
 			elif not cat_form.cleaned_data['problem_cause']: 
 				categorization.problem_cause = None
+			else:
+				problem_cause = ProblemCauses.objects.values('id').filter(cause=cat_form.cleaned_data['problem_cause'])[0]
+				categorization.problem_cause = problem_cause['id']
 
 			if not ProblemFixes.objects.filter(fix=cat_form.cleaned_data['problem_fix']).exists() and len(cat_form.cleaned_data['problem_fix'])>=1:
 				ProblemFixes.objects.create(fix=cat_form.cleaned_data['problem_fix'])
-				problem_fix = ProblemFixes.objects.values('id').filter(fix=cat_form.cleaned_data['problem_fix'])[0]
-				categorization.problem_fix = problem_fix['id']
 			elif not cat_form.cleaned_data['problem_fix']: 
 				categorization.problem_fix = None
+			else:
+				problem_fix = ProblemFixes.objects.values('id').filter(fix=cat_form.cleaned_data['problem_fix'])[0]
+				categorization.problem_fix = problem_fix['id']
 
 			if not ProblemSymptoms.objects.filter(symptom=cat_form.cleaned_data['problem_symptom']).exists() and len(cat_form.cleaned_data['problem_symptom'])>=1:
 				ProblemSymptoms.objects.create(symptom=cat_form.cleaned_data['problem_symptom'])
-				problem_symptom = ProblemSymptoms.objects.values('id').filter(symptom=cat_form.cleaned_data['problem_symptom'])[0]
-				categorization.problem_symptom = problem_symptom['id']
 			elif not cat_form.cleaned_data['problem_symptom']: 
 				categorization.problem_symptom = None
+			else: 
+				problem_symptom = ProblemSymptoms.objects.values('id').filter(symptom=cat_form.cleaned_data['problem_symptom'])[0]
+				categorization.problem_symptom = problem_symptom['id']
 
 			categorization.save()
 		else: 
