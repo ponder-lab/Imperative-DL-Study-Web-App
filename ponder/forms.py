@@ -22,7 +22,7 @@ class CategorizationForm(forms.ModelForm):
 	problem_symptom = forms.CharField(max_length=512,required=False)
 	class Meta():
 		model = Categorizations
-		fields = ('sha','is_func_fix', 'func_fix_comment', 'problem_category', 
+		fields = ('is_func_fix', 'func_fix_comment', 'problem_category', 
 			'category_comment','problem_cause','cause_comment',
 			'problem_symptom', 'symptom_comment',
 			'problem_fix', 'fix_comment',
@@ -30,9 +30,7 @@ class CategorizationForm(forms.ModelForm):
 	def __init__(self,*args,**kwargs):
 		sha = kwargs.pop('sha')
 		user = kwargs.pop('user')
-		commit_choice = [(Commits.objects.get(sha=sha), Commits.objects.get(sha=sha))]
 		super(CategorizationForm,self).__init__(*args,**kwargs)
-		self.fields['sha'] = forms.ChoiceField(choices=commit_choice)
 
 class ProblemCategoryForm(forms.ModelForm):
 	class Meta(): 
