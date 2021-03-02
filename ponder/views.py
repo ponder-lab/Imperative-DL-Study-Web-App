@@ -84,7 +84,7 @@ def id(request):
 @login_required
 def search(request):
    # if request.user.is_authenticated:
-	categories = Categorizations.objects.filter(categorizer=request.user.pk)
+	categories = Categorizations.objects.filter(categorizer=request.user.id)
 	return render(request, 'ponder/categorizations_filter2.html', {'categories': categories})
 
 @login_required
