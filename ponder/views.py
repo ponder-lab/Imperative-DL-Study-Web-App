@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 from django_tables2 import SingleTableView
-from .tables import CategorizationsTable, BugFixesTable, CategorizersTable, CommitDetailsTable, CommitsTable, DatasetsTable, ProblemCategoriesTable, ProblemCausesTable, ProblemFixesTable, ProblemSymptomsTable
+from .tables import Categorizations_FilterTable, BugFixes_FilterTable, CategorizationsTable, BugFixesTable, CategorizersTable, CommitDetailsTable, CommitsTable, DatasetsTable, ProblemCategoriesTable, ProblemCausesTable, ProblemFixesTable, ProblemSymptomsTable
 from .filters import RoundFilter
 from django.apps import apps 
 from django.contrib import admin 
@@ -79,13 +79,15 @@ def id(request):
 	id_qs = BugFixes.objects.filter(id=id_value)
 	sha = id_qs.values_list('sha', flat=True).get(pk=id_value)
 	fix_details = Categorizations.objects.filter(sha=sha)
-	return render(request, 'ponder/categorizations_filter1.html', {'fix_details': fix_details})
+	table = BugFixes_FilterTable(fix_details)
+	return render(request, 'ponder/categorizations_filter1.html',{'table': table})
 
 @login_required
 def search(request):
    # if request.user.is_authenticated:
 	categories = Categorizations.objects.filter(categorizer=request.user.id)
-	return render(request, 'ponder/categorizations_filter2.html', {'categories': categories})
+	table = Categorizations_FilterTable(categories)
+	return render(request, 'ponder/categorizations_filter2.html', {"table":table})
 
 @login_required
 def categorizations(request,pk):

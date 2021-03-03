@@ -25,8 +25,12 @@ class BugFixes(models.Model):
 		managed = False
 		db_table = 'bug_fixes'
 
-	def get_absolute_url(self):
-		return "%i/" % self.id
+	def get_id(self):
+			return "%i/" % self.id
+	
+	def get_sha(self):
+		project = Commits.objects.values('project').filter(sha=self.sha)[0]
+		return "https://github.com/"+str(project['project'])+"/commit/"+str(self.sha)
 
 class Categorizations(models.Model):
 	sha = models.CharField(max_length=40, blank=False, null=False)
@@ -47,6 +51,10 @@ class Categorizations(models.Model):
 	class Meta:
 		managed = False
 		db_table = 'categorizations'
+
+	def get_sha(self):
+		project = Commits.objects.values('project').filter(sha=self.sha)[0]
+		return "https://github.com/"+str(project['project'])+"/commit/"+str(self.sha)
 
 
 class Categorizers(models.Model):
@@ -92,6 +100,9 @@ class Commits(models.Model):
 		db_table = 'commits'
 	def __str__(self):
 		return self.sha
+
+	def get_project(self):
+		return "https://github.com/"+str(self.project)
 
 class Datasets(models.Model):
 	id = models.OneToOneField(Commits, models.DO_NOTHING, db_column='id', primary_key=True)
