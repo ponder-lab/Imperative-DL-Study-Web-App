@@ -3,20 +3,21 @@ from django_tables2 import TemplateColumn
 from .models import Categorizations, BugFixes, Categorizers, CommitDetails, Commits, Datasets, ProblemCategories, ProblemCauses, ProblemFixes, ProblemSymptoms
 
 class CategorizationsTable(tables.Table):
-    class Meta:
-        model = Categorizations
-        template_name = "django_tables2/bootstrap-responsive.html"
+        class Meta:
+                model = Categorizations
+                template_name = "django_tables2/bootstrap-responsive.html"
 
 class BugFixesTable(tables.Table):
-    id = tables.Column(linkify=True)
-    class Meta:
-        model = BugFixes
-        template_name = "django_tables2/bootstrap-responsive.html"
+        id = tables.Column(linkify=lambda record: record.get_id())
+        sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}})
+        class Meta:
+                model = BugFixes
+                template_name = "django_tables2/bootstrap-responsive.html"
 
 class CategorizersTable(tables.Table):
-    class Meta:
-        model = Categorizers
-        template_name = "django_tables2/bootstrap-responsive.html"
+        class Meta:
+                model = Categorizers
+                template_name = "django_tables2/bootstrap-responsive.html"
 
 class CommitDetailsTable(tables.Table):
 	class Meta:
@@ -26,17 +27,30 @@ class CommitDetailsTable(tables.Table):
 class CommitsTable(tables.Table):
 	add_form = TemplateColumn(template_name='ponder/add_a_categorization.html')
 	go_to_details = TemplateColumn(template_name='ponder/go_to_details.html', verbose_name="Sha")
+	project = tables.Column(linkify=lambda record: record.get_project(), attrs={"a": {"target": "_blank"}})
 	class Meta:
 		model = Commits
 		exclude = ('author_email','sha')
 		template_name = "django_tables2/bootstrap-responsive.html"
 		sequence = ('id','project', 'go_to_details', 'author', 'commit_date', 'dataset', 'rounds', 'add_form')
 
+class Categorizations_FilterTable(tables.Table):
+	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}})
+	class Meta:
+		model = Categorizations
+		template_name = "django_tables2/bootstrap-responsive.html"
+
+class BugFixes_FilterTable(tables.Table):
+	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}})
+	class Meta:
+		model = Categorizations
+		template_name = "django_tables2/bootstrap-responsive.html"
+
 class DatasetsTable(tables.Table):
-    class Meta:
-        model = Datasets
-        template_name = "django_tables2/bootstrap-responsive.html"
-        
+        class Meta:
+                model = Datasets
+                template_name = "django_tables2/bootstrap-responsive.html"
+	
 class ProblemCategoriesTable(tables.Table):
 	id = tables.Column(linkify=True)
 	category = tables.Column(linkify=True)
