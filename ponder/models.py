@@ -26,7 +26,7 @@ class BugFixes(models.Model):
 		db_table = 'bug_fixes'
 
 	def get_id(self):
-			return "%i/" % self.id
+		return "%i/" % self.id
 	
 	def get_sha(self):
 		project = Commits.objects.values('project').filter(sha=self.sha)[0]
