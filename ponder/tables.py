@@ -28,6 +28,7 @@ class CommitsTable(tables.Table):
 	add_form = TemplateColumn(template_name='ponder/add_a_categorization.html')
 	go_to_details = TemplateColumn(template_name='ponder/go_to_details.html', verbose_name="Sha")
 	project = tables.Column(linkify=lambda record: record.get_project(), attrs={"a": {"target": "_blank"}})
+	author = tables.Column(linkify=lambda record: record.email_author())
 	class Meta:
 		model = Commits
 		exclude = ('author_email','sha')
