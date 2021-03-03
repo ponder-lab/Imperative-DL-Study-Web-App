@@ -103,6 +103,9 @@ class Commits(models.Model):
 
 	def get_project(self):
 		return "https://github.com/"+str(self.project)
+	
+	def email_author(self):
+		return "mailto:" + self.author_email
 
 class Datasets(models.Model):
 	id = models.OneToOneField(Commits, models.DO_NOTHING, db_column='id', primary_key=True)
