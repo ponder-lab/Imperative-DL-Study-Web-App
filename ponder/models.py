@@ -105,7 +105,8 @@ class Commits(models.Model):
 		return "https://github.com/"+str(self.project)
 	
 	def email_author(self):
-		return "mailto:" + self.author_email
+		return "mailto:" + self.author_email.strip('<>') # remove brackets per #33.
+  
 	def get_commit(self):
 		return "https://github.com/"+str(self.project)+"/commit/"+str(self.sha)
 
