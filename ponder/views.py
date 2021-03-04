@@ -99,6 +99,12 @@ def categorizations(request,pk):
 	commit_url = "https://github.com/"+str(project['project'])+"/commit/"+str(sha_commits)
 	if request.method == 'POST':
 		cat_form = CategorizationForm(request.POST,sha=sha_commits, user = request.user)
+		if request.POST.get('is_func_fix') == '1':
+			cat_form.fields['problem_category'].required = True
+			cat_form.fields['problem_symptom'].required = True
+			cat_form.fields['problem_fix'].required = True 
+			cat_form.fields['problem_cause'].required = True 
+			cat_form.fields['should_discuss'].required = True 
 		if cat_form.is_valid():
 			categorization = cat_form.save(commit=False)
 			categorization.categorizer = request.user.id
