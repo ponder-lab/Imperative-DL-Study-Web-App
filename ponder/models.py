@@ -105,7 +105,7 @@ class Commits(models.Model):
 		return "https://github.com/"+str(self.project)
 	
 	def email_author(self):
-		return "mailto:" + self.author_email
+		return "mailto:" + self.author_email.strip('<>') # remove brackets per #33.
 
 class Datasets(models.Model):
 	id = models.OneToOneField(Commits, models.DO_NOTHING, db_column='id', primary_key=True)
