@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^ponder/',include('ponder.urls')),
     url(r'^logout/$', views.user_logout, name='logout'),
     url(r'^ponder/bug_fixes/', views.id, name='id'),
+    url(r'^ponder/categorizations/user=', views.search, name='categorizations_filter'),
 ]
