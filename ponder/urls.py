@@ -15,7 +15,7 @@ urlpatterns=[
     path("commits/<str:pk>", views.CommitDetailsTableView.as_view(), name='commits_details'),
     path("bug_fixes/", views.BugFixesTableView.as_view(), name='bugfixes_table'),
     url('bug_fixes/<int:pk>', views.id, name='id'),
-    url('categorizations/user/', views.search, name='categorizations_filter'),
+    url('categorizations/user=<str:user>', views.search, name='categorizations_filter'),
     # path("view_categorizations/", CategorizationsListView.as_view(), name='categorizations_table'),
     # path("view_bugfixes/", BugFixesListView.as_view(), name='bugfixes_table'),
     # path("view_categorizers/", CategorizersListView.as_view(), name='categorizers_table'),
