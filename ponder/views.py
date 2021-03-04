@@ -201,7 +201,8 @@ class CommitDetailsTableView(LoginRequiredMixin, SingleTableView):
 	template_name = 'ponder/commit_details_table.html'
 
 	def get_queryset(self):
-		return CommitDetails.objects.filter(sha=self.kwargs['pk'])
+		c = Commits.objects.values('sha').filter(id=self.kwargs['pk'])[0]
+		return CommitDetails.objects.filter(sha=c['sha'])
 
 class BugFixesTableView(LoginRequiredMixin, SingleTableView):
     model = BugFixes
