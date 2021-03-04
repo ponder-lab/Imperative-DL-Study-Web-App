@@ -97,8 +97,28 @@ def categorizations(request,pk):
 	project = Commits.objects.values('project').filter(sha=pk)[0]
 	general_url = "https://github.com/"+str(project['project'])+"/search?q="+str(sha_commits)
 	commit_url = "https://github.com/"+str(project['project'])+"/commit/"+str(sha_commits)
+	categories = []
+	fixes = []
+	causes = []
+	symptoms =[]
+	for i in range(len(ProblemCategories.objects.values('category').distinct())):
+		c = ProblemCategories.objects.values('category').distinct()[i]
+		if(c['category'] != 'None'): 
+			categories.append(c['category'])
+	for i in range(len(ProblemFixes.objects.values('fix').distinct())):
+		c = ProblemFixes.objects.values('fix').distinct()[i]
+		if(c['fix'] != 'None'): 
+			fixes.append(c['fix'])
+	for i in range(len(ProblemCauses.objects.values('cause').distinct())):
+		c = ProblemCauses.objects.values('cause').distinct()[i]
+		if(c['cause'] != 'None'): 
+			causes.append(c['cause'])
+	for i in range(len(ProblemSymptoms.objects.values('symptom').distinct())):
+		c = ProblemSymptoms.objects.values('symptom').distinct()[i]
+		if(c['symptom'] != 'None'): 
+			symptoms.append(c['symptom'])
 	if request.method == 'POST':
-		cat_form = CategorizationForm(request.POST,sha=sha_commits, user = request.user)
+		cat_form = CategorizationForm(request.POST,sha=sha_commits, user = request.user, problem_cause = causes, problem_fix = fixes, problem_category = categories, problem_symptom = symptoms)
 		if request.POST.get('is_func_fix') == '1':
 			cat_form.fields['problem_category'].required = True
 			cat_form.fields['problem_symptom'].required = True
@@ -149,7 +169,7 @@ def categorizations(request,pk):
 		else: 
 			print(cat_form.errors)
 	else:
-		cat_form = CategorizationForm(sha=sha_commits,user=request.user)
+		cat_form = CategorizationForm(request.POST,sha=sha_commits, user = request.user, problem_cause = causes, problem_fix = fixes, problem_category = categories, problem_symptom = symptoms)
 	context = {
 		'cat_form': cat_form,
 		'sha': sha_commits,
