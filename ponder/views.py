@@ -84,10 +84,10 @@ def id(request):
 
 @login_required
 def search(request):
-   # if request.user.is_authenticated:
-	categorizerID = Categorizers.objects.values('id').filter(user='user')
-	id_value = categorizerID.values_list('id', flat=True).get(pk=1)
-	categories = Categorizations.objects.filter(categorizer=id_value)
+	user = request.user.username
+	categorizerID = Categorizers.objects.values_list('id', flat=True).filter(user=user)
+	name = list(categorizerID)[0]
+	categories = Categorizations.objects.filter(categorizer=name)
 	table = Categorizations_FilterTable(categories)
 	return render(request, 'ponder/categorizations_filter2.html', {"table":table})
 
