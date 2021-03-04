@@ -26,14 +26,16 @@ class CommitDetailsTable(tables.Table):
 
 class CommitsTable(tables.Table):
 	add_form = TemplateColumn(template_name='ponder/add_a_categorization.html')
-	go_to_details = TemplateColumn(template_name='ponder/go_to_details.html', verbose_name="Sha")
+	go_to_details = TemplateColumn(template_name='ponder/go_to_details.html', verbose_name="ID")
 	project = tables.Column(linkify=lambda record: record.get_project(), attrs={"a": {"target": "_blank"}})
 	author = tables.Column(linkify=lambda record: record.email_author())
+	sha = tables.Column(linkify=lambda record: record.get_commit(), attrs={"a": {"target": "_blank"}})
+
 	class Meta:
 		model = Commits
-		exclude = ('author_email','sha')
+		exclude = ('author_email','id')
 		template_name = "django_tables2/bootstrap-responsive.html"
-		sequence = ('id','project', 'go_to_details', 'author', 'commit_date', 'dataset', 'rounds', 'add_form')
+		sequence = ('go_to_details','project', 'sha', 'author', 'commit_date', 'dataset', 'rounds', 'add_form')
 
 class Categorizations_FilterTable(tables.Table):
 	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}})
