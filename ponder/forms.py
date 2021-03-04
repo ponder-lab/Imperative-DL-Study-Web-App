@@ -15,7 +15,7 @@ class UserForm(forms.ModelForm):
 class CategorizationForm(forms.ModelForm):
 	CHOICES = [('0', 'False'), ('1', 'True')]
 	is_func_fix = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
-	should_discuss = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES, required=False)
+	should_discuss = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES, required= False)
 	problem_category = forms.CharField(max_length=512,required=False)
 	problem_cause = forms.CharField(max_length=512,required=False)
 	problem_fix = forms.CharField(max_length=512,required=False)
@@ -30,7 +30,15 @@ class CategorizationForm(forms.ModelForm):
 	def __init__(self,*args,**kwargs):
 		sha = kwargs.pop('sha')
 		user = kwargs.pop('user')
+		pc = kwargs.pop('problem_category', None)
+		ps = kwargs.pop('problem_symptom', None)
+		pf = kwargs.pop('problem_fix', None)
+		pcause = kwargs.pop('problem_cause', None)
 		super(CategorizationForm,self).__init__(*args,**kwargs)
+		self.fields['problem_category'].widget = CategoriesIssuesTextWidget(data_list = pc, name = 'problem_category')
+		self.fields['problem_cause'].widget = CategoriesIssuesTextWidget(data_list = pcause, name = 'problem_cause')
+		self.fields['problem_fix'].widget = CategoriesIssuesTextWidget(data_list = pf, name = 'problem_fix')
+		self.fields['problem_symptom'].widget = CategoriesIssuesTextWidget(data_list = ps, name = 'problem_symptom')
 
 class ProblemCategoryForm(forms.ModelForm):
 	class Meta(): 
