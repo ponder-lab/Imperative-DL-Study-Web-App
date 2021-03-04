@@ -29,7 +29,7 @@
                     </a>
                   {% elif project == "Categorizations" %}
                     <p class="card-text">View {{ user.username }} categorizations.</p>
-                    <a href="{% url 'ponder:categorizations_filter' %}"
+                    <a href="{% url 'ponder:categorizations_filter' %}?user={{user.id}}"
                      class="btn btn-primary">
                       View your categorizations
                     </a>
