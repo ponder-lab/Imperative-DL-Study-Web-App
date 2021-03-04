@@ -3,8 +3,7 @@ from django import forms
 from ponder.models import Categorizations, ProblemCategories, ProblemCauses, ProblemFixes, ProblemSymptoms, Commits,Categorizers
 from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
-
-
+from ponder.fields import CategoriesIssuesTextWidget
 
 class UserForm(forms.ModelForm):
 	password = forms.CharField(widget=forms.PasswordInput())
