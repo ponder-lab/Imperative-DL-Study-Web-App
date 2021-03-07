@@ -46,7 +46,7 @@ class Categorizations(models.Model):
 	fix_comment = models.TextField(blank=True, null=True)
 	categorizer = models.CharField(max_length=256)
 	should_discuss = models.IntegerField(blank=True, null=True)
-	bug_fix = models.ForeignKey(BugFixes, models.DO_NOTHING, blank=True, null=True)
+	bug_fix_id = models.IntegerField(blank=True, null=True)
 
 	class Meta:
 		managed = False
