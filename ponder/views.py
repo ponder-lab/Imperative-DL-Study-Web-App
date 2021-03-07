@@ -89,7 +89,9 @@ def search(request):
 	name = list(categorizerID)[0]
 	categories = Categorizations.objects.filter(categorizer=name)
 	table = Categorizations_FilterTable(categories)
-	return render(request, 'ponder/categorizations_filter2.html', {"table":table})
+	if request.path_info.endswith(request.user.id):
+		return render(request, 'ponder/categorizations_filter2.html', {"table":table})
+	return HttpResponse(status = 404)
 
 @login_required
 def categorizations(request,pk):
