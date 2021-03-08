@@ -72,15 +72,18 @@ def problem_details(request):
 
 @login_required
 def id(request):
-	s = request.path_info
-	s = s. replace('/ponder/bug_fixes/', '')
-	s = s. replace('/', '')
-	id_value = int(s)
-	id_qs = BugFixes.objects.filter(id=id_value)
-	sha = id_qs.values_list('sha', flat=True).get(pk=id_value)
-	fix_details = Categorizations.objects.filter(sha=sha)
-	table = BugFixes_FilterTable(fix_details)
-	return render(request, 'ponder/categorizations_filter1.html',{'table': table})
+	try:
+		s = request.path_info
+		s = s. replace('/ponder/bug_fixes/', '')
+		s = s. replace('/', '')
+		id_value = int(s)
+		id_qs = BugFixes.objects.filter(id=id_value)
+		sha = id_qs.values_list('sha', flat=True).get(pk=id_value)
+		fix_details = Categorizations.objects.filter(sha=sha)
+		table = BugFixes_FilterTable(fix_details)
+		return render(request, 'ponder/categorizations_filter1.html',{'table': table})
+	except:
+                return HttpResponse('<h1>Page Not Found </h1> <h2>Bug Fix does not exist</h2>', status=404)
 
 @login_required
 def search(request):
