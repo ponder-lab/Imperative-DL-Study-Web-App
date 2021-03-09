@@ -93,7 +93,7 @@ def search(request):
 	categories = Categorizations.objects.filter(categorizer=name)
 	table = Categorizations_FilterTable(categories)
 	userID = request.GET['user']
-	if userID == request.user.id:
+	if userID == str(request.user.id):
 		return render(request, 'ponder/categorizations_filter2.html', {"table":table})
 
 #	else:
