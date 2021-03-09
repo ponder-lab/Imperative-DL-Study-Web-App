@@ -92,7 +92,12 @@ def search(request):
 	name = list(categorizerID)[0]
 	categories = Categorizations.objects.filter(categorizer=name)
 	table = Categorizations_FilterTable(categories)
-	return render(request, 'ponder/categorizations_filter2.html', {"table":table})
+	userID = request.GET['user']
+	if userID == request.user.id:
+		return render(request, 'ponder/categorizations_filter2.html', {"table":table})
+
+	else:
+		return HttpResponse('<h1>Page Not Found </h1> <h2>Categorizations cannot be found or viewed</h2>', status=404)
 
 @login_required
 def categorizations(request,pk):
