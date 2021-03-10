@@ -6,3 +6,4 @@ django-crispy-forms
 whitenoise
 django-bootstrap3
 django-filter
+django-debug-toolbar
