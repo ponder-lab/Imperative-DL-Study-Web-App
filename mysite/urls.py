@@ -26,3 +26,10 @@ urlpatterns = [
     url(r'^logout/$', views.user_logout, name='logout'),
     url(r'^ponder/bug_fixes/', views.id, name='id'),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns += [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ]
