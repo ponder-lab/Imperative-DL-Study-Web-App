@@ -129,10 +129,12 @@ def categorizations(request,pk):
 		cat_form = CategorizationForm(request.POST,sha=sha_commits, user = request.user, problem_cause = causes, problem_fix = fixes, problem_category = categories, problem_symptom = symptoms)
 		if request.POST.get('is_func_fix') == '1':
 			cat_form.fields['problem_category'].required = True
-			cat_form.fields['problem_symptom'].required = True
-			cat_form.fields['problem_fix'].required = True 
-			cat_form.fields['problem_cause'].required = True 
-			cat_form.fields['should_discuss'].required = True 
+			if(request.POST.get('problem_category') != 'Unknown' and request.POST.get('problem_category')!='Test' and request.POST.get('problem_category') != 'Other'):
+				cat_form.fields['problem_symptom'].required = True
+				cat_form.fields['problem_fix'].required = True 
+				cat_form.fields['problem_cause'].required = True 
+		cat_form.fields['should_discuss'].required = True 
+
 		if cat_form.is_valid():
 			categorization = cat_form.save(commit=False)
 			categorization.categorizer = request.user.id
@@ -172,8 +174,12 @@ def categorizations(request,pk):
 				problem_symptom = ProblemSymptoms.objects.values('id').filter(symptom=cat_form.cleaned_data['problem_symptom'])[0]
 				categorization.problem_symptom = problem_symptom['id']
 
+			if cat_form.cleaned_data['should_discuss']=='':
+				categorization.should_discuss = None
+
 			categorization.sha=sha_commits
 			categorization.save()
+			return HttpResponseRedirect(reverse('ponder:success_categorization'))
 		else: 
 			print(cat_form.errors)
 	else:
@@ -185,6 +191,11 @@ def categorizations(request,pk):
 		'commit_url': commit_url
 		}
 	return render(request,'ponder/categorizations.html',context)
+
+def success_categorization(request):
+	template = 'ponder/success_form.html'
+	context = {}
+	return render(request, template, context)
 """
 class CategorizationsCreateView(LoginRequiredMixin, CreateView):
 	login_url = '/login/'
