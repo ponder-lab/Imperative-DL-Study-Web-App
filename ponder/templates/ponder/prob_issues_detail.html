@@ -1,0 +1,75 @@
+<div class="select-menu-list">
+        {% for c in categories%}
+        <div class="js-filterable-issue-labels" data-filterable-for="label-filter-field" data-filterable-type="substring">
+            <label class="select-menu-item label-select-menu-item text-normal" role="menuitemcheckbox" aria-checked="false" tabindex="0">
+                <svg class="octicon octicon-check select-menu-item-icon" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path>
+                </svg>
+                <div class="select-menu-item-text">
+                    <input hidden
+                        type="checkbox"
+                        data-label-name={{c.0}}
+                        value={{c.0}}
+                        name={{c.0}}
+                        >
+                    <div class="float-left color mr-2" style="margin-top: 2px; background-color: #d73a4a"></div>
+                    <div>
+                        <svg class="octicon octicon-x ml-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path>
+                        </svg>
+                        <div data-name="2717872069" class="css-truncate">
+                            <span class="name">{{c.0}}</span>
+                            <div class="description d-block color-text-secondary css-truncate-target m-0">
+                                {{c.1}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </label>
+        </div>
+        {%endfor%}
+    </form>
+</div>
+<details class="details-reset details-overlay details-overlay-dark lh-default color-text-primary width-full js-new-label-modal">
+    <summary
+        class="d-block color-text-secondary select-menu-item js-add-label-button border-0"
+        role="menuitem"
+        hidden
+        >
+        Create new category “<span class="js-new-label-name"></span>”
+    </summary>
+    <details-dialog
+        aria-label="Create new category"
+        class="Box Box--overlay d-flex flex-column anim-fade-in fast Box-overlay--narrow"
+        >
+        <div class="Box-header">
+            <button class="Box-btn-octicon btn-octicon float-right" type="button" aria-label="Close dialog" data-close-dialog>
+                <svg class="octicon octicon-x" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path>
+                </svg>
+            </button>
+            <h3 class="Box-title ">Create new category</h3>
+        </div>
+        <!-- '"` --><!-- </textarea></xmp> --></option></form>
+        <form class="d-flex flex-column hx_rsm-dialog-content js-new-label-modal-form js-label-preview-container js-label-form" action= {{categories}} 
+        accept-charset="UTF-8" method="post">
+            <div class="Box-body overflow-auto">
+                <input type="hidden" name="context" value="issue sidebar">
+                <input type="hidden" name="issue_id" value="822544631">
+                <div class="flash flash-error js-new-label-error p-2" hidden></div>
+                <dl class="form-group js-characters-remaining-container">
+                    <dt><label for="new-label-description">Description</label></dt>
+                    <dd>
+                        <input placeholder="Add description" type="text" id="new-label-description" name="label[description]" class="form-control js-characters-remaining-field js-new-label-description-input" maxlength="100">
+                    </dd>
+                    <dd class="mt-1 text-small label-characters-remaining js-characters-remaining" data-suffix="remaining" hidden>
+                        100 remaining
+                    </dd>
+                </dl>
+            </div>
+            <div class="Box-footer">
+                <button data-disable-invalid type="submit" data-disable-with="Saving..." class="btn btn-primary mt-2">Save</button>
+            </div>
+        </form>
+    </details-dialog>
+</details>
