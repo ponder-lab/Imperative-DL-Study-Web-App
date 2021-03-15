@@ -196,6 +196,34 @@ def success_categorization(request):
 	template = 'ponder/success_form.html'
 	context = {}
 	return render(request, template, context)
+
+def filtering(request):
+	template = 'ponder/githubtry.html'
+	categories = ProblemCategories.objects.values('category').distinct()
+	"""
+	causes = ProblemCauses.objects.values('cause').distinct()
+	causes_description = ProblemCauses.objects.values('description').distinct()
+	fixes = ProblemFixes.objects.values('fix').distinct()
+	symptoms = ProblemSymptoms.objects.values('symptom').distinct()
+	"""
+	categories_array = []
+	categoriesDescription_array = []
+	i=0
+	for c in categories:
+		categories_array.append(c['category'])
+		d = ProblemCategories.objects.values('description').filter(category=categories_array[i])[0]
+		i+=1
+		categoriesDescription_array.append(d['description'])
+
+	categories_full = zip(categories_array, categoriesDescription_array)
+	context = {
+		'categories': categories_full
+		#'causes': causes['cause'],
+		#'causes_description': causes_description['description'],
+		#'fixes': fixes['fix'],
+		#'symptoms': symptoms['symptom']
+		}
+	return render(request, template, context)
 """
 class CategorizationsCreateView(LoginRequiredMixin, CreateView):
 	login_url = '/login/'
