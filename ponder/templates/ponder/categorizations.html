@@ -2,17 +2,63 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block body_block %}
+{% load widget_tweaks %}
+
+<title>Categorization Form</title>
+<script type="module" src="/Users/tcv/Downloads/details-menu-element-main/dist/index.js"></script>
 <div class="card-body">
   <div class="container">
     <div class="jumbotron">
       <h1>Categorization Form</h1>
         <h3>Fill categorization for {{ sha }}.</h3>
+        <div style = "height: 20px"></div>
         <a style="background-color: lightblue; box-shadow: 0 1px 0 blue; color: white; padding: .5em .5em;position: relative;text-decoration: none;color:black;" href={{commit_url}}>Specific commit</a>
         <a style="background-color: lightblue; box-shadow: 0 1px 0 blue; color: white; padding: .5em .5em;position: relative;text-decoration: none;color:black;" href={{general_url}}>General Sha Search</a>
+        <div style = "height: 20px"></div>
         <h5>The buttons above take you to specific commit link for the sha, and the general search of the sha in the project.</h5>
         <form enctype="multipart/form-data" method="POST">
           {% csrf_token %}
-          {{ cat_form.as_p }}
+          {% for hidden_field in cat_form.hidden_fields %}
+            {{ hidden_field }}
+          {% endfor %}
+          {% for field in cat_form.visible_fields %}
+            <div class="form-group">
+              {{ field.label_tag }}
+              {% if field.name == "is_func_fix" or field.name == "should_discuss" %}
+              {% render_field field %}
+              {% else %}
+                {% if field.name == "problem_category" or field.name == "problem_cause" or field.name == "problem_fix" or field.name == "problem_symptom" %}
+                <details-menu
+                  src="{% url 'ponder:filtering'%}"
+                  class="select-menu-modal position-absolute right-0 hx_rsm-modal"
+                  style="z-index: 99; overflow: visible;"
+                  data-multiple>
+                    <div class="select-menu-filters">
+                <div class="select-menu-text-filter">
+                  <input type="text" id="label-filter-field" class="form-control js-label-filter-field js-filterable-field"
+                         placeholder="Filter categories" aria-label="Filter labels" autocomplete="off" autofocus>
+                </div>
+              </div>
+
+                  <div class="hx_rsm-content" role="menu">
+                      <include-fragment>
+                        <svg style="box-sizing: content-box;" viewBox="0 0 16 16" fill="none" width="32" height="32" class="my-6 mx-auto d-block">
+                          <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-opacity="0.25" stroke-width="2" vector-effect="non-scaling-stroke" />
+                          <path d="M15 8a7.002 7.002 0 00-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke">
+                            <animateTransform attributeName="transform" type="rotate" from="0 8 8" to="360 8 8" dur="1s" repeatCount="indefinite" />
+                          </path>
+                        </svg>
+                      </include-fragment>
+                  </div>
+                </details-menu>
+              {% endif %}
+              {% render_field field class="form-control" %}
+              {% endif %}
+              {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+              {% endif %}
+            </div>
+          {% endfor %}
           <input type="submit" name="" value="Add">
         </form>
     </div>
