@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Commits, Categorizations, User, BugFixes, Categorizers, CommitDetails, Commits, Datasets, ProblemCategories, ProblemCauses, ProblemFixes, ProblemSymptoms
+from .models import Categorization, User, BugFix, Categorizer, CommitDetail, Commit, Dataset, ProblemCategory, ProblemCause, ProblemFix, ProblemSymptom
 from django.http import Http404
 from ponder.forms import UserForm, CategorizationForm, ProblemCategoryForm, ProblemCausesForm, ProblemFixesForm, ProblemSymptomsForm, RoundForm
 from django.contrib.auth import authenticate, login, logout
@@ -63,12 +63,13 @@ def problem_details(request):
 		'p_fix': p_fixF,
 		'p_cause': p_causeF,
 		'p_symptom': p_symptomF,
-		#'values_pcat': ProblemCategories.objects.all(),
-		#'values_pf': ProblemFixes.objects.all(),
-		#'values_pcause': ProblemCauses.objects.all(),
-		#'values_ps': ProblemSymptoms.objects.all(),
+		#'values_pcat': ProblemCategory.objects.all(),
+		#'values_pf': ProblemFix.objects.all(),
+		#'values_pcause': ProblemCause.objects.all(),
+		#'values_ps': ProblemSymptom.objects.all(),
 		}
 	return render(request, 'ponder/categorizations_problem.html', context)
+
 
 @login_required
 def id(request):
@@ -77,9 +78,9 @@ def id(request):
 		s = s. replace('/ponder/bug_fixes/', '')
 		s = s. replace('/', '')
 		id_value = int(s)
-		id_qs = BugFixes.objects.filter(id=id_value)
+		id_qs = BugFix.objects.filter(id=id_value)
 		sha = id_qs.values_list('sha', flat=True).get(pk=id_value)
-		fix_details = Categorizations.objects.filter(sha=sha)
+		fix_details = Categorization.objects.filter(sha=sha)
 		table = BugFixes_FilterTable(fix_details)
 		return render(request, 'ponder/categorizations_filter1.html',{'table': table})
 	except:
@@ -88,9 +89,11 @@ def id(request):
 @login_required
 def search(request):
 	user = request.user.username
-	categorizerID = Categorizers.objects.values_list('id', flat=True).filter(user=user)
+	print(user)
+	categorizerID = Categorizer.objects.values_list('id', flat=True).filter(user=user)
+	print(categorizerID)
 	name = list(categorizerID)[0]
-	categories = Categorizations.objects.filter(categorizer=name)
+	categories = Categorization.objects.filter(categorizer=name)
 	table = Categorizations_FilterTable(categories)
 	userID = request.GET['user']
 	if userID == str(request.user.id):
@@ -101,28 +104,28 @@ def search(request):
 
 @login_required
 def categorizations(request,pk):
-	sha_commits=Commits(sha=pk)
-	project = Commits.objects.values('project').filter(sha=pk)[0]
+	sha_commits=Commit(sha=pk)
+	project = Commit.objects.values('project').filter(sha=pk)[0]
 	general_url = "https://github.com/"+str(project['project'])+"/search?q="+str(sha_commits)
 	commit_url = "https://github.com/"+str(project['project'])+"/commit/"+str(sha_commits)
 	categories = []
 	fixes = []
 	causes = []
 	symptoms =[]
-	for i in range(len(ProblemCategories.objects.values('category').distinct())):
-		c = ProblemCategories.objects.values('category').distinct()[i]
+	for i in range(len(ProblemCategory.objects.values('category').distinct())):
+		c = ProblemCategory.objects.values('category').distinct()[i]
 		if(c['category'] != 'None'): 
 			categories.append(c['category'])
-	for i in range(len(ProblemFixes.objects.values('fix').distinct())):
-		c = ProblemFixes.objects.values('fix').distinct()[i]
+	for i in range(len(ProblemFix.objects.values('fix').distinct())):
+		c = ProblemFix.objects.values('fix').distinct()[i]
 		if(c['fix'] != 'None'): 
 			fixes.append(c['fix'])
-	for i in range(len(ProblemCauses.objects.values('cause').distinct())):
-		c = ProblemCauses.objects.values('cause').distinct()[i]
+	for i in range(len(ProblemCause.objects.values('cause').distinct())):
+		c = ProblemCause.objects.values('cause').distinct()[i]
 		if(c['cause'] != 'None'): 
 			causes.append(c['cause'])
-	for i in range(len(ProblemSymptoms.objects.values('symptom').distinct())):
-		c = ProblemSymptoms.objects.values('symptom').distinct()[i]
+	for i in range(len(ProblemSymptom.objects.values('symptom').distinct())):
+		c = ProblemSymptom.objects.values('symptom').distinct()[i]
 		if(c['symptom'] != 'None'): 
 			symptoms.append(c['symptom'])
 	if request.method == 'POST':
@@ -138,40 +141,40 @@ def categorizations(request,pk):
 		if cat_form.is_valid():
 			categorization = cat_form.save(commit=False)
 			categorization.categorizer = request.user.id
-			if not ProblemCategories.objects.filter(category=cat_form.cleaned_data['problem_category']).exists():
-				ProblemCategories.objects.create(category=cat_form.cleaned_data['problem_category'])
+			if not ProblemCategory.objects.filter(category=cat_form.cleaned_data['problem_category']).exists():
+				ProblemCategory.objects.create(category=cat_form.cleaned_data['problem_category'])
 
 			if not cat_form.cleaned_data['problem_category']: 
 				categorization.problem_category = None
 			else:
-				problem_category = ProblemCategories.objects.values('id').filter(category=cat_form.cleaned_data['problem_category'])[0]
+				problem_category = ProblemCategory.objects.values('id').filter(category=cat_form.cleaned_data['problem_category'])[0]
 				categorization.problem_category = problem_category['id'] 
 
-			if not ProblemCauses.objects.filter(cause=cat_form.cleaned_data['problem_cause']).exists() and len(cat_form.cleaned_data['problem_cause'])>=1:
-				ProblemCauses.objects.create(cause=cat_form.cleaned_data['problem_cause'])
+			if not ProblemCause.objects.filter(cause=cat_form.cleaned_data['problem_cause']).exists() and len(cat_form.cleaned_data['problem_cause'])>=1:
+				ProblemCause.objects.create(cause=cat_form.cleaned_data['problem_cause'])
 
 			if not cat_form.cleaned_data['problem_cause']: 
 				categorization.problem_cause = None
 			else:
-				problem_cause = ProblemCauses.objects.values('id').filter(cause=cat_form.cleaned_data['problem_cause'])[0]
+				problem_cause = ProblemCause.objects.values('id').filter(cause=cat_form.cleaned_data['problem_cause'])[0]
 				categorization.problem_cause = problem_cause['id']
 
-			if not ProblemFixes.objects.filter(fix=cat_form.cleaned_data['problem_fix']).exists() and len(cat_form.cleaned_data['problem_fix'])>=1:
-				ProblemFixes.objects.create(fix=cat_form.cleaned_data['problem_fix'])
+			if not ProblemFix.objects.filter(fix=cat_form.cleaned_data['problem_fix']).exists() and len(cat_form.cleaned_data['problem_fix'])>=1:
+				ProblemFix.objects.create(fix=cat_form.cleaned_data['problem_fix'])
 
 			if not cat_form.cleaned_data['problem_fix']: 
 				categorization.problem_fix = None
 			else:
-				problem_fix = ProblemFixes.objects.values('id').filter(fix=cat_form.cleaned_data['problem_fix'])[0]
+				problem_fix = ProblemFix.objects.values('id').filter(fix=cat_form.cleaned_data['problem_fix'])[0]
 				categorization.problem_fix = problem_fix['id']
 
-			if not ProblemSymptoms.objects.filter(symptom=cat_form.cleaned_data['problem_symptom']).exists() and len(cat_form.cleaned_data['problem_symptom'])>=1:
-				ProblemSymptoms.objects.create(symptom=cat_form.cleaned_data['problem_symptom'])
+			if not ProblemSymptom.objects.filter(symptom=cat_form.cleaned_data['problem_symptom']).exists() and len(cat_form.cleaned_data['problem_symptom'])>=1:
+				ProblemSymptom.objects.create(symptom=cat_form.cleaned_data['problem_symptom'])
 
 			if not cat_form.cleaned_data['problem_symptom']: 
 				categorization.problem_symptom = None
 			else: 
-				problem_symptom = ProblemSymptoms.objects.values('id').filter(symptom=cat_form.cleaned_data['problem_symptom'])[0]
+				problem_symptom = ProblemSymptom.objects.values('id').filter(symptom=cat_form.cleaned_data['problem_symptom'])[0]
 				categorization.problem_symptom = problem_symptom['id']
 
 			if cat_form.cleaned_data['should_discuss']=='':
@@ -200,17 +203,17 @@ def success_categorization(request):
 class CategorizationsCreateView(LoginRequiredMixin, CreateView):
 	login_url = '/login/'
 	redirect_field_name = 'redirect_to'
-	model = Categorizations
+	model = Categorization
 	form_class = CategorizationForm
 	sucess_url = reverse_lazy('categorization_changelist')
 
 class CategorizationsListView(ListView):
-	model = Categorizations
+	model = Categorization
 	context_object_name = 'categorizations'
 
 def load_shas(request):
 	rounds = request.GET.get('rounds')
-	commits = Commits.objects.filter(rounds=rounds)
+	commits = Commit.objects.filter(rounds=rounds)
 	return render(request, 'ponder/shas_options.html', {'commits': commits})
 """
 
@@ -234,69 +237,69 @@ def user_login(request):
 		
 class CommitsTableView(LoginRequiredMixin, SingleTableMixin, FilterView):
 	login_url = 'ponder:user_login'
-	model = Commits
+	model = Commit
 	table_class = CommitsTable
 	template_name = 'ponder/commits_table.html'
 	filterset_class = RoundFilter
 
 class CommitDetailsTableView(LoginRequiredMixin, SingleTableView):
 	login_url = 'ponder:user_login'
-	model = CommitDetails
+	model = CommitDetail
 	table_class = CommitDetailsTable
 	template_name = 'ponder/commit_details_table.html'
 
 	def get_queryset(self):
-		c = Commits.objects.values('sha').filter(id=self.kwargs['pk'])[0]
-		return CommitDetails.objects.filter(sha=c['sha'])
+		c = Commit.objects.values('sha').filter(id=self.kwargs['pk'])[0]
+		return CommitDetail.objects.filter(sha=c['sha'])
 
 class BugFixesTableView(LoginRequiredMixin, SingleTableView):
-    model = BugFixes
+    model = BugFix
     table_class = BugFixesTable
     template_name = 'ponder/bugfixes_table.html' 
 	
 """
 class CategorizationsListView(SingleTableView):
-    model = Categorizations
+    model = Categorization
     table_class = CategorizationsTable
     template_name = 'ponder/categorizations_table.html' 
 
 class CategorizersListView(SingleTableView):
-    model = Categorizers
+    model = Categorizer
     table_class = CategorizersTable
     template_name = 'ponder/categorizers_table.html'
 
 class CommitDetailsListView(SingleTableView):
-    model = CommitDetails
+    model = CommitDetail
     table_class = CommitDetailsTable
     template_name = 'ponder/commitdetails_table.html'
 
 class CommitsListView(SingleTableView):
-    model = Commits
+    model = Commit
     table_class = CommitsTable
     template_name = 'ponder/commits_table.html'
 
 class DatasetsListView(SingleTableView):
-    model = Datasets
+    model = Dataset
     table_class = DatasetsTable
     template_name = 'ponder/datasets_table.html'
 
 class ProblemCategoriesListView(SingleTableView):
-    model = ProblemCategories
+    model = ProblemCategory
     table_class = ProblemCategoriesTable
     template_name = 'ponder/problemcategories_table.html'
 
 class ProblemCausesListView(SingleTableView):
-    model = ProblemCauses
+    model = ProblemCause
     table_class = ProblemCausesTable
     template_name = 'ponder/problemcauses_table.html' 
 
 class ProblemFixesListView(SingleTableView):
-    model = ProblemFixes
+    model = ProblemFix
     table_class = ProblemFixesTable
     template_name = 'ponder/problemfixes_table.html'
 
 class ProblemSymptomsListView(SingleTableView):
-    model = ProblemSymptoms
+    model = ProblemSymptom
     table_class = ProblemSymptomsTable
     template_name = 'ponder/problemsymptoms_table.html' 
     
