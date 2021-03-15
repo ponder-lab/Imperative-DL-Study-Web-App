@@ -198,7 +198,7 @@ def success_categorization(request):
 	return render(request, template, context)
 
 def filtering(request):
-	template = 'ponder/githubtry.html'
+	template = 'ponder/prob_issues_detail.html'
 	categories = ProblemCategories.objects.values('category').distinct()
 	"""
 	causes = ProblemCauses.objects.values('cause').distinct()
