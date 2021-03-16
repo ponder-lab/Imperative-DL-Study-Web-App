@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 from django import forms
-from ponder.models import Categorizations, ProblemCategories, ProblemCauses, ProblemFixes, ProblemSymptoms, Commits,Categorizers
+from ponder.models import Categorization, ProblemCategory, ProblemCause, ProblemFix, ProblemSymptom, Commit,Categorizer
 from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
 from ponder.fields import CategoriesIssuesTextWidget
@@ -15,12 +15,12 @@ class CategorizationForm(forms.ModelForm):
 	CHOICES = [('0', 'False'), ('1', 'True')]
 	is_func_fix = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
 	should_discuss = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES, required= False)
-	problem_category = forms.ModelChoiceField(queryset=ProblemCategories.objects.all(), required=False)
-	problem_cause = forms.ModelChoiceField(queryset=ProblemCauses.objects.all(), required=False)
-	problem_fix = forms.ModelChoiceField(queryset=ProblemFixes.objects.all(), required=False)
-	problem_symptom = forms.ModelChoiceField(queryset=ProblemSymptoms.objects.all(), required=False)
+	problem_category = forms.ModelChoiceField(queryset=ProblemCategory.objects.all(), required=False)
+	problem_cause = forms.ModelChoiceField(queryset=ProblemCause.objects.all(), required=False)
+	problem_fix = forms.ModelChoiceField(queryset=ProblemFix.objects.all(), required=False)
+	problem_symptom = forms.ModelChoiceField(queryset=ProblemSymptom.objects.all(), required=False)
 	class Meta():
-		model = Categorizations
+		model = Categorization
 		fields = ('is_func_fix', 'func_fix_comment', 'problem_category', 
 			'category_comment','problem_cause','cause_comment',
 			'problem_symptom', 'symptom_comment',
@@ -41,25 +41,25 @@ class CategorizationForm(forms.ModelForm):
 
 class ProblemCategoryForm(forms.ModelForm):
 	class Meta(): 
-		model = ProblemCategories
+		model = ProblemCategory
 		fields = ('category','description')
 
 class ProblemCausesForm(forms.ModelForm):
 	class Meta(): 
-		model = ProblemCauses
+		model = ProblemCause
 		fields = ('cause','description')
 
 class ProblemFixesForm(forms.ModelForm):
 	class Meta(): 
-		model = ProblemFixes
+		model = ProblemFix
 		fields = ('fix',)
 
 class ProblemSymptomsForm(forms.ModelForm):
 	class Meta(): 
-		model = ProblemSymptoms
+		model = ProblemSymptom
 		fields = ('symptom',)
 
 class RoundForm(forms.ModelForm):
 	class Meta(): 
-		model = Commits
+		model = Commit
 		fields = ('rounds',)

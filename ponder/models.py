@@ -8,16 +8,16 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class BugFixes(models.Model):
+class BugFix(models.Model):
 	sha = models.CharField(max_length=40, blank=False, null=False)
 	is_func_fix = models.BooleanField(blank=True, null=True)  # This field type is a guess.
-	problem_category = models.ForeignKey('ProblemCategories', models.DO_NOTHING, db_column='problem_category', blank=True, null=True)
+	problem_category = models.ForeignKey('ProblemCategory', models.DO_NOTHING, db_column='problem_category', blank=True, null=True)
 	category_comment = models.CharField(max_length=512, blank=True, null=True)
-	problem_cause = models.ForeignKey('ProblemCauses', models.DO_NOTHING, db_column='problem_cause', blank=True, null=True)
+	problem_cause = models.ForeignKey('ProblemCause', models.DO_NOTHING, db_column='problem_cause', blank=True, null=True)
 	cause_comment = models.CharField(max_length=512, blank=True, null=True)
-	problem_symptom = models.ForeignKey('ProblemSymptoms', models.DO_NOTHING, db_column='problem_symptom', blank=True, null=True)
+	problem_symptom = models.ForeignKey('ProblemSymptom', models.DO_NOTHING, db_column='problem_symptom', blank=True, null=True)
 	symptom_comment = models.CharField(max_length=512, blank=True, null=True)
-	problem_fix = models.ForeignKey('ProblemFixes', models.DO_NOTHING, db_column='problem_fix', blank=True, null=True)
+	problem_fix = models.ForeignKey('ProblemFix', models.DO_NOTHING, db_column='problem_fix', blank=True, null=True)
 	fix_comment = models.CharField(max_length=512, blank=True, null=True)
 	should_discuss = models.BooleanField(blank=True, null=True)
 
@@ -29,20 +29,20 @@ class BugFixes(models.Model):
 		return "%i/" % self.id
 	
 	def get_sha(self):
-		project = Commits.objects.values('project').filter(sha=self.sha)[0]
+		project = Commit.objects.values('project').filter(sha=self.sha)[0]
 		return "https://github.com/"+str(project['project'])+"/commit/"+str(self.sha)
 
-class Categorizations(models.Model):
+class Categorization(models.Model):
 	sha = models.CharField(max_length=40, blank=False, null=False)
 	is_func_fix = models.BooleanField()
 	func_fix_comment = models.TextField(blank=True, null=True)
-	problem_category = models.ForeignKey('ProblemCategories', models.DO_NOTHING, db_column='problem_category', blank=False, null=False)
+	problem_category = models.ForeignKey('ProblemCategory', models.DO_NOTHING, db_column='problem_category', blank=False, null=False)
 	category_comment = models.TextField(blank=True, null=True)
-	problem_cause = models.ForeignKey('ProblemCauses', models.DO_NOTHING, db_column='problem_cause', blank=False, null=False)
+	problem_cause = models.ForeignKey('ProblemCause', models.DO_NOTHING, db_column='problem_cause', blank=False, null=False)
 	cause_comment = models.TextField(blank=True, null=True)
-	problem_symptom = models.ForeignKey('ProblemSymptoms', models.DO_NOTHING, db_column='problem_symptom', blank=False, null=False)
+	problem_symptom = models.ForeignKey('ProblemSymptom', models.DO_NOTHING, db_column='problem_symptom', blank=False, null=False)
 	symptom_comment = models.TextField(blank=True, null=True)
-	problem_fix = models.ForeignKey('ProblemFixes', models.DO_NOTHING, db_column='problem_fix', blank=False, null=False)
+	problem_fix = models.ForeignKey('ProblemFix', models.DO_NOTHING, db_column='problem_fix', blank=False, null=False)
 	fix_comment = models.TextField(blank=True, null=True)
 	categorizer = models.CharField(max_length=256)
 	should_discuss = models.BooleanField(blank=True, null=True)
@@ -53,11 +53,11 @@ class Categorizations(models.Model):
 		db_table = 'categorizations'
 
 	def get_sha(self):
-		project = Commits.objects.values('project').filter(sha=self.sha)[0]
+		project = Commit.objects.values('project').filter(sha=self.sha)[0]
 		return "https://github.com/"+str(project['project'])+"/commit/"+str(self.sha)
 
 
-class Categorizers(models.Model):
+class Categorizer(models.Model):
 	name = models.CharField(unique=True, max_length=256)
 	initials = models.CharField(unique=True, max_length=3)
 	user = models.CharField(max_length=256)
@@ -69,7 +69,7 @@ class Categorizers(models.Model):
 		return self.user
 
 
-class CommitDetails(models.Model):
+class CommitDetail(models.Model):
 	sha = models.CharField(max_length=40, blank=False, null=False)
 	language = models.CharField(max_length=2, blank=True, null=True)
 	file_name = models.CharField(max_length=100, blank=True, null=True)
@@ -86,13 +86,13 @@ class CommitDetails(models.Model):
 		db_table = 'commit_details'
 
 
-class Commits(models.Model):
+class Commit(models.Model):
 	project = models.CharField(max_length=41)
 	sha = models.CharField(max_length=40, blank=False, null=False)
 	author = models.CharField(max_length=25, blank=True, null=True)
 	author_email = models.CharField(max_length=47, blank=True, null=True)
 	commit_date = models.DateField(blank=True, null=True)
-	dataset = models.ForeignKey('Datasets', models.DO_NOTHING, db_column='dataset')
+	dataset = models.ForeignKey('Dataset', models.DO_NOTHING, db_column='dataset')
 	rounds = models.IntegerField(blank=True, null=True)
 
 	class Meta:
@@ -110,8 +110,8 @@ class Commits(models.Model):
 	def get_commit(self):
 		return "https://github.com/"+str(self.project)+"/commit/"+str(self.sha)
 
-class Datasets(models.Model):
-	id = models.OneToOneField(Commits, models.DO_NOTHING, db_column='id', primary_key=True)
+class Dataset(models.Model):
+	#id = models.OneToOneField(Commit, models.DO_NOTHING, db_column='id', primary_key=True)
 	name = models.CharField(unique=True, max_length=256)
 	description = models.CharField(max_length=256)
 
@@ -122,7 +122,7 @@ class Datasets(models.Model):
 		return self.name
 
 
-class ProblemCategories(models.Model):
+class ProblemCategory(models.Model):
 	category = models.CharField(unique=True, max_length=512)
 	description = models.TextField(blank=True, null=True)
 
@@ -133,7 +133,7 @@ class ProblemCategories(models.Model):
 		return self.category
 
 
-class ProblemCauses(models.Model):
+class ProblemCause(models.Model):
 	cause = models.CharField(unique=True, max_length=512)
 	description = models.TextField(blank=True, null=True)
 
@@ -145,7 +145,7 @@ class ProblemCauses(models.Model):
 		return self.cause
 
 
-class ProblemFixes(models.Model):
+class ProblemFix(models.Model):
 	fix = models.CharField(unique=True, max_length=512)
 
 	class Meta:
@@ -155,7 +155,7 @@ class ProblemFixes(models.Model):
 		return self.fix
 
 
-class ProblemSymptoms(models.Model):
+class ProblemSymptom(models.Model):
 	symptom = models.CharField(max_length=512)
 
 	class Meta:
@@ -166,8 +166,8 @@ class ProblemSymptoms(models.Model):
 		return self.symptom
 
 
-class Repositories(models.Model):
-	project = models.ForeignKey(Commits, models.DO_NOTHING, db_column='project')
+class Repository(models.Model):
+	project = models.ForeignKey(Commit, models.DO_NOTHING, db_column='project')
 	user = models.CharField(max_length=25)
 	forks = models.IntegerField()
 	stars = models.IntegerField()
