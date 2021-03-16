@@ -19,7 +19,7 @@ class CategorizationForm(forms.ModelForm):
 	problem_cause = forms.ModelChoiceField(queryset=ProblemCause.objects.all(), required=False)
 	problem_fix = forms.ModelChoiceField(queryset=ProblemFix.objects.all(), required=False)
 	problem_symptom = forms.ModelChoiceField(queryset=ProblemSymptom.objects.all(), required=False)
-	class Meta():
+  class Meta():
 		model = Categorization
 		fields = ('is_func_fix', 'func_fix_comment', 'problem_category', 
 			'category_comment','problem_cause','cause_comment',
