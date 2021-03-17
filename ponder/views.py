@@ -140,7 +140,9 @@ def categorizations(request,pk):
 
 		if cat_form.is_valid():
 			categorization = cat_form.save(commit=False)
-			categorization.categorizer = request.user.id
+			username = User.objects.values('username').filter(id=request.user.id)[0]
+			username = Categorizer.objects.values('id').filter(user=username['username'])[0]
+			categorization.categorizer = username['id']
 			if not ProblemCategory.objects.filter(category=cat_form.cleaned_data['problem_category']).exists():
 				ProblemCategory.objects.create(category=cat_form.cleaned_data['problem_category'])
 
