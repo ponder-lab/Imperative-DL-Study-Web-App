@@ -136,7 +136,7 @@ def categorizations(request,pk):
 				cat_form.fields['problem_symptom'].required = True
 				cat_form.fields['problem_fix'].required = True 
 				cat_form.fields['problem_cause'].required = True 
-		cat_form.fields['should_discuss'].required = True 
+			cat_form.fields['should_discuss'].required = True 
 
 		if cat_form.is_valid():
 			categorization = cat_form.save(commit=False)
