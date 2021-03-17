@@ -10,8 +10,13 @@ from django.contrib.auth.models import User
 
 class BugFix(models.Model):
 	sha = models.CharField(max_length=40, blank=False, null=False)
+<<<<<<< HEAD
 	is_func_fix = models.BooleanField(blank=True, null=True)  # This field type is a guess.
 	problem_category = models.ForeignKey('ProblemCategory', models.DO_NOTHING, db_column='problem_category', blank=True, null=True)
+=======
+	is_func_fix = models.TextField(blank=True, null=True)  # This field type is a guess.
+	problem_category = models.ForeignKey('ProblemCategories', models.DO_NOTHING, db_column='problem_category', blank=True, null=True)
+>>>>>>> parent of 46db9af... Categorization model and form updates
 	category_comment = models.CharField(max_length=512, blank=True, null=True)
 	problem_cause = models.ForeignKey('ProblemCause', models.DO_NOTHING, db_column='problem_cause', blank=True, null=True)
 	cause_comment = models.CharField(max_length=512, blank=True, null=True)
