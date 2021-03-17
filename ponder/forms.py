@@ -15,10 +15,17 @@ class CategorizationForm(forms.ModelForm):
 	CHOICES = [('0', 'False'), ('1', 'True')]
 	is_func_fix = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
 	should_discuss = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES, required= False)
+<<<<<<< HEAD
 	problem_category = forms.ModelChoiceField(queryset=ProblemCategory.objects.all(), required=False)
 	problem_cause = forms.ModelChoiceField(queryset=ProblemCause.objects.all(), required=False)
 	problem_fix = forms.ModelChoiceField(queryset=ProblemFix.objects.all(), required=False)
 	problem_symptom = forms.ModelChoiceField(queryset=ProblemSymptom.objects.all(), required=False)
+=======
+	problem_category = forms.CharField(max_length=512,required=False)
+	problem_cause = forms.CharField(max_length=512,required=False)
+	problem_fix = forms.CharField(max_length=512,required=False)
+	problem_symptom = forms.CharField(max_length=512,required=False)
+>>>>>>> parent of 46db9af... Categorization model and form updates
 	class Meta():
 		model = Categorization
 		fields = ('is_func_fix', 'func_fix_comment', 'problem_category', 
