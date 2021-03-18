@@ -1,21 +1,166 @@
-{% extends "ponder/base.html" %}
 {% load crispy_forms_tags %}
 {% load static %}
-{% block body_block %}
-<div class="card-body">
-  <div class="container">
-    <div class="jumbotron">
-      <h1>Categorization Form</h1>
-        <h3>Fill categorization for {{ sha }}.</h3>
-        <a style="background-color: lightblue; box-shadow: 0 1px 0 blue; color: white; padding: .5em .5em;position: relative;text-decoration: none;color:black;" href={{commit_url}}>Specific commit</a>
-        <a style="background-color: lightblue; box-shadow: 0 1px 0 blue; color: white; padding: .5em .5em;position: relative;text-decoration: none;color:black;" href={{general_url}}>General Sha Search</a>
-        <h5>The buttons above take you to specific commit link for the sha, and the general search of the sha in the project.</h5>
-        <form enctype="multipart/form-data" method="POST">
-          {% csrf_token %}
-          {{ cat_form.as_p }}
-          <input type="submit" name="" value="Add">
-        </form>
-    </div>
-  </div> 
-</div>
-{% endblock %}
+{% block content %}
+{% include "ponder/modal.html" %}
+{% load widget_tweaks %}
+<head>
+  <title>Categorization Form</title>
+  {% block stylesheets %}
+      <!-- Bootstrap CSS -->
+      <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+      <!-- Font awesome CSS -->
+      <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+      <!-- Custom CSS -->
+      <style media="screen">
+        .invalid {
+          color: #dc3545;
+          font-size: 80%;
+        }
+        body {
+          display: flex;
+          flex-direction: column;
+          min-height: 100vh;
+        }
+        .footer {
+          margin: auto 0 0;
+          height: 56px;
+        }
+      </style>
+    {% endblock stylesheets %}
+
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container">
+        <ul class="nav navbar-nav">{# PONDER Home Link# / Admin Link#}
+          <li><a class="navbar-brand" href="{% url 'index' %}">PONDER</a></li>
+          <li><a class="navbar-link" href="{% url 'admin:index' %}">Admin</a></li>
+          {% if user.is_authenticated %}
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+          {% else %}
+            <li><a class="navbar-link" href="{% url 'ponder:user_login' %}">Login</a></li>
+          {% endif %}</ul>
+      </div>
+    </nav>
+</head>
+<body>
+  {% block scripts %}
+      <script src="{% static 'assets/js/jquery-3.2.1.min.js' %}"></script>
+      <script src="{% static 'assets/js/popper.min.js' %}"></script>
+      <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+      <!-- You can alternatively load the minified version -->
+      <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
+  {% endblock scripts %}
+  <div class="card-body">
+    <div class="container">
+      <div class="jumbotron">
+        <h1>Categorization Form</h1>
+          <h3>Fill categorization for {{ sha }}.</h3>
+          <div style = "height: 20px"></div>
+          <a style="background-color: lightblue; box-shadow: 0 1px 0 blue; color: white; padding: .5em .5em;position: relative;text-decoration: none;color:black;" href={{commit_url}}>Specific commit</a>
+          <a style="background-color: lightblue; box-shadow: 0 1px 0 blue; color: white; padding: .5em .5em;position: relative;text-decoration: none;color:black;" href={{general_url}}>General Sha Search</a>
+          <div style = "height: 20px"></div>
+          <h5>The buttons above take you to specific commit link for the sha, and the general search of the sha in the project.</h5>
+          <form enctype="multipart/form-data" method="POST">
+            {% csrf_token %}
+            {% for hidden_field in cat_form.hidden_fields %}
+              {{ hidden_field }}
+            {% endfor %}
+            {% for field in cat_form.visible_fields %}
+              <div class="form-group">
+                {{ field.label_tag }}
+                {% if field.name == "is_func_fix" or field.name == "should_discuss" %}
+                {% render_field field %}
+                {% else %}
+                  {% render_field field class="form-control" %}
+                  {% if field.name == "problem_category" %}
+                    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content"></div>
+                      </div>
+                    </div>
+                    <button id="create-problem_category" class="btn btn-primary" type="button" name="button" >
+                    <span class="fa fa-plus mr-2"></span>
+                    </button>
+                  {% endif %}  
+                  {% if field.name == "problem_cause" %}
+                    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content"></div>
+                      </div>
+                    </div>
+                    <button id="create-problem_cause" class="btn btn-primary" type="button" name="button" >
+                    <span class="fa fa-plus mr-2"></span>
+                    </button>
+                  {% endif %}  
+                  {% if field.name == "problem_fix" %}
+                    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content"></div>
+                      </div>
+                    </div>
+                    <button id="create-problem_fix" class="btn btn-primary" type="button" name="button" >
+                    <span class="fa fa-plus mr-2"></span>
+                    </button>
+                  {% endif %}  
+                  {% if field.name == "problem_symptom" %}
+                    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content"></div>
+                      </div>
+                    </div>
+                    <button id="create-problem_symptom" class="btn btn-primary" type="button" name="button" >
+                    <span class="fa fa-plus mr-2"></span>
+                    </button>
+                  {% endif %}  
+                {% endif %} 
+                {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+              </div>
+            {% endfor %}
+            <input type="submit" name="" value="Add">
+          </form>
+      </div>
+    </div> 
+  </div>
+</body>
+{% endblock content %}
+
+{% block extrascripts %}
+ <script type="text/javascript">
+  $(function () {
+          function createProblemCategoryModalForm() {
+            $("#create-problem_category").modalForm({
+                formURL: "{% url 'ponder:create_problem_category' sha %}",
+                modalID: "#create-modal"
+            });
+          }
+          createProblemCategoryModalForm();
+
+          function createProblemCauseModalForm() {
+            $("#create-problem_cause").modalForm({
+                formURL: "{% url 'ponder:create_problem_cause' sha %}",
+                modalID: "#create-modal"
+            });
+          }
+          createProblemCauseModalForm();
+
+          function createProblemSymptomModalForm() {
+            $("#create-problem_symptom").modalForm({
+                formURL: "{% url 'ponder:create_problem_symptom' sha %}",
+                modalID: "#create-modal"
+            });
+          }
+          createProblemSymptomModalForm();
+
+          function createProblemFixModalForm() {
+            $("#create-problem_fix").modalForm({
+                formURL: "{% url 'ponder:create_problem_fix' sha %}",
+                modalID: "#create-modal"
+            });
+          }
+          createProblemFixModalForm();
+
+
+      });
+  </script>
+{% endblock extrascripts %}
