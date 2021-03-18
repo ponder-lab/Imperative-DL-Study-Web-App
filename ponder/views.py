@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Categorization, User, BugFix, Categorizer, CommitDetail, Commit, Dataset, ProblemCategory, ProblemCause, ProblemFix, ProblemSymptom
 from django.http import Http404
-from ponder.forms import UserForm, CategorizationForm, ProblemCategoryForm, ProblemCausesForm, ProblemFixesForm, ProblemSymptomsForm, RoundForm
+from ponder.forms import UserForm, CategorizationForm, ProblemCategoryForm, ProblemCausesForm, ProblemFixesForm, ProblemSymptomsForm, RoundForm, ProblemCategoryPopup,ProblemCausePopup,ProblemFixPopup,ProblemSymptomPopup
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -22,6 +22,8 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
+from bootstrap_modal_forms.generic import BSModalCreateView
+
 
 def index(request):
 	parts = ['Commits','Categorizations','Bug Fixes']
@@ -36,39 +38,6 @@ def special(request):
 def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect(reverse('index'))
-
-def problem_details(request):
-
-	if request.method == 'POST':
-		p_categoryF = ProblemCategoryForm(data=request.POST)
-		p_fixF = ProblemFixesForm(data=request.POST)
-		p_causeF = ProblemCausesForm(data=request.POST)
-		p_symptomF = ProblemSymptomsForm(data=request.POST)
-
-		if p_categoryF.is_valid() and p_fixF.is_valid() and p_causeF.is_valid() and p_symptomF.is_valid(): 
-			p_category = p_categoryF.save()
-			p_fix = p_fixF.save()
-			p_cause = p_causeF.save()
-			p_symptom = p_symptomF.save()
-		else:
-			print(p_categoryF.errors,p_fixF.errors, p_causeF.errors, p_symptomF.errors)
-	else: 
-		p_categoryF = ProblemCategoryForm()
-		p_fixF = ProblemFixesForm()
-		p_causeF = ProblemCausesForm()
-		p_symptomF = ProblemSymptomsForm()
-
-	context = {
-		'p_category': p_categoryF,
-		'p_fix': p_fixF,
-		'p_cause': p_causeF,
-		'p_symptom': p_symptomF,
-		#'values_pcat': ProblemCategory.objects.all(),
-		#'values_pf': ProblemFix.objects.all(),
-		#'values_pcause': ProblemCause.objects.all(),
-		#'values_ps': ProblemSymptom.objects.all(),
-		}
-	return render(request, 'ponder/categorizations_problem.html', context)
 
 
 @login_required
@@ -108,28 +77,9 @@ def categorizations(request,pk):
 	project = Commit.objects.values('project').filter(sha=pk)[0]
 	general_url = "https://github.com/"+str(project['project'])+"/search?q="+str(sha_commits)
 	commit_url = "https://github.com/"+str(project['project'])+"/commit/"+str(sha_commits)
-	categories = []
-	fixes = []
-	causes = []
-	symptoms =[]
-	for i in range(len(ProblemCategory.objects.values('category').distinct())):
-		c = ProblemCategory.objects.values('category').distinct()[i]
-		if(c['category'] != 'None'): 
-			categories.append(c['category'])
-	for i in range(len(ProblemFix.objects.values('fix').distinct())):
-		c = ProblemFix.objects.values('fix').distinct()[i]
-		if(c['fix'] != 'None'): 
-			fixes.append(c['fix'])
-	for i in range(len(ProblemCause.objects.values('cause').distinct())):
-		c = ProblemCause.objects.values('cause').distinct()[i]
-		if(c['cause'] != 'None'): 
-			causes.append(c['cause'])
-	for i in range(len(ProblemSymptom.objects.values('symptom').distinct())):
-		c = ProblemSymptom.objects.values('symptom').distinct()[i]
-		if(c['symptom'] != 'None'): 
-			symptoms.append(c['symptom'])
+
 	if request.method == 'POST':
-		cat_form = CategorizationForm(request.POST,sha=sha_commits, user = request.user, problem_cause = causes, problem_fix = fixes, problem_category = categories, problem_symptom = symptoms)
+		cat_form = CategorizationForm(request.POST,sha=sha_commits, user = request.user)
 		if request.POST.get('is_func_fix') == '1':
 			cat_form.fields['problem_category'].required = True
 			if(request.POST.get('problem_category') != 'Unknown' and request.POST.get('problem_category')!='Test' and request.POST.get('problem_category') != 'Other'):
@@ -141,54 +91,16 @@ def categorizations(request,pk):
 		if cat_form.is_valid():
 			categorization = cat_form.save(commit=False)
 			username = User.objects.values('username').filter(id=request.user.id)[0]
-			username = Categorizer.objects.values('id').filter(user=username['username'])[0]
-			categorization.categorizer = username['id']
-			if not ProblemCategory.objects.filter(category=cat_form.cleaned_data['problem_category']).exists():
-				ProblemCategory.objects.create(category=cat_form.cleaned_data['problem_category'])
-
-			if not cat_form.cleaned_data['problem_category']: 
-				categorization.problem_category = None
-			else:
-				problem_category = ProblemCategory.objects.values('id').filter(category=cat_form.cleaned_data['problem_category'])[0]
-				categorization.problem_category = problem_category['id'] 
-
-			if not ProblemCause.objects.filter(cause=cat_form.cleaned_data['problem_cause']).exists() and len(cat_form.cleaned_data['problem_cause'])>=1:
-				ProblemCause.objects.create(cause=cat_form.cleaned_data['problem_cause'])
-
-			if not cat_form.cleaned_data['problem_cause']: 
-				categorization.problem_cause = None
-			else:
-				problem_cause = ProblemCause.objects.values('id').filter(cause=cat_form.cleaned_data['problem_cause'])[0]
-				categorization.problem_cause = problem_cause['id']
-
-			if not ProblemFix.objects.filter(fix=cat_form.cleaned_data['problem_fix']).exists() and len(cat_form.cleaned_data['problem_fix'])>=1:
-				ProblemFix.objects.create(fix=cat_form.cleaned_data['problem_fix'])
-
-			if not cat_form.cleaned_data['problem_fix']: 
-				categorization.problem_fix = None
-			else:
-				problem_fix = ProblemFix.objects.values('id').filter(fix=cat_form.cleaned_data['problem_fix'])[0]
-				categorization.problem_fix = problem_fix['id']
-
-			if not ProblemSymptom.objects.filter(symptom=cat_form.cleaned_data['problem_symptom']).exists() and len(cat_form.cleaned_data['problem_symptom'])>=1:
-				ProblemSymptom.objects.create(symptom=cat_form.cleaned_data['problem_symptom'])
-
-			if not cat_form.cleaned_data['problem_symptom']: 
-				categorization.problem_symptom = None
-			else: 
-				problem_symptom = ProblemSymptom.objects.values('id').filter(symptom=cat_form.cleaned_data['problem_symptom'])[0]
-				categorization.problem_symptom = problem_symptom['id']
-
+			categorization.categorizer = Categorizer.objects.get(user = username['username'])
 			if cat_form.cleaned_data['should_discuss']=='':
 				categorization.should_discuss = None
-
 			categorization.sha=sha_commits
 			categorization.save()
 			return HttpResponseRedirect(reverse('ponder:success_categorization'))
 		else: 
 			print(cat_form.errors)
 	else:
-		cat_form = CategorizationForm(request.POST,sha=sha_commits, user = request.user, problem_cause = causes, problem_fix = fixes, problem_category = categories, problem_symptom = symptoms)
+		cat_form = CategorizationForm(request.POST,sha=sha_commits, user = request.user)
 	context = {
 		'cat_form': cat_form,
 		'sha': sha_commits,
@@ -197,27 +109,51 @@ def categorizations(request,pk):
 		}
 	return render(request,'ponder/categorizations.html',context)
 
+@login_required
 def success_categorization(request):
 	template = 'ponder/success_form.html'
 	context = {}
 	return render(request, template, context)
-"""
-class CategorizationsCreateView(LoginRequiredMixin, CreateView):
-	login_url = '/login/'
-	redirect_field_name = 'redirect_to'
-	model = Categorization
-	form_class = CategorizationForm
-	sucess_url = reverse_lazy('categorization_changelist')
 
-class CategorizationsListView(ListView):
-	model = Categorization
-	context_object_name = 'categorizations'
+class ProblemCategoryCreateView(BSModalCreateView):
+	template_name = 'ponder/popup_prob_cat.html'
+	form_class = ProblemCategoryPopup
+	success_message = 'Success: Problem Category was created.'
 
-def load_shas(request):
-	rounds = request.GET.get('rounds')
-	commits = Commit.objects.filter(rounds=rounds)
-	return render(request, 'ponder/shas_options.html', {'commits': commits})
-"""
+	def get_success_url(self, **kwargs):
+		obj = self.kwargs
+		print(obj['pk'])
+		return reverse("ponder:categorizations_add", kwargs={'pk': obj['pk']})
+
+class ProblemCauseCreateView(BSModalCreateView):
+	template_name = 'ponder/popup_prob_cause.html'
+	form_class = ProblemCausePopup
+	success_message = 'Success: Problem Cause was created.'
+
+	def get_success_url(self, **kwargs):
+		obj = self.kwargs
+		print(obj['pk'])
+		return reverse("ponder:categorizations_add", kwargs={'pk': obj['pk']})
+
+class ProblemSymptomCreateView(BSModalCreateView):
+	template_name = 'ponder/popup_prob_symptom.html'
+	form_class = ProblemSymptomPopup
+	success_message = 'Success: Problem Symptom was created.'
+
+	def get_success_url(self, **kwargs):
+		obj = self.kwargs
+		print(obj['pk'])
+		return reverse("ponder:categorizations_add", kwargs={'pk': obj['pk']})
+
+class ProblemFixCreateView(BSModalCreateView):
+	template_name = 'ponder/popup_prob_fix.html'
+	form_class = ProblemFixPopup
+	success_message = 'Success: Problem Fix was created.'
+
+	def get_success_url(self, **kwargs):
+		obj = self.kwargs
+		print(obj['pk'])
+		return reverse("ponder:categorizations_add", kwargs={'pk': obj['pk']})
 
 def user_login(request):
 	if request.method == 'POST':
@@ -258,51 +194,3 @@ class BugFixesTableView(LoginRequiredMixin, SingleTableView):
     model = BugFix
     table_class = BugFixesTable
     template_name = 'ponder/bugfixes_table.html' 
-	
-"""
-class CategorizationsListView(SingleTableView):
-    model = Categorization
-    table_class = CategorizationsTable
-    template_name = 'ponder/categorizations_table.html' 
-
-class CategorizersListView(SingleTableView):
-    model = Categorizer
-    table_class = CategorizersTable
-    template_name = 'ponder/categorizers_table.html'
-
-class CommitDetailsListView(SingleTableView):
-    model = CommitDetail
-    table_class = CommitDetailsTable
-    template_name = 'ponder/commitdetails_table.html'
-
-class CommitsListView(SingleTableView):
-    model = Commit
-    table_class = CommitsTable
-    template_name = 'ponder/commits_table.html'
-
-class DatasetsListView(SingleTableView):
-    model = Dataset
-    table_class = DatasetsTable
-    template_name = 'ponder/datasets_table.html'
-
-class ProblemCategoriesListView(SingleTableView):
-    model = ProblemCategory
-    table_class = ProblemCategoriesTable
-    template_name = 'ponder/problemcategories_table.html'
-
-class ProblemCausesListView(SingleTableView):
-    model = ProblemCause
-    table_class = ProblemCausesTable
-    template_name = 'ponder/problemcauses_table.html' 
-
-class ProblemFixesListView(SingleTableView):
-    model = ProblemFix
-    table_class = ProblemFixesTable
-    template_name = 'ponder/problemfixes_table.html'
-
-class ProblemSymptomsListView(SingleTableView):
-    model = ProblemSymptom
-    table_class = ProblemSymptomsTable
-    template_name = 'ponder/problemsymptoms_table.html' 
-    
-"""
