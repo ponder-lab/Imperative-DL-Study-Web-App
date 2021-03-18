@@ -7,3 +7,6 @@ whitenoise
 django-bootstrap3
 django-filter
 django-debug-toolbar
+django-widget-tweaks
+django-bootstrap-modal-forms
+djangorestframework
