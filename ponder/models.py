@@ -19,7 +19,7 @@ class BugFix(models.Model):
 	symptom_comment = models.CharField(max_length=512, blank=True, null=True)
 	problem_fix = models.ForeignKey('ProblemFix', models.DO_NOTHING, db_column='problem_fix', blank=True, null=True)
 	fix_comment = models.CharField(max_length=512, blank=True, null=True)
-	should_discuss = models.IntegerField(blank=True, null=True)
+	should_discuss = models.BooleanField(blank=True, null=True)
 
 	class Meta:
 		managed = False
