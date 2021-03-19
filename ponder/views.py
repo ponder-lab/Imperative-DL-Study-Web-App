@@ -51,13 +51,13 @@ def id(request):
 		sha = id_qs.values_list('sha', flat=True).get(pk=id_value)
 		fix_details = Categorization.objects.filter(sha=sha)
 		table = BugFixes_FilterTable(fix_details)
-		return render(request, 'ponder/categorizations_filter1.html',{'table': table})
+		return render(request, 'ponder/categorizations_filter1.html',{'table': table, 'id_value': id_value})
 	except:
                 return HttpResponse('<h1>Page Not Found </h1> <h2>Bug Fix does not exist</h2>', status=404)
 
 @login_required
 def search(request):
-	user = request.user.username
+	user = 'mzneit'
 	print(user)
 	categorizerID = Categorizer.objects.values_list('id', flat=True).filter(user=user)
 	print(categorizerID)
