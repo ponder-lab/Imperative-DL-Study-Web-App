@@ -57,7 +57,7 @@ def id(request):
 
 @login_required
 def search(request):
-	user = 'mzneit'
+	user = request.user.username
 	print(user)
 	categorizerID = Categorizer.objects.values_list('id', flat=True).filter(user=user)
 	print(categorizerID)
