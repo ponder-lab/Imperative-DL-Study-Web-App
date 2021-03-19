@@ -8,9 +8,21 @@
     <head>
         <title>Bug Fix Details</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+	    <style>
+		  	.container {
+		    width: 100%;
+		    height: 100%;
+		    left: 0;
+		    top: 0;
+		    z-index: 10;
+		  	}
+	  	</style>
     </head>
     <body>
+    	<h3>Categorizations for bug fix with ID {{id_value}} </h3>
+    	<div class="container">
         {% render_table table %}
+    	</div>
     </body>
 </html>
 {% endblock %}
