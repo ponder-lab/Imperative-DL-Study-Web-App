@@ -72,9 +72,10 @@ def search(request):
 		return HttpResponse('<h1>Page Not Found </h1> <h2>Categorizations cannot be found or viewed</h2>', status=404)
 
 @login_required
-def categorizations(request,pk):
-	sha_commits=Commit(sha=pk)
-	project = Commit.objects.values('project').filter(sha=pk)[0]
+def categorizations(request):
+	param_sha = request.GET.get('sha', '')
+	sha_commits=Commit(sha=param_sha)
+	project = Commit.objects.values('project').filter(sha=param_sha)[0]
 	general_url = "https://github.com/"+str(project['project'])+"/search?q="+str(sha_commits)
 	commit_url = "https://github.com/"+str(project['project'])+"/commit/"+str(sha_commits)
 
