@@ -56,7 +56,7 @@ def id(request):
                 return HttpResponse('<h1>Page Not Found </h1> <h2>Bug Fix does not exist</h2>', status=404)
 
 @login_required
-def categorizations(request):
+def categorizations(request, pk):
 	param_sha = request.GET.get('sha', '')
 	sha_commits=Commit(sha=param_sha)
 	project = Commit.objects.values('project').filter(sha=param_sha)[0]
