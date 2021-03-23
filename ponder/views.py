@@ -52,6 +52,7 @@ def id(request):
 		fix_details = Categorization.objects.filter(sha=sha)
 		fix_details = Categorization.objects.filter(bug_fix=id_value)
 		table = BugFixes_FilterTable(fix_details)
+		table.paginate(page=request.GET.get("page", 1), per_page=25)
 		return render(request, 'ponder/categorizations_filter1.html',{'table': table, 'id_value': id_value})
 	except:
                 return HttpResponse('<h1>Page Not Found </h1> <h2>Bug Fix does not exist</h2>', status=404)
@@ -65,6 +66,7 @@ def search(request):
 	name = list(categorizerID)[0]
 	categories = Categorization.objects.filter(categorizer=name)
 	table = Categorizations_FilterTable(categories)
+	table.paginate(page=request.GET.get("page", 1), per_page=25)
 	userID = request.GET['user']
 	if userID == str(request.user.id):
 		return render(request, 'ponder/categorizations_filter2.html', {"table":table})
