@@ -69,7 +69,7 @@ def search(request):
 		return render(request, 'ponder/categorizations_filter2.html', {"table":table})
 
 @login_required
-def categorizations(request, pk):
+def categorizations(request):
 	param_sha = request.GET.get('commit', '')
 	sha_commits=Commit(sha=param_sha)
 	project = Commit.objects.values('project').filter(sha=param_sha)[0]
