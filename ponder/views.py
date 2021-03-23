@@ -57,7 +57,7 @@ def id(request):
 
 @login_required
 def search(request):
-	pass
+	return categorizations (request, None)
 
 @login_required
 def categorizations(request, pk):
