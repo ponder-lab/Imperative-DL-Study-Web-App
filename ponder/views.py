@@ -73,7 +73,7 @@ def search(request):
 
 @login_required
 def categorizations(request, pk):
-	param_sha = request.GET.get('sha', '')
+	param_sha = request.GET.get('commit', '')
 	sha_commits=Commit(sha=param_sha)
 	project = Commit.objects.values('project').filter(sha=param_sha)[0]
 	general_url = "https://github.com/"+str(project['project'])+"/search?q="+str(sha_commits)
