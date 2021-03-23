@@ -189,6 +189,11 @@ class CommitDetailsTableView(LoginRequiredMixin, SingleTableView):
 	def get_queryset(self):
 		c = Commit.objects.values('sha').filter(id=self.kwargs['pk'])[0]
 		return CommitDetail.objects.filter(sha=c['sha'])
+	
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['sha'] = Commit.objects.values('sha').filter(id=self.kwargs['pk'])[0]['sha']
+		return context
 
 class BugFixesTableView(LoginRequiredMixin, SingleTableView):
     model = BugFix
