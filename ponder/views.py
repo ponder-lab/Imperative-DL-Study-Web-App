@@ -50,6 +50,7 @@ def id(request):
 		id_qs = BugFix.objects.filter(id=id_value)
 		sha = id_qs.values_list('sha', flat=True).get(pk=id_value)
 		fix_details = Categorization.objects.filter(sha=sha)
+		fix_details = Categorization.objects.filter(bug_fix=id_value)
 		table = BugFixes_FilterTable(fix_details)
 		return render(request, 'ponder/categorizations_filter1.html',{'table': table, 'id_value': id_value})
 	except:
