@@ -67,6 +67,8 @@ def search(request):
 	userID = request.GET['user']
 	if userID == str(request.user.id):
 		return render(request, 'ponder/categorizations_filter2.html', {"table":table})
+	else:
+		return HttpResponse('<h1>Page Not Found </h1> <h2>Categorizations cannot be found or viewed</h2>', status=404)
 
 @login_required
 def categorizations(request):
