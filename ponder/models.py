@@ -28,6 +28,9 @@ class BugFix(models.Model):
 	def get_id(self):
 		return "%i/" % self.id
 	
+	def __str__(self):
+		return "%s" % self.id
+	
 	def get_sha(self):
 		project = Commit.objects.values('project').filter(sha=self.sha)[0]
 		return "https://github.com/"+str(project['project'])+"/commit/"+str(self.sha)
