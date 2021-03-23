@@ -10,9 +10,9 @@ from django.views.generic import ListView
 from django_tables2 import SingleTableView
 from .tables import Categorizations_FilterTable, BugFixes_FilterTable, CategorizationsTable, BugFixesTable, CategorizersTable, CommitDetailsTable, CommitsTable, DatasetsTable, ProblemCategoriesTable, ProblemCausesTable, ProblemFixesTable, ProblemSymptomsTable
 from .filters import RoundFilter
-from django.apps import apps 
-from django.contrib import admin 
-from django.contrib.admin.sites import AlreadyRegistered 
+from django.apps import apps
+from django.contrib import admin
+from django.contrib.admin.sites import AlreadyRegistered
 from django_tables2 import views
 from django_tables2 import MultiTableMixin
 from django_tables2   import RequestConfig
@@ -56,6 +56,22 @@ def id(request):
                 return HttpResponse('<h1>Page Not Found </h1> <h2>Bug Fix does not exist</h2>', status=404)
 
 @login_required
+def search(request):
+	user = request.user.username
+	print(user)
+	categorizerID = Categorizer.objects.values_list('id', flat=True).filter(user=user)
+	print(categorizerID)
+	name = list(categorizerID)[0]
+	categories = Categorization.objects.filter(categorizer=name)
+	table = Categorizations_FilterTable(categories)
+	userID = request.GET['user']
+	if userID == str(request.user.id):
+		return render(request, 'ponder/categorizations_filter2.html', {"table":table})
+
+	else:
+		return HttpResponse('<h1>Page Not Found </h1> <h2>Categorizations cannot be found or viewed</h2>', status=404)
+
+@login_required
 def categorizations(request, pk):
 	param_sha = request.GET.get('sha', '')
 	sha_commits=Commit(sha=param_sha)
@@ -69,9 +85,9 @@ def categorizations(request, pk):
 			cat_form.fields['problem_category'].required = True
 			if(request.POST.get('problem_category') != 'Unknown' and request.POST.get('problem_category')!='Test' and request.POST.get('problem_category') != 'Other'):
 				cat_form.fields['problem_symptom'].required = True
-				cat_form.fields['problem_fix'].required = True 
-				cat_form.fields['problem_cause'].required = True 
-			cat_form.fields['should_discuss'].required = True 
+				cat_form.fields['problem_fix'].required = True
+				cat_form.fields['problem_cause'].required = True
+			cat_form.fields['should_discuss'].required = True
 
 		if cat_form.is_valid():
 			categorization = cat_form.save(commit=False)
@@ -82,7 +98,7 @@ def categorizations(request, pk):
 			categorization.sha=sha_commits
 			categorization.save()
 			return HttpResponseRedirect(reverse('ponder:success_categorization'))
-		else: 
+		else:
 			print(cat_form.errors)
 	else:
 		cat_form = CategorizationForm(request.POST,sha=sha_commits, user = request.user)
@@ -157,7 +173,7 @@ def user_login(request):
                         return HttpResponse("Invalid login details given")
 	else:
 		return render(request, 'ponder/login.html', {})
-		
+
 class CommitsTableView(LoginRequiredMixin, SingleTableMixin, FilterView):
 	login_url = 'ponder:user_login'
 	model = Commit
@@ -178,4 +194,4 @@ class CommitDetailsTableView(LoginRequiredMixin, SingleTableView):
 class BugFixesTableView(LoginRequiredMixin, SingleTableView):
     model = BugFix
     table_class = BugFixesTable
-    template_name = 'ponder/bugfixes_table.html' 
+    template_name = 'ponder/bugfixes_table.html'
