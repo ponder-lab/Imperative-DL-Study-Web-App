@@ -57,7 +57,16 @@ def id(request):
 
 @login_required
 def search(request):
-	return categorizations (request, None)
+	user = request.user.username
+	print(user)
+	categorizerID = Categorizer.objects.values_list('id', flat=True).filter(user=user)
+	print(categorizerID)
+	name = list(categorizerID)[0]
+	categories = Categorization.objects.filter(categorizer=name)
+	table = Categorizations_FilterTable(categories)
+	userID = request.GET['user']
+	if userID == str(request.user.id):
+		return render(request, 'ponder/categorizations_filter2.html', {"table":table})
 
 @login_required
 def categorizations(request, pk):
