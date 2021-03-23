@@ -47,7 +47,7 @@ class BugFixes_FilterTable(tables.Table):
 	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}})
 	class Meta:
 		model = Categorization
-		exclude = ('bug_fix_id', )
+		exclude = ('bug_fix', )
 		template_name = "django_tables2/bootstrap-responsive.html"
 
 class DatasetsTable(tables.Table):
