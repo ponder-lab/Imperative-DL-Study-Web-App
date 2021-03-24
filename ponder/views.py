@@ -74,7 +74,7 @@ def search(request):
 		return HttpResponse('<h1>Page Not Found </h1> <h2>Categorizations cannot be found or viewed</h2>', status=404)
 
 @login_required
-def AddCategorization(request,pk):
+def AddCategorization(request):
 	param_sha = request.GET.get('commit', '')
 	sha_commits=Commit(sha=param_sha)
 	project = Commit.objects.values('project').filter(sha=param_sha)[0]
