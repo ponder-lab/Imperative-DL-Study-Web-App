@@ -11,8 +11,8 @@ body {
 #thankyou {
   background-color: white;
   border-radius: 10px;
-  height: 400px;
-  width: 400px;
+  height: 300px;
+  width: 1200px;
   border: 6px solid #e2552d;
   box-shadow: 7px 7px 4px #4999b6;
   margin: 100px auto 50px;
@@ -59,7 +59,7 @@ a:hover {
 
 <body>
   <div id="thankyou">
-    <h2 id="h2thankyou">Your categorization has been sucessfully added!</h2>
+    <h2 id="h2thankyou">Your categorization for {{sha}} has been sucessfully added!</h2>
   </div>
   <div><a id="linkback" href="{% url 'ponder:commits_table' %}">Add categorization for another commit</a></div>
   <div style = "height: 20px"></div>
