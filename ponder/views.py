@@ -75,8 +75,9 @@ def search(request):
 
 @login_required
 def AddCategorization(request,pk):
-	sha_commits=Commit(sha=pk)
-	project = Commit.objects.values('project').filter(sha=pk)[0]
+	param_sha = request.GET.get('commit', '')
+	sha_commits=Commit(sha=param_sha)
+	project = Commit.objects.values('project').filter(sha=param_sha)[0]
 	general_url = "https://github.com/"+str(project['project'])+"/search?q="+str(sha_commits)
 	commit_url = "https://github.com/"+str(project['project'])+"/commit/"+str(sha_commits)
 
@@ -98,7 +99,7 @@ def AddCategorization(request,pk):
 				categorization.should_discuss = None
 			categorization.sha=sha_commits
 			categorization.save()
-			return HttpResponseRedirect(reverse('ponder:success_categorization', kwargs={'pk': sha_commits}))
+			return HttpResponseRedirect(reverse('ponder:success_categorization', kwargs={'pk': param_sha}))
 		else: 
 			print(cat_form.errors)
 	else:
