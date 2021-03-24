@@ -74,10 +74,9 @@ def search(request):
 		return HttpResponse('<h1>Page Not Found </h1> <h2>Categorizations cannot be found or viewed</h2>', status=404)
 
 @login_required
-def categorizations(request):
-	param_sha = request.GET.get('commit', '')
-	sha_commits=Commit(sha=param_sha)
-	project = Commit.objects.values('project').filter(sha=param_sha)[0]
+def AddCategorization(request,pk):
+	sha_commits=Commit(sha=pk)
+	project = Commit.objects.values('project').filter(sha=pk)[0]
 	general_url = "https://github.com/"+str(project['project'])+"/search?q="+str(sha_commits)
 	commit_url = "https://github.com/"+str(project['project'])+"/commit/"+str(sha_commits)
 
@@ -87,9 +86,9 @@ def categorizations(request):
 			cat_form.fields['problem_category'].required = True
 			if(request.POST.get('problem_category') != 'Unknown' and request.POST.get('problem_category')!='Test' and request.POST.get('problem_category') != 'Other'):
 				cat_form.fields['problem_symptom'].required = True
-				cat_form.fields['problem_fix'].required = True
-				cat_form.fields['problem_cause'].required = True
-			cat_form.fields['should_discuss'].required = True
+				cat_form.fields['problem_fix'].required = True 
+				cat_form.fields['problem_cause'].required = True 
+			cat_form.fields['should_discuss'].required = True 
 
 		if cat_form.is_valid():
 			categorization = cat_form.save(commit=False)
@@ -99,8 +98,8 @@ def categorizations(request):
 				categorization.should_discuss = None
 			categorization.sha=sha_commits
 			categorization.save()
-			return HttpResponseRedirect(reverse('ponder:success_categorization'))
-		else:
+			return HttpResponseRedirect(reverse('ponder:success_categorization', kwargs={'pk': sha_commits}))
+		else: 
 			print(cat_form.errors)
 	else:
 		cat_form = CategorizationForm(request.POST,sha=sha_commits, user = request.user)
@@ -111,6 +110,7 @@ def categorizations(request):
 		'commit_url': commit_url
 		}
 	return render(request,'ponder/categorizations.html',context)
+
 
 @login_required
 def success_categorization(request, pk):
