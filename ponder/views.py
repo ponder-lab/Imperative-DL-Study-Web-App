@@ -113,9 +113,9 @@ def categorizations(request):
 	return render(request,'ponder/categorizations.html',context)
 
 @login_required
-def success_categorization(request):
+def success_categorization(request, pk):
 	template = 'ponder/success_form.html'
-	context = {}
+	context = {'sha': pk}
 	return render(request, template, context)
 
 class ProblemCategoryCreateView(BSModalCreateView):
