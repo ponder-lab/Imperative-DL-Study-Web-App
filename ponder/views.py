@@ -126,8 +126,10 @@ class ProblemCategoryCreateView(BSModalCreateView):
 
 	def get_success_url(self, **kwargs):
 		obj = self.kwargs
-		print(obj['pk'])
-		return reverse("ponder:categorizations_add", kwargs={'pk': obj['pk']})
+		url =  reverse("ponder:categorizations_add")
+		qs = 'commit=%s' % obj['pk']
+		return '?'.join((url,qs))
+
 
 class ProblemCauseCreateView(BSModalCreateView):
 	template_name = 'ponder/popup_prob_cause.html'
@@ -136,8 +138,9 @@ class ProblemCauseCreateView(BSModalCreateView):
 
 	def get_success_url(self, **kwargs):
 		obj = self.kwargs
-		print(obj['pk'])
-		return reverse("ponder:categorizations_add", kwargs={'pk': obj['pk']})
+		url =  reverse("ponder:categorizations_add")
+		qs = 'commit=%s' % obj['pk']
+		return '?'.join((url,qs))
 
 class ProblemSymptomCreateView(BSModalCreateView):
 	template_name = 'ponder/popup_prob_symptom.html'
@@ -146,8 +149,9 @@ class ProblemSymptomCreateView(BSModalCreateView):
 
 	def get_success_url(self, **kwargs):
 		obj = self.kwargs
-		print(obj['pk'])
-		return reverse("ponder:categorizations_add", kwargs={'pk': obj['pk']})
+		url =  reverse("ponder:categorizations_add")
+		qs = 'commit=%s' % obj['pk']
+		return '?'.join((url,qs))
 
 class ProblemFixCreateView(BSModalCreateView):
 	template_name = 'ponder/popup_prob_fix.html'
@@ -156,8 +160,9 @@ class ProblemFixCreateView(BSModalCreateView):
 
 	def get_success_url(self, **kwargs):
 		obj = self.kwargs
-		print(obj['pk'])
-		return reverse("ponder:categorizations_add", kwargs={'pk': obj['pk']})
+		url =  reverse("ponder:categorizations_add")
+		qs = 'commit=%s' % obj['pk']
+		return '?'.join((url,qs))
 
 def user_login(request):
 	if request.method == 'POST':
