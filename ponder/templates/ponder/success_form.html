@@ -63,7 +63,9 @@ a:hover {
   </div>
   <div><a id="linkback" href="{% url 'ponder:commits_table' %}">Add categorization for another commit</a></div>
   <div style = "height: 20px"></div>
-    <div><a id="linkback" href="{% url 'index'  %}">Go to home page</a></div>
+  <div><a id="linkback" href="{% url 'index'  %}">Go to home page</a></div>
+  <div style = "height: 20px"></div>
+  <div><a id="linkback" href="{% url 'ponder:categorizations_add' sha %}">Add another categorization for this commit</a></div>
 
 </body>
 {% endblock %}
