@@ -39,6 +39,7 @@ class CommitsTable(tables.Table):
 
 class Categorizations_FilterTable(tables.Table):
 	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}})
+	bug_fix = tables.Column(linkify=True)
 	problem_category = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_category.description}})
 	problem_cause = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_cause.description}})
 	class Meta:
