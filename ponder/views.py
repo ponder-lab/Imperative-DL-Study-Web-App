@@ -15,7 +15,7 @@ from django.contrib import admin
 from django.contrib.admin.sites import AlreadyRegistered
 from django_tables2 import views
 from django_tables2 import MultiTableMixin
-from django_tables2   import RequestConfig
+from django_tables2 import RequestConfig
 from django.views.generic.base import TemplateView
 from django.views.generic import ListView, CreateView, UpdateView
 from django.urls import reverse_lazy
@@ -41,7 +41,7 @@ def user_logout(request):
 
 
 @login_required
-def id(request):
+def categorizations_by_bugFixID(request):
 	try:
 		s = request.path_info
 		s = s. replace('/ponder/bug_fixes/', '')
@@ -58,7 +58,7 @@ def id(request):
                 return HttpResponse('<h1>Page Not Found </h1> <h2>Bug Fix does not exist</h2>', status=404)
 
 @login_required
-def search(request):
+def categorizations_by_userID(request):
 	user = request.user.username
 	print(user)
 	categorizerID = Categorizer.objects.values_list('id', flat=True).filter(user=user)
