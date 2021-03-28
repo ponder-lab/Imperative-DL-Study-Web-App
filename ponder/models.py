@@ -1,16 +1,9 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 from django.contrib.auth.models import User
 
 class BugFix(models.Model):
 	sha = models.CharField(max_length=40, blank=False, null=False)
-	is_func_fix = models.BooleanField(blank=True, null=True)  # This field type is a guess.
+	is_func_fix = models.BooleanField(blank=True, null=True)
 	problem_category = models.ForeignKey('ProblemCategory', models.DO_NOTHING, db_column='problem_category', blank=True, null=True)
 	category_comment = models.CharField(max_length=512, blank=True, null=True)
 	problem_cause = models.ForeignKey('ProblemCause', models.DO_NOTHING, db_column='problem_cause', blank=True, null=True)
@@ -58,6 +51,9 @@ class Categorization(models.Model):
 	def get_sha(self):
 		project = Commit.objects.values('project').filter(sha=self.sha)[0]
 		return "https://github.com/"+str(project['project'])+"/commit/"+str(self.sha)
+	
+	def get_absolute_url(self):
+                return "bug_fixes/"+str(self.bug_fix)
 
 
 class Categorizer(models.Model):
