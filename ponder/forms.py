@@ -12,9 +12,8 @@ class UserForm(forms.ModelForm):
 		fields = ('username','password','email')
 		
 class CategorizationForm(forms.ModelForm):
-	CHOICES = [('0', 'False'), ('1', 'True')]
-	is_func_fix = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
-	should_discuss = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES, required= False)
+	is_func_fix = forms.BooleanField()
+	should_discuss = forms.BooleanField(required=False)
 	problem_category = forms.ModelChoiceField(queryset=ProblemCategory.objects.all(), required=False)
 	problem_cause = forms.ModelChoiceField(queryset=ProblemCause.objects.all(), required=False)
 	problem_fix = forms.ModelChoiceField(queryset=ProblemFix.objects.all(), required=False)
@@ -27,6 +26,7 @@ class CategorizationForm(forms.ModelForm):
 			'problem_symptom', 'symptom_comment',
 			'problem_fix', 'fix_comment',
 			'should_discuss')
+
 	def __init__(self,*args,**kwargs):
 		sha = kwargs.pop('sha')
 		user = kwargs.pop('user')
