@@ -1,6 +1,5 @@
-#-*- coding: utf-8 -*-
 from django import forms
-from ponder.models import Categorization, ProblemCategory, ProblemCause, ProblemFix, ProblemSymptom, Commit,Categorizer
+from ponder.models import Categorization, BugFix, ProblemCategory, ProblemCause, ProblemFix, ProblemSymptom, Commit,Categorizer
 from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
 from ponder.fields import CategoriesIssuesTextWidget
@@ -32,6 +31,23 @@ class CategorizationForm(forms.ModelForm):
 		sha = kwargs.pop('sha')
 		user = kwargs.pop('user')
 		super(CategorizationForm,self).__init__(*args,**kwargs)
+
+class BugFixForm(forms.ModelForm):
+	CHOICES = [('0', 'False'), ('1', 'True')]
+	is_func_fix = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES, required= True)
+	should_discuss = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES, required= False)
+	problem_category = forms.ModelChoiceField(queryset=ProblemCategory.objects.all(), required=False)
+	problem_cause = forms.ModelChoiceField(queryset=ProblemCause.objects.all(), required=False)
+	problem_fix = forms.ModelChoiceField(queryset=ProblemFix.objects.all(), required=False)
+	problem_symptom = forms.ModelChoiceField(queryset=ProblemSymptom.objects.all(), required=False)
+	class Meta:
+		model = BugFix
+		fields = ('sha', 'is_func_fix', 'problem_category', 
+			'category_comment','problem_cause','cause_comment',
+			'problem_symptom', 'symptom_comment',
+			'problem_fix', 'fix_comment',
+			'should_discuss')
+		
 
 class ProblemCategoryPopup(BSModalModelForm):
 	category = forms.CharField(max_length=512,required=True)

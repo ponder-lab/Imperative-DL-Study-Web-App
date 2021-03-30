@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Categorization, User, BugFix, Categorizer, CommitDetail, Commit, Dataset, ProblemCategory, ProblemCause, ProblemFix, ProblemSymptom
 from django.http import Http404
-from ponder.forms import UserForm, CategorizationForm, ProblemCategoryForm, ProblemCausesForm, ProblemFixesForm, ProblemSymptomsForm, RoundForm, ProblemCategoryPopup,ProblemCausePopup,ProblemFixPopup,ProblemSymptomPopup
+from ponder.forms import UserForm, CategorizationForm, ProblemCategoryForm, ProblemCausesForm, ProblemFixesForm, ProblemSymptomsForm, RoundForm, ProblemCategoryPopup,ProblemCausePopup,ProblemFixPopup,ProblemSymptomPopup, BugFixForm
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -55,7 +55,7 @@ def categorizations_by_bugFixID(request):
 		table.paginate(page=request.GET.get("page", 1), per_page=25)
 		return render(request, 'ponder/categorizations_filter1.html',{'table': table, 'id_value': id_value})
 	except:
-                return HttpResponse('<h1>Page Not Found </h1> <h2>Bug Fix does not exist</h2>', status=404)
+		return HttpResponse('<h1>Page Not Found </h1> <h2>Bug Fix does not exist</h2>', status=404)
 
 @login_required
 def categorizations_by_userID(request):
@@ -171,14 +171,14 @@ def user_login(request):
 		user = authenticate(username=username, password=password)
 		if user:
 			if user.is_active:
-                                login(request,user)
-                                return HttpResponseRedirect(reverse('index'))
+				login(request,user)
+				return HttpResponseRedirect(reverse('index'))
 			else:
-                                return HttpResponse("Your account was inactive.")
+				return HttpResponse("Your account was inactive.")
 		else:
-                        print("Someone tried to login and failed.")
-                        print("They used username: {} and password: {}".format(username,password))
-                        return HttpResponse("Invalid login details given")
+			print("Someone tried to login and failed.")
+			print("They used username: {} and password: {}".format(username,password))
+			return HttpResponse("Invalid login details given")
 	else:
 		return render(request, 'ponder/login.html', {})
 
@@ -208,3 +208,56 @@ class BugFixesTableView(LoginRequiredMixin, SingleTableView):
     model = BugFix
     table_class = BugFixesTable
     template_name = 'ponder/bugfixes_table.html'
+
+@login_required
+def create_bugfix(request):
+	form = BugFixForm()
+	if request.method == 'POST':
+		form = BugFixForm(request.POST)
+		if request.POST.get('is_func_fix') == '1':
+			form.fields['problem_category'].required = True
+			if(request.POST.get('problem_category') != 'Unknown' and request.POST.get('problem_category')!='Test' and request.POST.get('problem_category') != 'Other'):
+				form.fields['problem_symptom'].required = True
+				form.fields['problem_fix'].required = True 
+				form.fields['problem_cause'].required = True 
+			form.fields['should_discuss'].required = True 
+		if form.is_valid():
+			form.save()
+			return HttpResponseRedirect('../')			 
+	context = {'form': form}
+	return render(request, 'ponder/bugfix_form.html', context)
+
+@login_required
+def update_bugfix(request):   
+	form_update = BugFix.objects.get(id=request.GET['id'])
+	form = BugFixForm(instance = form_update)
+	if request.method == 'POST':
+		form = BugFixForm(request.POST, instance=form_update)
+		if request.POST.get('is_func_fix') == '1':
+			form.fields['problem_category'].required = True
+			if(request.POST.get('problem_category') != 'Unknown' and request.POST.get('problem_category')!='Test' and request.POST.get('problem_category') != 'Other'):
+				form.fields['problem_symptom'].required = True
+				form.fields['problem_fix'].required = True 
+				form.fields['problem_cause'].required = True 
+			form.fields['should_discuss'].required = True 
+		if form.is_valid():
+			form.save()
+			return HttpResponseRedirect('/ponder/bug_fixes/')
+	context = {'form': form}
+	return render(request, 'ponder/bugfix_form.html', context)
+
+@login_required
+def delete_bugfix(request):
+	item = BugFix.objects.get(id=request.GET['id'])
+	if request.method == 'POST':
+		item.delete()
+		return HttpResponseRedirect('/ponder/bug_fixes/')
+	
+	return render(request, 'ponder/BugFix_confirm_delete.html')
+
+@login_required
+def confirm_bugfixdelete(request):
+	item = BugFix.objects.get(id=request.GET['id'])
+	template = 'ponder/BugFix_confirm_delete.html'
+	context = {'item': item}
+	return render(request, template, context)
