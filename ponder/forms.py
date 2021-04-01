@@ -33,8 +33,9 @@ class CategorizationForm(forms.ModelForm):
 		super(CategorizationForm,self).__init__(*args,**kwargs)
 
 class BugFixForm(forms.ModelForm):
-	is_func_fix = forms.BooeleanField(required=True)
-	should_discuss = forms.BooleanField(required=False)
+	CHOICES = [('0', 'False'), ('1', 'True')]
+	is_func_fix = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES, required= True)
+	should_discuss = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES, required= False)
 	problem_category = forms.ModelChoiceField(queryset=ProblemCategory.objects.all(), required=False)
 	problem_cause = forms.ModelChoiceField(queryset=ProblemCause.objects.all(), required=False)
 	problem_fix = forms.ModelChoiceField(queryset=ProblemFix.objects.all(), required=False)
