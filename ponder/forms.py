@@ -33,7 +33,7 @@ class CategorizationForm(forms.ModelForm):
 		super(CategorizationForm,self).__init__(*args,**kwargs)
 
 class BugFixForm(forms.ModelForm):
-	is_func_fix = forms.BooleanField(required=True)
+	is_func_fix = forms.BooeleanField(required=True)
 	should_discuss = forms.BooleanField(required=False)
 	problem_category = forms.ModelChoiceField(queryset=ProblemCategory.objects.all(), required=False)
 	problem_cause = forms.ModelChoiceField(queryset=ProblemCause.objects.all(), required=False)
