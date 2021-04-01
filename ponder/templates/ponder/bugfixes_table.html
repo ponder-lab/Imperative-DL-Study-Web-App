@@ -17,36 +17,9 @@
 	  	</style>
     </head>
     <body>
-    	
-      <div class="container">
-      <div>
-      
-      <nav class="navbar navbar-expand-lg bg-light" style="background-color: #e3f2fd;">
-
-        <a class="navbar-brand" style="font-size: 30px;
-  line-height: 43px; width: 1350px; font-family: Arial";>Bug Fixes Table</a>
-        
-      </span>
-
-        <span class="navbar-text">
-        <div>
-        
-        <form class="form-inline float-sm-right">
-       <input class="form-control mr-sm-2" type="search" placeholder="Search by round" aria-label="Search" style="width: 200px;">
-        <div style="display: inline;">
-        <button type="button" class="btn btn-outline-info btn-lg my-2 my-sm-0"  type="submit">Search</button>
-    </div>
-        </form>
-      </span>
-      </div>
-        </nav>
-        </div>
-    
-      <a type="button" class="btn btn-primary btn-lg btn-block" href="{% url 'ponder:create_bugfix' %}">Click to add a new bug fix</a>
-
+    	<div class="container">
         {% render_table table %}
-      </div>
+    	</div>
     </body>
 </html>
 {% endblock %}
-
