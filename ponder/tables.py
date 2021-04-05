@@ -3,21 +3,25 @@ from django_tables2 import TemplateColumn
 from .models import Categorization, BugFix, Categorizer, CommitDetail, Commit, Dataset, ProblemCategory, ProblemCause, ProblemFix, ProblemSymptom
 
 class CategorizationsTable(tables.Table):
-        class Meta:
-                model = Categorization
-                template_name = "django_tables2/bootstrap-responsive.html"
+	class Meta:
+		model = Categorization
+		template_name = "django_tables2/bootstrap-responsive.html"
 
 class BugFixesTable(tables.Table):
-        id = tables.Column(linkify=lambda record: record.get_id())
-        sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}})
-        class Meta:
-                model = BugFix
-                template_name = "django_tables2/bootstrap-responsive.html"
+	id = tables.Column(linkify=lambda record: record.get_id())
+	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}})
+	problem_category = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_category.description}})
+	problem_cause = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_cause.description}})
+	problem_symptom = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_symptom.description}})
+	problem_fix = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_fix.description}})
+	class Meta:
+		model = BugFix
+		template_name = "django_tables2/bootstrap-responsive.html"
 
 class CategorizersTable(tables.Table):
-        class Meta:
-                model = Categorizer
-                template_name = "django_tables2/bootstrap-responsive.html"
+	class Meta:
+		model = Categorizer
+		template_name = "django_tables2/bootstrap-responsive.html"
 
 class CommitDetailsTable(tables.Table):
 	class Meta:
@@ -30,7 +34,6 @@ class CommitsTable(tables.Table):
 	project = tables.Column(linkify=lambda record: record.get_project(), attrs={"a": {"target": "_blank"}})
 	author = tables.Column(linkify=lambda record: record.email_author())
 	sha = tables.Column(linkify=lambda record: record.get_commit(), attrs={"a": {"target": "_blank"}})
-
 	class Meta:
 		model = Commit
 		exclude = ('author_email','id')
@@ -42,21 +45,27 @@ class Categorizations_FilterTable(tables.Table):
 	bug_fix = tables.Column(linkify=True)
 	problem_category = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_category.description}})
 	problem_cause = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_cause.description}})
+	problem_symptom = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_symptom.description}})
+	problem_fix = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_fix.description}})
 	class Meta:
 		model = Categorization
 		template_name = "django_tables2/bootstrap-responsive.html"
 
 class BugFixes_FilterTable(tables.Table):
 	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}})
+	problem_category = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_category.description}})
+	problem_cause = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_cause.description}})
+	problem_symptom = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_symptom.description}})
+	problem_fix = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_fix.description}})
 	class Meta:
 		model = Categorization
 		exclude = ('bug_fix', )
 		template_name = "django_tables2/bootstrap-responsive.html"
 
 class DatasetsTable(tables.Table):
-        class Meta:
-                model = Dataset
-                template_name = "django_tables2/bootstrap-responsive.html"
+	class Meta:
+		model = Dataset
+		template_name = "django_tables2/bootstrap-responsive.html"
 	
 class ProblemCategoriesTable(tables.Table):
 	id = tables.Column(linkify=True)

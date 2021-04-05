@@ -4,13 +4,13 @@ from django.contrib.auth.models import User
 class BugFix(models.Model):
 	sha = models.CharField(max_length=40, blank=False, null=False)
 	is_func_fix = models.BooleanField(blank=True, null=True)
-	problem_category = models.ForeignKey('ProblemCategory', models.DO_NOTHING, db_column='problem_category', blank=True, null=True)
+	problem_category = models.ForeignKey('ProblemCategory', models.DO_NOTHING, db_column='problem_category', blank=True, null=False)
 	category_comment = models.CharField(max_length=512, blank=True, null=True)
-	problem_cause = models.ForeignKey('ProblemCause', models.DO_NOTHING, db_column='problem_cause', blank=True, null=True)
+	problem_cause = models.ForeignKey('ProblemCause', models.DO_NOTHING, db_column='problem_cause', blank=True, null=False)
 	cause_comment = models.CharField(max_length=512, blank=True, null=True)
-	problem_symptom = models.ForeignKey('ProblemSymptom', models.DO_NOTHING, db_column='problem_symptom', blank=True, null=True)
+	problem_symptom = models.ForeignKey('ProblemSymptom', models.DO_NOTHING, db_column='problem_symptom', blank=True, null=False)
 	symptom_comment = models.CharField(max_length=512, blank=True, null=True)
-	problem_fix = models.ForeignKey('ProblemFix', models.DO_NOTHING, db_column='problem_fix', blank=True, null=True)
+	problem_fix = models.ForeignKey('ProblemFix', models.DO_NOTHING, db_column='problem_fix', blank=True, null=False)
 	fix_comment = models.CharField(max_length=512, blank=True, null=True)
 	should_discuss = models.BooleanField(blank=True, null=True)
 
@@ -146,6 +146,7 @@ class ProblemCause(models.Model):
 
 class ProblemFix(models.Model):
 	fix = models.CharField(unique=True, max_length=512)
+	description = models.TextField(blank=True, null=True)
 
 	class Meta:
 		managed = False
@@ -156,6 +157,7 @@ class ProblemFix(models.Model):
 
 class ProblemSymptom(models.Model):
 	symptom = models.CharField(max_length=512)
+	description = models.TextField(blank=True, null=True)
 
 	class Meta:
 		managed = False
