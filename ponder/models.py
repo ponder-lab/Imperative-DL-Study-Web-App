@@ -123,7 +123,7 @@ class Dataset(models.Model):
 
 class ProblemCategory(models.Model):
 	category = models.CharField(unique=True, max_length=512)
-	description = models.TextField(blank=True, null=True)
+	description = models.TextField(blank=True, null=False)
 
 	class Meta:
 		managed = False
@@ -134,7 +134,7 @@ class ProblemCategory(models.Model):
 
 class ProblemCause(models.Model):
 	cause = models.CharField(unique=True, max_length=512)
-	description = models.TextField(blank=True, null=True)
+	description = models.TextField(blank=True, null=False)
 
 	class Meta:
 		managed = False
@@ -146,7 +146,7 @@ class ProblemCause(models.Model):
 
 class ProblemFix(models.Model):
 	fix = models.CharField(unique=True, max_length=512)
-	description = models.TextField(blank=True, null=True)
+	description = models.TextField(blank=True, null=False)
 
 	class Meta:
 		managed = False
@@ -157,7 +157,7 @@ class ProblemFix(models.Model):
 
 class ProblemSymptom(models.Model):
 	symptom = models.CharField(max_length=512)
-	description = models.TextField(blank=True, null=True)
+	description = models.TextField(blank=True, null=False)
 
 	class Meta:
 		managed = False
