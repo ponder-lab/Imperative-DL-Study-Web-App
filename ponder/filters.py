@@ -5,7 +5,7 @@ class RoundFilter(django_filters.FilterSet):
 	rounds = []
 	for i in range(len(Commit.objects.values('rounds').distinct())):
 		c = Commit.objects.values('rounds').distinct()[i]
-		if(c['rounds'] != 'None'): 
+		if(i != 2): 
 			rounds.append([c['rounds'], c['rounds']])
 
 	rounds = django_filters.ChoiceFilter(choices=rounds)
