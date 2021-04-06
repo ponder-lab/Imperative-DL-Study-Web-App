@@ -7,24 +7,15 @@
     <head>
         <title>Table of Commits</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-        <script src="{% static 'assets/js/jquery-3.2.1.min.js' %}"></script>
     </head>
     <body>
     	{% if filter %}
-    	<form action="" method="get" class="form form-inline">
+    	<form action="" method="get" class="form form-inline" onchange="this.form.submit();">
             <label for="round">Round: </label>
             {% bootstrap_form filter.form layout='inline' id="round" name="round" %}
         </form>
         {% endif %}
 
         {% render_table table %}
-
-        <script>
-          $(document).ready(function() {
-               $('#id_rounds').on('change', function() {
-                 $('#submit').click();
-               });
-            });
-        </script>
     </body>
 {% endblock %}
