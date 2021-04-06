@@ -12,10 +12,11 @@
     <body>
     	{% if filter %}
     	<form action="" method="get" class="form form-inline">
-        {% bootstrap_form filter.form layout='inline' %}
-        {% bootstrap_button 'Choose your round' id="submit"%}
+            {% bootstrap_form filter.form layout='inline' %}
+            {% bootstrap_button 'Choose your round' id="submit"%}
         </form>
-{% endif %}
+        {% endif %}
+
         {% render_table table %}
 
         <script>
