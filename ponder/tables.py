@@ -34,6 +34,7 @@ class CommitsTable(tables.Table):
 	project = tables.Column(linkify=lambda record: record.get_project(), attrs={"a": {"target": "_blank"}})
 	author = tables.Column(linkify=lambda record: record.email_author())
 	sha = tables.Column(linkify=lambda record: record.get_commit(), attrs={"a": {"target": "_blank"}})
+	dataset = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.dataset.description}})
 	class Meta:
 		model = Commit
 		exclude = ('author_email','id')
