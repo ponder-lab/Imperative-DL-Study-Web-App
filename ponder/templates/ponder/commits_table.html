@@ -10,7 +10,7 @@
     </head>
     <body>
     	{% if filter %}
-    	<form action="" method="get" class="form form-inline" onchange="this.form.submit();">
+    	<form action="" method="get" class="form form-inline">
             <label for="round">Round: </label>
             {% bootstrap_form filter.form layout='inline' id="round" name="round" %}
         </form>
