@@ -48,14 +48,14 @@ class Categorizations_FilterTable(tables.Table):
 	problem_cause = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_cause.description}})
 	problem_symptom = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_symptom.description}})
 	problem_fix = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_fix.description}})
-	Round = TemplateColumn('{{record.render_Round()}}')
+#	Round = TemplateColumn('{{record.render_Round()}}')
 	class Meta:
 		model = Categorization
 		template_name = "django_tables2/bootstrap-responsive.html"
 		
-	def render_Round(self, record):
-		rounds = Commit.objects.values_list('rounds', flat=True).filter(sha=record.sha)[0]
-		return rounds
+#	def render_Round(self, record):
+#		rounds = Commit.objects.values_list('rounds', flat=True).filter(sha=record.sha)[0]
+#		return rounds
 
 class BugFixes_FilterTable(tables.Table):
 	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}})
