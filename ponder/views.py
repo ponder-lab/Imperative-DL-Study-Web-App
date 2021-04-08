@@ -53,6 +53,17 @@ def categorizations_by_bugFixID(request):
 		fix_details = Categorization.objects.filter(bug_fix=id_value)
 		table = BugFixes_FilterTable(fix_details)
 		table.paginate(page=request.GET.get("page", 1), per_page=25)
+		is_func_fix = BugFix.objects.values_list('is_func_fix', flat=True).filter(id=id_value)[0]
+		if is_func_fix == False:
+			is_func_fix = '✘'
+		else:
+			is_func_fix = '✔'
+		try:
+			pb_category = BugFix.objects.prefetch_related('problem_category').filter(id=id_value)[0].problem_category
+		except:
+			pb_category = None
+		return render(request, 'ponder/categorizations_filter1.html',{'table': table, 'id_value': id_value, 'sha': sha, 'is_func_fix': is_func_fix, 'problem_category': pb_category})
+
 		return render(request, 'ponder/categorizations_filter1.html',{'table': table, 'id_value': id_value})
 	except:
                 return HttpResponse('<h1>Page Not Found </h1> <h2>Bug Fix does not exist</h2>', status=404)
