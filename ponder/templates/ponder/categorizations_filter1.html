@@ -9,7 +9,7 @@
         <title>Bug Fix Details</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
 	    <style>
-		  	.container {
+		  .container {
 		    width: 100%;
 		    height: 100%;
 		    left: 0;
@@ -25,12 +25,13 @@
               <thead class="thead-warning">
                 <tr>
                   <th scope="col"><h3>Bug Fix {{id_value}}</h3></th>
+		  <th scope="col"><h3></h3></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>Sha</td>
-                  <td>{{sha}}</td>
+                  <td><a target="_blank" href="https://github.com/{{project}}/commit/{{sha}}">{{sha}}</a></td>
                 </tr>
                 <tr>
                   <td>Is function fix?</td>
@@ -49,7 +50,7 @@
     <div class="container">
       <nav class="navbar navbar-expand-lg bg-light" style="background-color: #e3f2fd;">
       <h3 style="font-size: 30px;
-      line-height: 43px; font-family: Helvetica; text-align: center; color: black; color: #337ab7;"> Categorizations for Bug Fix {{id_value}} </h3>
+      line-height: 43px; font-family: Helvetica; text-align: center; color: #337ab7;"> Categorizations for Bug Fix {{id_value}} </h3>
       </nav>
     </div>
     </br>
