@@ -13,7 +13,7 @@ class UserForm(forms.ModelForm):
 		fields = ('username','password','email')
 		
 class CategorizationForm(forms.ModelForm):
-	is_func_fix = forms.BooleanField()
+	is_func_fix = forms.BooleanField(default=False)
 	should_discuss = forms.BooleanField(required=False)
 	problem_category = forms.ModelChoiceField(queryset=ProblemCategory.objects.all(), required=False)
 	problem_cause = forms.ModelChoiceField(queryset=ProblemCause.objects.all(), required=False)
