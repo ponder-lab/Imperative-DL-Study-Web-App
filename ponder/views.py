@@ -55,7 +55,7 @@ def categorizations_by_bugFixID(request):
 		table.paginate(page=request.GET.get("page", 1), per_page=25)
 		is_func_fix = BugFix.objects.values_list('is_func_fix', flat=True).filter(id=id_value)[0]
 		project = Commit.objects.values('project').filter(sha=sha)[0]
-        	project = str(project['project'])
+		project = str(project['project'])
 		if is_func_fix == False:
 			is_func_fix = '✘'
 		else:
