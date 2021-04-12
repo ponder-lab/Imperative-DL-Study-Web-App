@@ -54,6 +54,10 @@ class Categorization(models.Model):
 	
 	def get_absolute_url(self):
                 return "bug_fixes/"+str(self.bug_fix)
+	
+	def email_categorizer(self):
+                user = User.objects.get(username=self.categorizer)
+                return "mailto:" + user.email
 
 
 class Categorizer(models.Model):
