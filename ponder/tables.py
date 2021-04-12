@@ -44,6 +44,7 @@ class CommitsTable(tables.Table):
 class Categorizations_FilterTable(tables.Table):
 	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}})
 	bug_fix = tables.Column(linkify=True)
+	categorizer = tables.Column(linkify=lambda record: record.email_categorizer())
 	problem_category = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_category.description}})
 	problem_cause = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_cause.description}})
 	problem_symptom = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_symptom.description}})
@@ -59,6 +60,7 @@ class Categorizations_FilterTable(tables.Table):
 
 class BugFixes_FilterTable(tables.Table):
 	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}})
+	categorizer = tables.Column(linkify=lambda record: record.email_categorizer())
 	problem_category = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_category.description}})
 	problem_cause = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_cause.description}})
 	problem_symptom = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_symptom.description}})
