@@ -77,9 +77,7 @@
                         <div class="modal-content"></div>
                       </div>
                     </div>
-                    <button id="create-problem_category" class="btn btn-primary" type="button" name="button" >
-                    <span class="fa fa-plus mr-2"></span>
-                    </button>
+                    <p>Or, create new category: <input name="category_text" type="text"/>Description:<input name="category_description" type="text"/></p>
                   {% endif %}  
                   {% if field.name == "problem_cause" %}
                     <div class="modal fade" tabindex="-1" role="dialog" id="modal">
@@ -87,19 +85,15 @@
                         <div class="modal-content"></div>
                       </div>
                     </div>
-                    <button id="create-problem_cause" class="btn btn-primary" type="button" name="button" >
-                    <span class="fa fa-plus mr-2"></span>
-                    </button>
-                  {% endif %}  
+                    <p>Or, create new cause: <input name="cause_text" type="text"/>Description:<input name="cause_description" type="text"/></p>
+                  {% endif %}
                   {% if field.name == "problem_fix" %}
                     <div class="modal fade" tabindex="-1" role="dialog" id="modal">
                       <div class="modal-dialog" role="document">
                         <div class="modal-content"></div>
                       </div>
                     </div>
-                    <button id="create-problem_fix" class="btn btn-primary" type="button" name="button" >
-                    <span class="fa fa-plus mr-2"></span>
-                    </button>
+                    <p>Or, create new fix: <input name="fix_text" type="text"/>Description:<input name="fix_description" type="text"/></p>
                   {% endif %}  
                   {% if field.name == "problem_symptom" %}
                     <div class="modal fade" tabindex="-1" role="dialog" id="modal">
@@ -107,9 +101,7 @@
                         <div class="modal-content"></div>
                       </div>
                     </div>
-                    <button id="create-problem_symptom" class="btn btn-primary" type="button" name="button" >
-                    <span class="fa fa-plus mr-2"></span>
-                    </button>
+                  <p>Or, create new category: <input name="symptom_text" type="text"/>Description:<input name="symtpom_description" type="text"/></p>
                   {% endif %}  
                 {% endif %} 
                 {% if field.help_text %}
@@ -124,43 +116,3 @@
   </div>
 </body>
 {% endblock content %}
-
-{% block extrascripts %}
- <script type="text/javascript">
-  $(function () {
-          function createProblemCategoryModalForm() {
-            $("#create-problem_category").modalForm({
-                formURL: "{% url 'ponder:create_problem_category' sha %}",
-                modalID: "#create-modal"
-            });
-          }
-          createProblemCategoryModalForm();
-
-          function createProblemCauseModalForm() {
-            $("#create-problem_cause").modalForm({
-                formURL: "{% url 'ponder:create_problem_cause' sha %}",
-                modalID: "#create-modal"
-            });
-          }
-          createProblemCauseModalForm();
-
-          function createProblemSymptomModalForm() {
-            $("#create-problem_symptom").modalForm({
-                formURL: "{% url 'ponder:create_problem_symptom' sha %}",
-                modalID: "#create-modal"
-            });
-          }
-          createProblemSymptomModalForm();
-
-          function createProblemFixModalForm() {
-            $("#create-problem_fix").modalForm({
-                formURL: "{% url 'ponder:create_problem_fix' sha %}",
-                modalID: "#create-modal"
-            });
-          }
-          createProblemFixModalForm();
-
-
-      });
-  </script>
-{% endblock extrascripts %}
