@@ -94,35 +94,96 @@ def AddCategorization(request):
 
 	if request.method == 'POST':
 		cat_form = CategorizationForm(request.POST,sha=sha_commits, user = request.user)
-		if request.POST.get('is_func_fix') == '1':
+
+		if request.POST.get('is_func_fix')== '1' and request.POST.get('category_text')== '':
 			cat_form.fields['problem_category'].required = True
 			if(request.POST.get('problem_category') != 'Unknown' and request.POST.get('problem_category')!='Test' and request.POST.get('problem_category') != 'Other'):
-				cat_form.fields['problem_symptom'].required = True
-				cat_form.fields['problem_fix'].required = True 
-				cat_form.fields['problem_cause'].required = True 
+				if(request.POST.get('cause_text')==''):
+					cat_form.fields['problem_cause'].required = True 
+				elif(request.POST.get('symptom_text')==''):
+					cat_form.fields['problem_symptom'].required = True
+				elif(request.POST.get('fix_text')==''):
+					cat_form.fields['problem_fix'].required = True 
 			cat_form.fields['should_discuss'].required = True 
+
+		if not ProblemCategory.objects.filter(category=request.POST.get('category_text')).exists() and len(request.POST.get('category_text')):
+			ProblemCategory.objects.create(category=request.POST.get('category_text'),description=request.POST.get('category_description')) 
+
+		if not ProblemCause.objects.filter(cause=request.POST.get('cause_text')).exists() and len(request.POST.get('cause_text'))>=1:
+			ProblemCause.objects.create(cause=request.POST.get('cause_text'), description=request.POST.get('cause_description'))
+
+		if not ProblemFix.objects.filter(fix=request.POST.get('fix_text')).exists() and len(request.POST.get('fix_text'))>=1:
+			ProblemFix.objects.create(fix=request.POST.get('fix_text'), description=request.POST.get('fix_description'))
+
+		if not ProblemSymptom.objects.filter(symptom=request.POST.get('symptom_text')).exists() and len(request.POST.get('symptom_text'))>=1:
+			ProblemSymptom.objects.create(symptom=request.POST.get('symptom_text'), description=request.POST.get('symptom_description'))
 
 		if cat_form.is_valid():
 			categorization = cat_form.save(commit=False)
 			username = User.objects.values('username').filter(id=request.user.id)[0]
 			categorization.categorizer = Categorizer.objects.get(user = username['username'])
-			if cat_form.cleaned_data['should_discuss']=='':
-				categorization.should_discuss = None
+
+			if not cat_form.cleaned_data['problem_category'] and not request.POST.get('category_text'): 
+				categorization.problem_category = None
+			elif not cat_form.cleaned_data['problem_category']:
+				problem_category = ProblemCategory.objects.values('id').filter(category=request.POST.get('category_text'))[0]
+				problem_category_id = problem_category['id']
+				categorization.problem_category=ProblemCategory.objects.get(id=problem_category_id)
+			else: 
+				problem_category = ProblemCategory.objects.values('id').filter(category=cat_form.cleaned_data['problem_category'])[0]
+				problem_category_id = problem_category['id']
+				categorization.problem_category=ProblemCategory.objects.get(id=problem_category_id)
+
+			if not cat_form.cleaned_data['problem_cause'] and not request.POST.get('cause_text'): 
+				categorization.problem_cause = None
+			elif not cat_form.cleaned_data['problem_cause']:
+				problem_cause = ProblemCause.objects.values('id').filter(cause=request.POST.get('cause_text'))[0]
+				problem_cause_id = problem_cause['id']
+				categorization.problem_cause=ProblemCause.objects.get(id=problem_cause_id)
+			else: 
+				problem_cause = ProblemCause.objects.values('id').filter(cause=cat_form.cleaned_data['problem_cause'])[0]
+				problem_cause_id = problem_cause['id']
+				categorization.problem_cause=ProblemCause.objects.get(id=problem_cause_id)
+
+			if not cat_form.cleaned_data['problem_fix'] and not request.POST.get('fix_text'): 
+				categorization.problem_fix = None
+			elif not cat_form.cleaned_data['problem_fix']:
+				print(request.POST.get('fix_text'))
+				problem_fix = ProblemFix.objects.values('id').filter(fix=request.POST.get('fix_text'))[0]
+				problem_fix_id = problem_fix['id']
+				categorization.problem_fix=ProblemFix.objects.get(id=problem_fix_id)
+			else:
+				problem_fix = ProblemFix.objects.values('id').filter(fix=cat_form.cleaned_data['problem_fix'])[0]
+				problem_fix_id = problem_fix['id']
+				categorization.problem_fix=ProblemFix.objects.get(id=problem_fix_id)
+
+			if not cat_form.cleaned_data['problem_symptom'] and not request.POST.get('symptom_text'): 
+				categorization.problem_symptom = None
+			elif not cat_form.cleaned_data['problem_symptom']: 
+				problem_symptom = ProblemSymptom.objects.values('id').filter(symptom=request.POST.get('symptom_text'))[0]
+				problem_symptom_id = problem_symptom['id']
+				categorization.problem_symptom=ProblemSymptom.objects.get(id=problem_symptom_id)
+			else: 
+				problem_symptom = ProblemSymptom.objects.values('id').filter(symptom=cat_form.cleaned_data['problem_symptom'])[0]
+				problem_symptom_id = problem_symptom['id']
+				categorization.problem_symptom=ProblemSymptom.objects.get(id=problem_symptom_id)
+
 			categorization.sha=sha_commits
 			categorization.save()
 			return HttpResponseRedirect(reverse('ponder:success_categorization', kwargs={'pk': param_sha}))
 		else: 
 			print(cat_form.errors)
 	else:
-		cat_form = CategorizationForm(request.POST,sha=sha_commits, user = request.user)
+		cat_form = CategorizationForm(request.POST, sha=sha_commits, user = request.user)
+
 	context = {
 		'cat_form': cat_form,
 		'sha': sha_commits,
 		'general_url': general_url,
 		'commit_url': commit_url
 		}
-	return render(request,'ponder/categorizations.html',context)
 
+	return render(request,'ponder/categorizations.html',context)
 
 @login_required
 def success_categorization(request, pk):
