@@ -8,6 +8,7 @@
   {% block stylesheets %}
       <!-- Bootstrap CSS -->
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" >
       <!-- Font awesome CSS -->
       <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
       <!-- Custom CSS -->
@@ -26,6 +27,68 @@
           height: 56px;
         }
       </style>
+      <style type="text/css">
+        @import "compass/css3";
+        body {
+          padding:4em 2em;
+        }
+
+        .popover{
+            max-width: 100%; /* Max Width of the popover (depending on the container!) */
+        }
+
+        span.title {
+          font-weight: bold;
+          font-size: 16px;
+        }
+
+        a.info {
+          vertical-align: bottom;
+          position:relative; /* Anything but static */
+          width: 1.5em;
+          height: 1.5em;
+          text-indent: -9999em;
+          display: inline-block;
+          color: white;
+          font-weight:bold;
+          font-size:1em;
+          line-height:1em;
+          background-color: #91b2d2;
+          margin-left: .25em;
+          -webkit-border-radius:.75em;
+          -moz-border-radius:.75em;
+          border-radius:.75em;
+        }
+        a.info:hover {
+          background-color:#628cb6;
+          cursor: hand; 
+          cursor: pointer;
+        }
+        a.info:before {
+          content:"?";
+          position: absolute;
+          top: .25em;
+          left:0;
+          text-indent: 0;
+          display:block;
+          width:1.5em;
+          text-align:center;
+        }
+
+        .popover-title {
+          font-weight:bold;
+        }
+        label a.info, 
+        label div.popover.fade.in { 
+          opacity: 1;
+          -webkit-transition: opacity 1;
+          -moz-transition: opacity 1;
+          transition: opacity 1;
+        }
+        label:hover a.info, 
+        label:hover div.popover.fade.in { 
+          opacity: 1; }
+      </style>
     {% endblock stylesheets %}
 
     <nav class="navbar navbar-default navbar-static-top">
@@ -43,11 +106,8 @@
 </head>
 <body>
   {% block scripts %}
-      <script src="{% static 'assets/js/jquery-3.2.1.min.js' %}"></script>
-      <script src="{% static 'assets/js/popper.min.js' %}"></script>
-      <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
-      <!-- You can alternatively load the minified version -->
-      <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+      <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
   {% endblock scripts %}
   <div class="card-body">
     <div class="container">
@@ -78,6 +138,9 @@
                       </div>
                     </div>
                     <p>Or, create new category: <input name="category_text" type="text"/>Description:<input name="category_description" type="text"/></p>
+                    <label>                    
+                    <a class="info" data-toggle="popover" data-placement="right" data-content= "{{ info_cat }}" title="" data-original-title="Descriptions">Info</a>
+                  </label>
                   {% endif %}  
                   {% if field.name == "problem_cause" %}
                     <div class="modal fade" tabindex="-1" role="dialog" id="modal">
@@ -86,6 +149,9 @@
                       </div>
                     </div>
                     <p>Or, create new cause: <input name="cause_text" type="text"/>Description:<input name="cause_description" type="text"/></p>
+                    <label>                    
+                    <a class="info" data-toggle="popover" data-placement="right" data-content="{{ info_cause }}" title="" data-original-title="Descriptions">Info</a>
+                  </label>
                   {% endif %}
                   {% if field.name == "problem_fix" %}
                     <div class="modal fade" tabindex="-1" role="dialog" id="modal">
@@ -94,6 +160,9 @@
                       </div>
                     </div>
                     <p>Or, create new fix: <input name="fix_text" type="text"/>Description:<input name="fix_description" type="text"/></p>
+                    <label>                    
+                    <a class="info" data-toggle="popover" data-placement="right" data-content="{{ info_fix }}" title="" data-original-title="Descriptions">Info</a>
+                  </label>
                   {% endif %}  
                   {% if field.name == "problem_symptom" %}
                     <div class="modal fade" tabindex="-1" role="dialog" id="modal">
@@ -102,6 +171,9 @@
                       </div>
                     </div>
                   <p>Or, create new symptom: <input name="symptom_text" type="text"/>Description:<input name="symtpom_description" type="text"/></p>
+                  <label>                    
+                    <a class="info" data-toggle="popover" data-placement="right" data-content="{{ info_symptom }}" title="" data-original-title="Descriptions">Info</a>
+                  </label>
                   {% endif %}  
                 {% endif %} 
                 {% if field.help_text %}
@@ -116,3 +188,21 @@
   </div>
 </body>
 {% endblock content %}
+
+{% block extrascripts %}
+<script type="text/javascript">
+$('.info').popover({
+    container: 'body'
+});
+$(':not(#anything)').on('click', function (e) {
+    $('.info').each(function () {
+        //the 'is' for buttons that trigger popups
+        //the 'has' for icons and other elements within a button that triggers a popup
+        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+            $(this).popover('hide');
+            return;
+        }
+    });
+});
+</script>
+{% endblock extrascripts %}
