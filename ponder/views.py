@@ -176,47 +176,11 @@ def AddCategorization(request):
 	else:
 		cat_form = CategorizationForm(request.POST, sha=sha_commits, user = request.user)
 
-	info_cat=""
-	info_cause=""
-	info_symptom=""
-	info_fix = ""
-	for field in ProblemCategory.objects.values('category','description'): 
-		info_cat+=field['category']+": "
-		if field['description']=='':
-			info_cat+="No description"+'/ \n'
-		else:
-			info_cat+=field['description']+'/\n'
-
-	for field in ProblemCause.objects.values('cause','description'): 
-		info_cause+=field['cause']+": "
-		if field['description']=='':
-			info_cause+="No description"+'/ \n'
-		else:
-			info_cause+=field['description']+'/ \n'
-
-	for field in ProblemSymptom.objects.values('symptom','description'): 
-		info_symptom+=field['symptom']+": "
-		if field['description']=='':
-			info_symptom+="No description"+'/ \n'
-		else:
-			info_symptom+=field['description']+'/ \n'
-
-	for field in ProblemFix.objects.values('fix','description'): 
-		info_fix+=field['fix']+": "
-		if field['description']=='':
-			info_fix+="No description"+'/ \n'
-		else:
-			info_fix+=field['description']+'/ \n'
-
 	context = {
 		'cat_form': cat_form,
 		'sha': sha_commits,
 		'general_url': general_url,
-		'commit_url': commit_url,
-		'info_cat': info_cat,
-		'info_cause': info_cause,
-		'info_symptom': info_symptom,
-		'info_fix': info_fix
+		'commit_url': commit_url
 		}
 
 	return render(request,'ponder/categorizations.html',context)
