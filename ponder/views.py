@@ -53,8 +53,41 @@ def categorizations_by_bugFixID(request):
 		fix_details = Categorization.objects.filter(bug_fix=id_value)
 		table = BugFixes_FilterTable(fix_details)
 		table.paginate(page=request.GET.get("page", 1), per_page=25)
-		BugFixRow = BugFixesTable(id_qs)
-		return render(request, 'ponder/categorizations_filter1.html',{'table': table, 'id_value': id_value, 'BugFixRow': BugFixRow})
+		obj = id_qs[0]
+        	is_func_fix = obj.is_func_fix
+        	should_discuss = obj.should_discuss
+		project = Commit.objects.values('project').filter(sha=sha)[0]
+		project = str(project['project'])
+		if is_func_fix == False:
+                	is_func_fix = '✘'
+		else:
+			is_func_fix = '✔'     
+
+		if should_discuss == False:
+			should_discuss = '✘'
+		else:
+			should_discuss = '✔'
+		try:
+			pb_category = obj.problem_category
+		except:
+			pb_category = None
+		try:
+			pb_cause = obj.problem_cause
+		except:
+			pb_cause = None
+		try:
+			pb_symptom = obj.problem_symptom
+		except:
+			pb_symptom = None
+		try:
+			pb_fix = obj.problem_fix
+		except:
+			pb_fix = None
+			
+		context = {'table': table, 'id_value': id_value, 'sha': sha, 'is_func_fix': is_func_fix, 'project': project, \
+                   'category_comment': obj.category_comment, 'cause_comment': obj.cause_comment, 'symptom_comment': obj.symptom_comment, 'fix_comment': obj.fix_comment, \
+                   'pb_category': pb_category, 'pb_cause': pb_cause, 'pb_symptom': pb_symptom, 'pb_fix': pb_fix, 'should_discuss': should_discuss}
+		return render(request, 'ponder/categorizations_filter1.html', context)
 	except:
                 return HttpResponse('<h1>Page Not Found </h1> <h2>Bug Fix does not exist</h2>', status=404)
 
