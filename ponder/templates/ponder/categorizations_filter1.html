@@ -19,15 +19,65 @@
 	  	</style>
     </head>
     <body>
-    <div class="container">
-      <nav class="navbar navbar-expand-lg bg-light" style="background-color: #e3f2fd;">
-        <h3 style="font-size: 30px; line-height: 43px; font-family: Helvetica; text-align: center; color: #337ab7;"> Bug Fix {{id_value}} </h3>
-      </nav>
+    <div class="container-fluid">
+        <div class="col-lg-6" style="border-style: outset; width: 100%">
+            <table class="table" style="border: 1px; width: 100%">
+              <thead class="thead-warning">
+                <tr>
+                  <th scope="col"><h3>Bug Fix {{id_value}}</h3></th>
+                  <th scope="col"><h3></h3></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Sha</td>
+                  <td><a target="_blank" href="https://github.com/{{project}}/commit/{{sha}}">{{sha}}</a></td>
+                </tr>
+                <tr>
+                  <td>Is function fix?</td>
+                  <td>{{is_func_fix}}</td>
+                </tr>
+                <tr>
+                  <td>Problem category</td>
+                  <td>{{pb_category}}</td>
+                </tr>
+                <tr>
+                  <td>Category comment</td>
+                  <td>{{category_comment}}</td>
+                </tr>
+                <tr>
+                  <td>Problem cause</td>
+                  <td>{{pb_cause}}</td>
+                </tr>
+                <tr>
+                  <td>Cause comment</td>
+                  <td>{{cause_comment}}</td>
+                </tr>
+                <tr>
+                  <td>Problem symptom</td>
+                  <td>{{pb_symptom}}</td>
+                </tr>
+                <tr>
+                  <td>Symptom comment</td>
+                  <td>{{symptom_comment}}</td>
+                </tr>
+                <tr>
+                  <td>Problem fix</td>
+                  <td>{{pb_fix}}</td>
+                </tr>
+                <tr>
+                  <td>Fix comment</td>
+                  <td>{{fix_comment}}</td>
+                </tr>
+                <tr>
+                  <td>Should discuss?</td>
+                  <td>{{should_discuss}}</td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
     </div>
-
-    <div class="container"> 
-	{% render_table BugFixRow %}
-    </div>
+    </br>
 	
     <div class="container">
       <nav class="navbar navbar-expand-lg bg-light" style="background-color: #e3f2fd;">
