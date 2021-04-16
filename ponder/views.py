@@ -54,7 +54,7 @@ def categorizations_by_bugFixID(request):
 		table = BugFixes_FilterTable(fix_details)
 		table.paginate(page=request.GET.get("page", 1), per_page=25)
 		obj = id_qs[0]
-        	is_func_fix = obj.is_func_fix
+		is_func_fix = obj.is_func_fix
         	should_discuss = obj.should_discuss
 		project = Commit.objects.values('project').filter(sha=sha)[0]
 		project = str(project['project'])
