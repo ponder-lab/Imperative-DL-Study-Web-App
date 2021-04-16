@@ -67,7 +67,7 @@ class BugFixes_FilterTable(tables.Table):
 	problem_fix = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_fix.description}})
 	class Meta:
 		model = Categorization
-		exclude = ('bug_fix', 'sha')
+		exclude = ('bug_fix',)
 		template_name = "django_tables2/bootstrap-responsive.html"
 
 class DatasetsTable(tables.Table):
