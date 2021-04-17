@@ -70,19 +70,19 @@ def categorizations_by_bugFixID(request):
 		try:
 			pb_category = obj.problem_category
 		except:
-			pb_category = None
+			pb_category = '—'
 		try:
 			pb_cause = obj.problem_cause
 		except:
-			pb_cause = None
+			pb_cause = '—'
 		try:
 			pb_symptom = obj.problem_symptom
 		except:
-			pb_symptom = None
+			pb_symptom = '—'
 		try:
 			pb_fix = obj.problem_fix
 		except:
-			pb_fix = None
+			pb_fix = '—'
 			
 		context = {'table': table, 'id_value': id_value, 'sha': sha, 'is_func_fix': is_func_fix, 'project': project, \
                    'category_comment': obj.category_comment, 'cause_comment': obj.cause_comment, 'symptom_comment': obj.symptom_comment, 'fix_comment': obj.fix_comment, \
