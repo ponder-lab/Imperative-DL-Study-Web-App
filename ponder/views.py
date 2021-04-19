@@ -59,7 +59,7 @@ def categorizations_by_bugFixID(request):
 		project = Commit.objects.values('project').filter(sha=sha)[0]
 		project = str(project['project'])
 		if is_func_fix == False:
-                	is_func_fix = '✘'
+					is_func_fix = '✘'
 		else:
 			is_func_fix = '✔'     
 
@@ -85,11 +85,11 @@ def categorizations_by_bugFixID(request):
 			pb_fix = '—'
 			
 		context = {'table': table, 'id_value': id_value, 'sha': sha, 'is_func_fix': is_func_fix, 'project': project, \
-                   'category_comment': obj.category_comment, 'cause_comment': obj.cause_comment, 'symptom_comment': obj.symptom_comment, 'fix_comment': obj.fix_comment, \
-                   'pb_category': pb_category, 'pb_cause': pb_cause, 'pb_symptom': pb_symptom, 'pb_fix': pb_fix, 'should_discuss': should_discuss}
+				   'category_comment': obj.category_comment, 'cause_comment': obj.cause_comment, 'symptom_comment': obj.symptom_comment, 'fix_comment': obj.fix_comment, \
+				   'pb_category': pb_category, 'pb_cause': pb_cause, 'pb_symptom': pb_symptom, 'pb_fix': pb_fix, 'should_discuss': should_discuss}
 		return render(request, 'ponder/categorizations_filter1.html', context)
 	except:
-                return HttpResponse('<h1>Page Not Found </h1> <h2>Bug Fix does not exist</h2>', status=404)
+				return HttpResponse('<h1>Page Not Found </h1> <h2>Bug Fix does not exist</h2>', status=404)
 
 @login_required
 def categorizations_by_userID(request):
@@ -118,16 +118,16 @@ def AddCategorization(request):
 	if request.method == 'POST':
 		cat_form = CategorizationForm(request.POST,sha=sha_commits, user = request.user)
 
-		if request.POST.get('is_func_fix')== '1' and request.POST.get('category_text')== '':
+		if request.POST.get('is_func_fix')== 'on' and request.POST.get('category_text')== '':
 			cat_form.fields['problem_category'].required = True
-			if(request.POST.get('problem_category') != 'Unknown' and request.POST.get('problem_category')!='Test' and request.POST.get('problem_category') != 'Other'):
-				if(request.POST.get('cause_text')==''):
-					cat_form.fields['problem_cause'].required = True 
-				elif(request.POST.get('symptom_text')==''):
-					cat_form.fields['problem_symptom'].required = True
-				elif(request.POST.get('fix_text')==''):
-					cat_form.fields['problem_fix'].required = True 
-			cat_form.fields['should_discuss'].required = True 
+			if(not((request.POST.get('problem_category') == '' or request.POST.get('category_text') =='') and (request.POST.get('problem_cause') == '' or request.POST.get('cause_text') =='') and (request.POST.get('problem_fix') == '' or request.POST.get('fix_text') =='') and (request.POST.get('problem_symptom') == '' or request.POST.get('symptom_text') == ''))):
+				if(request.POST.get('problem_category') != '1' and request.POST.get('problem_category')!='2' and request.POST.get('problem_category') != '5'):
+					if(request.POST.get('cause_text')==''):
+						cat_form.fields['problem_cause'].required = True 
+					elif(request.POST.get('symptom_text')==''):
+						cat_form.fields['problem_symptom'].required = True
+					elif(request.POST.get('fix_text')==''):
+						cat_form.fields['problem_fix'].required = True  
 
 		if not ProblemCategory.objects.filter(category=request.POST.get('category_text')).exists() and len(request.POST.get('category_text')):
 			ProblemCategory.objects.create(category=request.POST.get('category_text'),description=request.POST.get('category_description')) 
@@ -266,14 +266,14 @@ def user_login(request):
 		user = authenticate(username=username, password=password)
 		if user:
 			if user.is_active:
-                                login(request,user)
-                                return HttpResponseRedirect(reverse('index'))
+								login(request,user)
+								return HttpResponseRedirect(reverse('index'))
 			else:
-                                return HttpResponse("Your account was inactive.")
+								return HttpResponse("Your account was inactive.")
 		else:
-                        print("Someone tried to login and failed.")
-                        print("They used username: {} and password: {}".format(username,password))
-                        return HttpResponse("Invalid login details given")
+						print("Someone tried to login and failed.")
+						print("They used username: {} and password: {}".format(username,password))
+						return HttpResponse("Invalid login details given")
 	else:
 		return render(request, 'ponder/login.html', {})
 
@@ -300,6 +300,6 @@ class CommitDetailsTableView(LoginRequiredMixin, SingleTableView):
 		return context
 
 class BugFixesTableView(LoginRequiredMixin, SingleTableView):
-    model = BugFix
-    table_class = BugFixesTable
-    template_name = 'ponder/bugfixes_table.html'
+	model = BugFix
+	table_class = BugFixesTable
+	template_name = 'ponder/bugfixes_table.html'
