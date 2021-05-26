@@ -12,11 +12,32 @@ class UserForm(forms.ModelForm):
 		model = User
 		fields = ('username','password','email')
 		
+class SelectWithData(forms.Select):
+	option_data = {}
+
+	def __init__(self, attrs=None, choices=(), option_data={}):
+		super(SelectWithData, self).__init__(attrs, choices)
+		self.option_data = option_data
+
+	def get_context(self, name, value, attrs):
+		context = super(SelectWithData, self).get_context(name, value, attrs)
+		for optgroup in context['widget'].get('optgroups', []):
+			for option in optgroup[1]:
+				if (option['value'] != '' and option['name'] == 'problem_cause'):
+					option['attrs']['title'] = ProblemCause.objects.values().get(id=option['value'].value)['description']
+				if (option['value'] != '' and option['name'] == 'problem_category'):
+					option['attrs']['title'] = ProblemCategory.objects.values().get(id=option['value'].value)['description']
+				if (option['value'] != '' and option['name'] == 'problem_symptom'):
+					option['attrs']['title'] = ProblemSymptom.objects.values().get(id=option['value'].value)['description']
+				if (option['value'] != '' and option['name'] == 'problem_fix'):
+					option['attrs']['title'] = ProblemFix.objects.values().get(id=option['value'].value)['description']
+		return context
+
 class CategorizationForm(forms.ModelForm):
-	problem_category = forms.ModelChoiceField(queryset=ProblemCategory.objects.all(), required=False)
-	problem_cause = forms.ModelChoiceField(queryset=ProblemCause.objects.all(), required=False)
-	problem_fix = forms.ModelChoiceField(queryset=ProblemFix.objects.all(), required=False)
-	problem_symptom = forms.ModelChoiceField(queryset=ProblemSymptom.objects.all(), required=False)
+	problem_category = forms.ModelChoiceField(queryset=ProblemCategory.objects.all(), widget = SelectWithData(), required=False)
+	problem_cause = forms.ModelChoiceField(queryset=ProblemCause.objects.all(), widget = SelectWithData(),required=False)
+	problem_fix = forms.ModelChoiceField(queryset=ProblemFix.objects.all(), widget = SelectWithData(), required=False)
+	problem_symptom = forms.ModelChoiceField(queryset=ProblemSymptom.objects.all(), widget = SelectWithData(), required=False)
 	should_discuss = forms.BooleanField(required=False)
 
 	class Meta():
