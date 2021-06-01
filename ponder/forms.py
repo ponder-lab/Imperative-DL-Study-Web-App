@@ -30,6 +30,7 @@ class SelectWithData(forms.Select):
 					option['attrs']['title'] = ProblemFix.objects.values().get(id=option['value'].value)['description']
 		return context
 
+# TODO: Form validation should happen inside the form class. See https://bit.ly/3uHBXbA, https://bit.ly/34CxnAH, and https://bit.ly/2SHKsWJ.
 class CategorizationForm(forms.ModelForm):
 	problem_category = forms.ModelChoiceField(queryset=ProblemCategory.objects.all(), widget = SelectWithData(), required=False)
 	problem_cause = forms.ModelChoiceField(queryset=ProblemCause.objects.all(), widget = SelectWithData(),required=False)
