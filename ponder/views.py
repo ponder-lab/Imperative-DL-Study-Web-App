@@ -116,10 +116,17 @@ def AddCategorization(request):
 	commit_url = "https://github.com/"+str(project['project'])+"/commit/"+str(sha_commits)
 
 	if request.method == 'POST':
-		cat_form = CategorizationForm(request.POST,sha=sha_commits, user = request.user)
+		cat_form = CategorizationForm(request.POST, sha=sha_commits, user=request.user) # FIXME: Can't make a "new" form.
 
-		if request.POST.get('is_func_fix')== 'on' and request.POST.get('category_text')== '':
-			cat_form.fields['problem_category'].required = True
+		# if this is a tf.function fix and did not enter a new problem category name.
+		if request.POST.get('is_func_fix')== 'on' and request.POST.get('category_text') == '':
+			# In this case, we need to check that they have entered a non-blank problem category from the dropdown menu selection.
+			# If the dropdown menu selection is blank.
+			if request.POST.get['problem_category'] == '':
+				# Now, we have a problem. It's a tf.function fix and we are missing a problem category. We have to fail the validation.
+				# TODO: valid = False. You would raise a ValidationError in your validator.
+				cat_form.fields['problem_category'].required = True # FIXME
+				
 			if(not((request.POST.get('problem_category') == '' or request.POST.get('category_text') =='') and (request.POST.get('problem_cause') == '' or request.POST.get('cause_text') =='') and (request.POST.get('problem_fix') == '' or request.POST.get('fix_text') =='') and (request.POST.get('problem_symptom') == '' or request.POST.get('symptom_text') == ''))):
 				if(request.POST.get('problem_category') != '1' and request.POST.get('problem_category')!='2' and request.POST.get('problem_category') != '5'):
 					if(request.POST.get('cause_text')==''):
@@ -141,7 +148,7 @@ def AddCategorization(request):
 		if not ProblemSymptom.objects.filter(symptom=request.POST.get('symptom_text')).exists() and len(request.POST.get('symptom_text'))>=1:
 			ProblemSymptom.objects.create(symptom=request.POST.get('symptom_text'), description=request.POST.get('symptom_description'))
 
-		if cat_form.is_valid():
+		if cat_form.is_valid(): # FIXME: Can't really rely on Django to tell you this really because the validation is dynamic.
 			categorization = cat_form.save(commit=False)
 			username = User.objects.values('username').filter(id=request.user.id)[0]
 			categorization.categorizer = Categorizer.objects.get(user = username['username'])
@@ -191,12 +198,16 @@ def AddCategorization(request):
 				problem_symptom_id = problem_symptom['id']
 				categorization.problem_symptom=ProblemSymptom.objects.get(id=problem_symptom_id)
 
-			categorization.sha=sha_commits
+			# At this point, we have a good form submission. Let's save the categorization.
+			categorization.sha = sha_commits
 			categorization.save()
+			
+			# Render the succcess message.
 			return HttpResponseRedirect(reverse('ponder:success_categorization', kwargs={'pk': param_sha}))
-		else: 
+		else: # otherwise, we have a problem.
 			print(cat_form.errors)
-	else:
+	else: # It is not a POST.
+		# We just create the form.
 		cat_form = CategorizationForm(request.POST, sha=sha_commits, user = request.user)
 
 	context = {
@@ -206,6 +217,7 @@ def AddCategorization(request):
 		'commit_url': commit_url
 		}
 
+	# Here, we render the form.
 	return render(request,'ponder/categorizations.html',context)
 
 @login_required
