@@ -2,9 +2,6 @@
 from django import forms
 from ponder.models import Categorization, ProblemCategory, ProblemCause, ProblemFix, ProblemSymptom, Commit,Categorizer
 from django.contrib.auth.models import User
-from django.contrib.sessions.models import Session
-from ponder.fields import CategoriesIssuesTextWidget
-from bootstrap_modal_forms.forms import BSModalModelForm
 
 class UserForm(forms.ModelForm):
 	password = forms.CharField(widget=forms.PasswordInput())
@@ -52,54 +49,3 @@ class CategorizationForm(forms.ModelForm):
 		sha = kwargs.pop('sha')
 		user = kwargs.pop('user')
 		super(CategorizationForm,self).__init__(*args,**kwargs)
-
-class ProblemCategoryPopup(BSModalModelForm):
-	category = forms.CharField(max_length=512,required=True)
-	description = forms.CharField(max_length=512,required=False)
-	class Meta:
-		model = ProblemCategory
-		fields = ['category','description']
-
-class ProblemCausePopup(BSModalModelForm):
-	cause = forms.CharField(max_length=512,required=True)
-	description = forms.CharField(max_length=512,required=False)
-	class Meta:
-		model = ProblemCause
-		fields = ['cause','description']
-
-class ProblemSymptomPopup(BSModalModelForm):
-	symptom = forms.CharField(max_length=512,required=True)
-	class Meta:
-		model = ProblemSymptom
-		fields = ['symptom',]
-
-class ProblemFixPopup(BSModalModelForm):
-	fix = forms.CharField(max_length=512,required=True)
-	class Meta:
-		model = ProblemFix
-		fields = ['fix',]
-
-class ProblemCategoryForm(forms.ModelForm):
-	class Meta(): 
-		model = ProblemCategory
-		fields = ('category','description')
-
-class ProblemCausesForm(forms.ModelForm):
-	class Meta(): 
-		model = ProblemCause
-		fields = ('cause','description')
-
-class ProblemFixesForm(forms.ModelForm):
-	class Meta(): 
-		model = ProblemFix
-		fields = ('fix',)
-
-class ProblemSymptomsForm(forms.ModelForm):
-	class Meta(): 
-		model = ProblemSymptom
-		fields = ('symptom',)
-
-class RoundForm(forms.ModelForm):
-	class Meta(): 
-		model = Commit
-		fields = ('rounds',)

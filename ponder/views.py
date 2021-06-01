@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Categorization, User, BugFix, Categorizer, CommitDetail, Commit, Dataset, ProblemCategory, ProblemCause, ProblemFix, ProblemSymptom
 from django.http import Http404
-from ponder.forms import UserForm, CategorizationForm, ProblemCategoryForm, ProblemCausesForm, ProblemFixesForm, ProblemSymptomsForm, RoundForm, ProblemCategoryPopup,ProblemCausePopup,ProblemFixPopup,ProblemSymptomPopup
+from ponder.forms import UserForm, CategorizationForm
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -213,51 +213,6 @@ def success_categorization(request, pk):
 	template = 'ponder/success_form.html'
 	context = {'sha': pk}
 	return render(request, template, context)
-
-class ProblemCategoryCreateView(BSModalCreateView):
-	template_name = 'ponder/popup_prob_cat.html'
-	form_class = ProblemCategoryPopup
-	success_message = 'Success: Problem Category was created.'
-
-	def get_success_url(self, **kwargs):
-		obj = self.kwargs
-		url =  reverse("ponder:categorizations_add")
-		qs = 'commit=%s' % obj['pk']
-		return '?'.join((url,qs))
-
-
-class ProblemCauseCreateView(BSModalCreateView):
-	template_name = 'ponder/popup_prob_cause.html'
-	form_class = ProblemCausePopup
-	success_message = 'Success: Problem Cause was created.'
-
-	def get_success_url(self, **kwargs):
-		obj = self.kwargs
-		url =  reverse("ponder:categorizations_add")
-		qs = 'commit=%s' % obj['pk']
-		return '?'.join((url,qs))
-
-class ProblemSymptomCreateView(BSModalCreateView):
-	template_name = 'ponder/popup_prob_symptom.html'
-	form_class = ProblemSymptomPopup
-	success_message = 'Success: Problem Symptom was created.'
-
-	def get_success_url(self, **kwargs):
-		obj = self.kwargs
-		url =  reverse("ponder:categorizations_add")
-		qs = 'commit=%s' % obj['pk']
-		return '?'.join((url,qs))
-
-class ProblemFixCreateView(BSModalCreateView):
-	template_name = 'ponder/popup_prob_fix.html'
-	form_class = ProblemFixPopup
-	success_message = 'Success: Problem Fix was created.'
-
-	def get_success_url(self, **kwargs):
-		obj = self.kwargs
-		url =  reverse("ponder:categorizations_add")
-		qs = 'commit=%s' % obj['pk']
-		return '?'.join((url,qs))
 
 def user_login(request):
 	if request.method == 'POST':

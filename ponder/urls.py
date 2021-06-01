@@ -12,9 +12,5 @@ urlpatterns=[
     url('bug_fixes/<int:pk>', views.categorizations_by_bugFixID, name='id'),
     path('categorizations/add', views.AddCategorization, name='categorizations_add'),
     url('categorizations', views.categorizations_by_userID, name='categorizations_filter'),
-	path("success_categorization/<str:pk>", views.success_categorization, name='success_categorization'),
-    path('create_prob_category/<str:pk>', views.ProblemCategoryCreateView.as_view(), name='create_problem_category'),
-    path('create_prob_cause/<str:pk>', views.ProblemCauseCreateView.as_view(), name='create_problem_cause'),
-    path('create_prob_symptom/<str:pk>', views.ProblemSymptomCreateView.as_view(), name='create_problem_symptom'),
-    path('create_prob_fix/<str:pk>', views.ProblemFixCreateView.as_view(), name='create_problem_fix'),
+	path("success_categorization/<str:pk>", views.success_categorization, name='success_categorization')
 ]
