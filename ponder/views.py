@@ -49,7 +49,6 @@ def categorizations_by_bugFixID(request):
 		id_value = int(s)
 		id_qs = BugFix.objects.filter(id=id_value)
 		sha = id_qs.values_list('sha', flat=True).get(pk=id_value)
-		fix_details = Categorization.objects.filter(sha=sha)
 		fix_details = Categorization.objects.filter(bug_fix=id_value)
 		table = BugFixes_FilterTable(fix_details)
 		table.paginate(page=request.GET.get("page", 1), per_page=25)
@@ -59,7 +58,7 @@ def categorizations_by_bugFixID(request):
 		project = Commit.objects.values('project').filter(sha=sha)[0]
 		project = str(project['project'])
 		if is_func_fix == False:
-					is_func_fix = '✘'
+			is_func_fix = '✘'
 		else:
 			is_func_fix = '✔'     
 
@@ -89,7 +88,7 @@ def categorizations_by_bugFixID(request):
 				   'pb_category': pb_category, 'pb_cause': pb_cause, 'pb_symptom': pb_symptom, 'pb_fix': pb_fix, 'should_discuss': should_discuss}
 		return render(request, 'ponder/categorizations_filter1.html', context)
 	except:
-				return HttpResponse('<h1>Page Not Found </h1> <h2>Bug Fix does not exist</h2>', status=404)
+		return HttpResponse('<h1>Page Not Found </h1> <h2>Bug Fix does not exist</h2>', status=404)
 
 @login_required
 def categorizations_by_userID(request):
