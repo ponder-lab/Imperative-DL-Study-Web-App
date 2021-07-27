@@ -25,7 +25,7 @@ The app by default connects to our Heroku DB using the settings provided in `set
 
 1) Run the following commands to import a base MySQL dump of the heroku database to your local db: `mysql -u <USERNAME> -p <DATA_BASE_NAME> < sql_dump_file.sql`
 2) Then, in our `settings.py` update our `DATABASE` config value using the below example:
-```aidl
+```python
 DATABASE = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -37,20 +37,23 @@ DATABASE = {
     }
 }
 ```
-3) Finally, we can run the migrate command to have Django update our imported DB with any future updates/changes that were done to our db from our migrate file: `python manage.py migrate`
+3) Finally, we can run the migrate command to have Django update our imported DB with any future updates/changes that were done to our db from our migrate file: 
+```bash
+python manage.py migrate
+```
 
 To get an up to date schema of our DB from Heroku, we can also connect directly to it to fetch a MySQL dump of the DB by running the command below:
+```bash
+mysqldump --no-tablespaces --column-statistics=0 --host=us-cdbr-east-03.cleardb.com --user=be05ffb901b132 --password=3d94000c heroku_4ac11fb2946b4e7 > sql_dump_file.sql
+```
 
-`mysqldump --no-tablespaces --column-statistics=0 --host=us-cdbr-east-03.cleardb.com --user=be05ffb901b132 --password=3d94000c heroku_4ac11fb2946b4e7 > sql_dump_file.sql`
-
-
-- The host, password and username that we used above to connect to our Heroku DB can all be found in our `settings.py` in case it changes in the future.
-
+The host, password and username that we used above to connect to our Heroku DB can all be found in our `settings.py` in case it changes in the future.
 
 ## Admin Account
 
-Username: admin
-
-Password: umjawaRZ7GY5C7Q
+Field | Value
+-- | --
+Username | admin
+Password | umjawaRZ7GY5C7Q
 
 You can use this to register for accounts in the web app that is deployed on Heroku.
