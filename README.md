@@ -7,7 +7,7 @@ https://fathomless-inlet-57767.herokuapp.com
 ### Pre-requisites
 - Ensure Django is set up: https://docs.djangoproject.com/en/3.1/topics/install/
 - Ensure mysql is set up: https://dev.mysql.com/doc/refman/8.0/en/installing.html
-    - Additionally, also ensure `mysql-client` is installed (either via Brew or other methods)
+    - Additionally, also ensure `mysqlclient` is installed (either via Brew or other methods) https://pypi.org/project/mysqlclient/
 - Ensure the below PATH is exported in your environment `export DYLD_LIBRARY_PATH="/usr/local/mysql/lib/"`
 
 ### Run Instructions
