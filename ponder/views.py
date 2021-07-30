@@ -93,10 +93,11 @@ def categorizations_by_bugFixID(request):
 @login_required
 def categorizations_by_userID(request):
 	user = request.user.username
-	print(user)
 	categorizerID = Categorizer.objects.values_list('id', flat=True).filter(user=user)
-	print(categorizerID)
-	name = list(categorizerID)[0]
+	try:
+		name = list(categorizerID)[0]
+	except:
+		return HttpResponse('<h1>Page Not Found </h1> <h2>You have no access to this page</h2>', status=404)	
 	categories = Categorization.objects.filter(categorizer=name)
 	table = Categorizations_FilterTable(categories)
 	table.paginate(page=request.GET.get("page", 1), per_page=25)
