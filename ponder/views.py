@@ -99,6 +99,11 @@ def categorizations_by_userID(request):
 	except:
 		return HttpResponse('<h1>Page Not Found </h1> <h2>You have no access to this page</h2>', status=404)	
 	categories = Categorization.objects.filter(categorizer=name)
+	try:
+		rounds = request.GET['rounds']
+		categories = filter(lambda category: Commit.objects.values_list('rounds', flat=True).filter(sha=category.sha)[0] == int(rounds), categories)
+	except:
+		pass
 	table = Categorizations_FilterTable(categories)
 	table.paginate(page=request.GET.get("page", 1), per_page=25)
 	userID = request.GET['user']
