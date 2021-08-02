@@ -100,8 +100,8 @@ def categorizations_by_userID(request):
 		return HttpResponse('<h1>Page Not Found </h1> <h2>You have no access to this page</h2>', status=404)	
 	categories = Categorization.objects.filter(categorizer=name)
 	try:
-		rounds = request.GET['rounds']
-		categories = filter(lambda category: Commit.objects.values_list('rounds', flat=True).filter(sha=category.sha)[0] == int(rounds), categories)
+		rounds = int(request.GET['rounds'])
+		categories = filter(lambda category: Commit.objects.values_list('rounds', flat=True).filter(sha=category.sha)[0] == rounds, categories)
 	except:
 		pass
 	table = Categorizations_FilterTable(categories)
