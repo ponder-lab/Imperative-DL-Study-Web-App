@@ -25,7 +25,7 @@ SECRET_KEY = '#f)c)#%(9gcx9d27nh_4#1aghrgo$xqgx!kqzk2-()ccwv1mc3'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True # We are currently in dev per #16.
 
-ALLOWED_HOSTS = ['fathomless-inlet-57767.herokuapp.com']
+ALLOWED_HOSTS = ['fathomless-inlet-57767.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
