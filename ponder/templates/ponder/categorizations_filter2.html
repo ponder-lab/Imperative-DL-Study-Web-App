@@ -19,7 +19,7 @@
 	  	</style>
     </head>
     <body>
-    	<h3>Categorizations for user: {{ user.username }}</h3>
+    	<h3>Categorizations for user: {{user.username}}</h3>
 		<form method="get" class="form form-inline" id="round_form">
 			<input type="hidden" name="user" value="{{user.id}}" />
 			<label for="rounds">Rounds: </label>
@@ -30,6 +30,7 @@
 				<option value="3" {% if request.GET.rounds == '3' %} selected {% endif %}>3</option>
 				<option value="4" {% if request.GET.rounds == '4' %} selected {% endif %}>4</option>
 			</select>
+		</form>
 		<div class="container">
         {% render_table table %}
     	</div>
