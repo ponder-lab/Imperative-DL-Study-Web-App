@@ -27,13 +27,10 @@ from bootstrap_modal_forms.generic import BSModalCreateView
 
 def index(request):
 	user = request.user.username
-	categorizerID = Categorizer.objects.values_list('id', flat=True).filter(user=user)
-	try:
-		name = list(categorizerID)[0]
-	except:
-		parts = ['Commits','Bug Fixes']
-	else:
+	if Categorizer.objects.values_list('id', flat=True).filter(user=user).exists():
 		parts = ['Commits','Categorizations','Bug Fixes']
+	else:
+		parts = ['Commits','Bug Fixes']
 	context = {'projects': parts}
 	return render(request, 'ponder/index.html', context)
 
