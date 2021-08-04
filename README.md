@@ -20,6 +20,56 @@ https://fathomless-inlet-57767.herokuapp.com
 - Debug: If the above `localhost:8000` page throws an access error, consider adding `localhost` to `ALLOWED_HOSTS` in the `settings.py` file.
 - Debug: If you run into error regarding `STATIC_ROOT` see: https://github.com/OpenToAllCTF/OTA-University/issues/9 suggestion to change `STATIC_ROOT` assignment to just `/static/`
 
+### Docker
+- Docker Compose should be installed to build the app's container image. 
+- On Windows or Mac systems, install Docker Desktop. It includes Docker Engine, Docker CLI client and Docker Compose.
+- For information on how to install Docker Compose on Linux systems, the instructions are listed in this page: https://docs.docker.com/compose/install/
+- The Docker directory currently includes only two files:
+  - Dockerfile
+  - docker-compose.yml	
+
+- Include the following to the above directory:
+  - manage.py
+  - mysite
+  - ponder
+  - requirements.txt
+
+- This should be the final Docker directory tree: 
+```bash
+    .
+    ├── Dockerfile
+    ├── docker-compose.yml
+    ├── manage.py
+    ├── mysite
+    │   ├── __pycache__
+    │   ├── asgi.py
+    │   ├── settings.py
+    │   ├── urls.py
+    │   └── wsgi.py
+    ├── ponder
+    │   ├── __pycache__
+    │   ├── admin.py
+    │   ├── apps.py
+    │   ├── filters.py
+    │   ├── forms.py
+    │   ├── migrations
+    │   ├── models.py
+    │   ├── static
+    │   ├── tables.py
+    │   ├── templates
+    │   ├── tests.py
+    │   ├── urls.py
+    │   └── views.py
+    └── requirements.txt
+    
+```
+
+To build the Docker image:
+
+- In the terminal, go to the top level directory and run the  command: `docker-compose up`
+- This will build the image on Docker Desktop with multiple containers (web and db containers). Go to http://localhost:8000/ in your browser to view the running app. 
+- To shutdown the services, type `CTRL-C` in the same shell or run `docker-compose down` from another shell.
+
 ### Local DB
 The app by default connects to our Heroku DB using the settings provided in `settings.py`. Run the below command to get a mysql dump of our latest DB from Heroku.
 
