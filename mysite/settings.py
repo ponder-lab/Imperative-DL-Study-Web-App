@@ -90,7 +90,7 @@ DATABASES = {
         'USER': 'be05ffb901b132',
         'PASSWORD': '3d94000c',
         'HOST': 'us-cdbr-east-03.cleardb.com',
-        'OPTIONS': {'ssl_mode': 'DISABLED'}
+      #  'OPTIONS': {'ssl_mode': 'DISABLED'}
     }
 }
 
@@ -159,3 +159,5 @@ LOGIN_URL = '/ponder/user_login/'
 # https://warehouse.python.org/project/whitenoise/
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
