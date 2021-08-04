@@ -68,6 +68,7 @@ To build the Docker image:
 
 - In the terminal, go to the top level directory and run the  command: `docker-compose up`
 - This will build the image on Docker Desktop with multiple containers (web and db containers). Go to http://localhost:8000/ in your browser to view the running app. 
+- You need to add localhost to ALLOWED HOSTS in the settings.py file.
 - To shutdown the services, type `CTRL-C` in the same shell or run `docker-compose down` from another shell.
 
 ### Local DB
