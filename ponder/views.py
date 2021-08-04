@@ -23,6 +23,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 from bootstrap_modal_forms.generic import BSModalCreateView
+from django.db.models import Max
 
 
 def index(request):
@@ -108,11 +109,13 @@ def categorizations_by_userID(request):
 		categories = filter(lambda category: Commit.objects.values_list('rounds', flat=True).filter(sha=category.sha)[0] == int(rounds), categories)
 	elif rounds != '':
 		categories = []
+	maxRound = Commit.objects.aggregate(Max('rounds'))['rounds__max']
+	listOfRounds = range(1, maxRound + 1)
 	table = Categorizations_FilterTable(categories)
 	table.paginate(page=request.GET.get("page", 1), per_page=25)
 	userID = request.GET['user']
 	if userID == str(request.user.id):
-		return render(request, 'ponder/categorizations_filter2.html', {"table":table})
+		return render(request, 'ponder/categorizations_filter2.html', {"table":table, "listOfRounds":listOfRounds})
 	else:
 		return HttpResponse('<h1>Page Not Found </h1> <h2>Categorizations cannot be found or viewed</h2>', status=404)
 
