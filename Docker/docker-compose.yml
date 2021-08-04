@@ -1,0 +1,19 @@
+version: "3.9"
+   
+
+services:
+  db:
+    image: mysql
+
+    environment:
+      - MYSQL_DB=heroku_4ac11fb2946b4e7
+      - MYSQL_ROOT_PASSWORD=3d94000c
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
