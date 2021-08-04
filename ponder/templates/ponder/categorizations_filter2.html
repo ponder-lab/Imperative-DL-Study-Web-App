@@ -25,10 +25,9 @@
 			<label for="rounds">Rounds: </label>
 			<select onchange="this.form.submit()" name="rounds" class="form-control" id="id_rounds">
 				<option value="" {% if not request.GET.rounds or not request.GET.rounds.isnumeric %} selected {% endif %}>---------</option>
-				<option value="1" {% if request.GET.rounds == '1' %} selected {% endif %}>1</option>
-				<option value="2" {% if request.GET.rounds == '2' %} selected {% endif %}>2</option>
-				<option value="3" {% if request.GET.rounds == '3' %} selected {% endif %}>3</option>
-				<option value="4" {% if request.GET.rounds == '4' %} selected {% endif %}>4</option>
+				{% for i in listOfRounds %}
+					<option value='{{i}}' {% if request.GET.rounds == i|slugify %} selected {% endif %}>{{i}}</option>
+				{% endfor %}
 			</select>
 		</form>
 		<div class="container">
