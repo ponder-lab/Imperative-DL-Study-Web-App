@@ -106,12 +106,16 @@ def categorizations_by_userID(request):
 	categories = Categorization.objects.filter(categorizer=name)
 	rounds = request.GET.get('rounds', '')
 	if rounds.isnumeric():
-		categories = filter(lambda category: Commit.objects.values_list('rounds', flat=True).filter(sha=category.sha)[0] == int(rounds), categories)
+		qs = Commit.objects.filter(rounds=rounds)
+		categories = []
+		for p in qs:
+			categories += Categorization.objects.filter(sha=p.sha, categorizer=name)
 	elif rounds != '':
 		categories = []
 	maxRound = Commit.objects.aggregate(Max('rounds'))['rounds__max']
 	listOfRounds = range(1, maxRound + 1)
 	table = Categorizations_FilterTable(categories)
+	table.order_by = "id"
 	table.paginate(page=request.GET.get("page", 1), per_page=25)
 	userID = request.GET['user']
 	if userID == str(request.user.id):
