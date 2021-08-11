@@ -91,7 +91,7 @@ def categorizations_by_bugFixID(request):
 		context = {'table': table, 'id_value': id_value, 'sha': sha, 'is_func_fix': is_func_fix, 'project': project, \
 				   'category_comment': obj.category_comment, 'cause_comment': obj.cause_comment, 'symptom_comment': obj.symptom_comment, 'fix_comment': obj.fix_comment, \
 				   'pb_category': pb_category, 'pb_cause': pb_cause, 'pb_symptom': pb_symptom, 'pb_fix': pb_fix, 'should_discuss': should_discuss}
-		return render(request, 'ponder/categorizations_filter1.html', context)
+		return render(request, 'ponder/categorizations_by_BugFixID.html', context)
 	except:
 		return HttpResponse('<h1>Page Not Found </h1> <h2>Bug Fix does not exist</h2>', status=404)
 
@@ -119,7 +119,7 @@ def categorizations_by_userID(request):
 	table.paginate(page=request.GET.get("page", 1), per_page=25)
 	userID = request.GET['user']
 	if userID == str(request.user.id):
-		return render(request, 'ponder/categorizations_filter2.html', {"table":table, "listOfRounds":listOfRounds})
+		return render(request, 'ponder/categorizations_by_userID.html', {"table":table, "listOfRounds":listOfRounds})
 	else:
 		return HttpResponse('<h1>Page Not Found </h1> <h2>Categorizations cannot be found or viewed</h2>', status=404)
 
