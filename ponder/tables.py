@@ -1,6 +1,8 @@
 import django_tables2 as tables
 from django_tables2 import TemplateColumn
 from .models import Categorization, BugFix, Categorizer, CommitDetail, Commit, Dataset, ProblemCategory, ProblemCause, ProblemFix, ProblemSymptom
+from django.utils.html import format_html
+import re
 
 class CategorizationsTable(tables.Table):
 	class Meta:
@@ -57,6 +59,32 @@ class Categorizations_FilterTable(tables.Table):
 	def render_Round(self, record):
 		rounds = Commit.objects.values_list('rounds', flat=True).filter(sha=record.sha)[0]
 		return rounds
+
+	def render_func_fix_comment(self, value):
+		return self.activateLinks(value)
+
+	def render_category_comment(self, value):
+		return self.activateLinks(value)
+
+	def render_cause_comment(self, value):
+		return self.activateLinks(value)
+	
+	def render_symptom_comment(self, value):
+		return self.activateLinks(value)
+	
+	def render_fix_comment(self, value):
+		return self.activateLinks(value)
+
+	def activateLinks(self, text):
+		pattern = re.compile(r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))")
+		result = ""
+		idx = 0
+		for match in pattern.finditer(text):
+			start, end = match.start(0), match.end(0)
+			result = format_html("{}{}<a href='{}'>{}</a>", result, text[idx:start], text[start:end], text[start:end])
+			idx = end
+		result = format_html("{}{}", result, text[idx:])
+		return result
 
 class BugFixes_FilterTable(tables.Table):
 	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}})
