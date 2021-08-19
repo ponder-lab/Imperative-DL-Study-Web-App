@@ -110,6 +110,21 @@ class BugFixes_FilterTable(tables.Table):
 		exclude = ('bug_fix',)
 		template_name = "django_tables2/bootstrap-responsive.html"
 
+	def render_func_fix_comment(self, value):
+		return activateLinks(value)
+
+	def render_category_comment(self, value):
+		return activateLinks(value)
+
+	def render_cause_comment(self, value):
+		return activateLinks(value)
+	
+	def render_symptom_comment(self, value):
+		return activateLinks(value)
+	
+	def render_fix_comment(self, value):
+		return activateLinks(value)
+
 class DatasetsTable(tables.Table):
 	class Meta:
 		model = Dataset
