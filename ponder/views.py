@@ -24,6 +24,8 @@ from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 from bootstrap_modal_forms.generic import BSModalCreateView
 from django.db.models import Max
+from django.utils.html import format_html
+import re
 
 
 def index(request):
@@ -44,6 +46,18 @@ def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect(reverse('index'))
 
+def activateLinks(text):
+        if text == None:
+                text = '-'
+        pattern = re.compile(r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))")
+        result = ""
+        idx = 0
+        for match in pattern.finditer(text):
+                start, end = match.start(0), match.end(0)
+                result = format_html("{}{}<a href='{}'>{}</a>", result, text[idx:start], text[start:end], text[start:end])
+                idx = end
+        result = format_html("{}{}", result, text[idx:])
+        return result
 
 @login_required
 def categorizations_by_bugFixID(request):
@@ -89,7 +103,7 @@ def categorizations_by_bugFixID(request):
 			pb_fix = '—'
 			
 		context = {'table': table, 'id_value': id_value, 'sha': sha, 'is_func_fix': is_func_fix, 'project': project, \
-				   'category_comment': obj.category_comment, 'cause_comment': obj.cause_comment, 'symptom_comment': obj.symptom_comment, 'fix_comment': obj.fix_comment, \
+				   'category_comment': activateLinks(obj.category_comment), 'cause_comment': activateLinks(obj.cause_comment), 'symptom_comment': activateLinks(obj.symptom_comment), 'fix_comment': activateLinks(obj.fix_comment), \
 				   'pb_category': pb_category, 'pb_cause': pb_cause, 'pb_symptom': pb_symptom, 'pb_fix': pb_fix, 'should_discuss': should_discuss}
 		return render(request, 'ponder/categorizations_by_BugFixID.html', context)
 	except:
