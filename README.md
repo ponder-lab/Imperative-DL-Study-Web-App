@@ -100,6 +100,13 @@ mysqldump --no-tablespaces --column-statistics=0 --host=us-cdbr-east-03.cleardb.
 
 The host, password and username that we used above to connect to our Heroku DB can all be found in our `settings.py` in case it changes in the future.
 
+### Test Database
+1) In `mysite/test_settings.py`, configure the `DATABASE` dictionary values to connect to your local database.
+2) Use this command to run the tests:
+```bash
+python manage.py test ponder --settings=mysite.test_settings
+```
+
 ## Admin Account
 
 Field | Value
