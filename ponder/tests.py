@@ -53,11 +53,12 @@ class AddCategorizationFormTests(TestCase):
     def test_categorizer_not_null(self):
         self.assertIsNotNone(self.newCategorization.categorizer)
 
-    def test_all_entered_fields_exist_in_form(self):
+    def test_all_test_data_fields_exist_in_form(self):
         for field in self.data:
             if len(self.data[field]) >= 1:
                 self.assertTrue(field in self.form.data and len(self.form.data[field]) >= 1)
     
+    # Test that all the test data was correctly populated in the form.
     def test_all_entered_fields_are_stored_correctly_in_form(self):
         for field in self.data:
             if len(self.data[field]) >= 1:
