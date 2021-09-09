@@ -63,7 +63,7 @@ class AddCategorizationFormTests(TestCase):
         for field in self.data:
             if len(self.data[field]) >= 1:
                 self.assertEqual(self.data[field], self.form.data[field])
-        
+    """
     def test_constraints(self):
         if ((self.data.get('is_func_fix') == 'on' 
         or self.data.get('problem_category') == '1' 
@@ -78,3 +78,14 @@ class AddCategorizationFormTests(TestCase):
             self.assertTrue(self.form.is_valid())
         else:
             self.assertFalse(self.form.is_valid())
+    """
+
+    # Check constraint is at https://gist.github.com/khatchad/09f0c8d1ca6e0f23b0b9bbf5c62ac8f9#file-commit_categorizations-sql-L32.
+    
+    """
+    If the func fix is null, then we don't need any of the other fields populated.
+    """
+    def test_null_func_fix:
+        form = CategorizationForm(sha='0000000', data={"is_func_fix": null})
+        self.assert(form.is_valid()) # The form should be valid.
+        self.assert(form.errors["is_func_fix"], []) # There should be no errors.
