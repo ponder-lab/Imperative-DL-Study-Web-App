@@ -146,13 +146,30 @@ def AddCategorization(request):
 	commit_url = "https://github.com/"+str(project['project'])+"/commit/"+str(sha_commits)
 
 	if request.method == 'POST':
-		cat_form = CategorizationForm(request.POST, sha=sha_commits, user=request.user) # FIXME: Can't make a "new" form.
+		request.POST = request.POST.copy()
+		if not ProblemCategory.objects.filter(category=request.POST.get('category_text')).exists() and len(request.POST.get('category_text'))>=1:
+			pb = ProblemCategory.objects.create(category=request.POST.get('category_text'),description=request.POST.get('category_description'))
+			request.POST['problem_category'] = request.POST.get(pb.id)
+
+		if not ProblemCause.objects.filter(cause=request.POST.get('cause_text')).exists() and len(request.POST.get('cause_text'))>=1:
+			pc = ProblemCause.objects.create(cause=request.POST.get('cause_text'), description=request.POST.get('cause_description'))
+			request.POST['problem_cause'] = request.POST.get(pc.id)
+
+		if not ProblemFix.objects.filter(fix=request.POST.get('fix_text')).exists() and len(request.POST.get('fix_text'))>=1:
+			pf = ProblemFix.objects.create(fix=request.POST.get('fix_text'), description=request.POST.get('fix_description'))
+			request.POST['problem_fix'] = request.POST.get(pf.id)
+
+		if not ProblemSymptom.objects.filter(symptom=request.POST.get('symptom_text')).exists() and len(request.POST.get('symptom_text'))>=1:
+			ps = ProblemSymptom.objects.create(symptom=request.POST.get('symptom_text'), description=request.POST.get('symptom_description'))
+			request.POST['problem_symptom'] = request.POST.get(ps.id)
+		
+		cat_form = CategorizationForm(request.POST, sha=sha_commits, user=request.user)
 
 		# if this is a tf.function fix and did not enter a new problem category name.
 		if request.POST.get('is_func_fix')== 'on' and request.POST.get('category_text') == '':
 			# In this case, we need to check that they have entered a non-blank problem category from the dropdown menu selection.
 			# If the dropdown menu selection is blank.
-			if request.POST.get['problem_category'] == '':
+			if request.POST.get('problem_category') == '':
 				# Now, we have a problem. It's a tf.function fix and we are missing a problem category. We have to fail the validation.
 				# TODO: valid = False. You would raise a ValidationError in your validator.
 				cat_form.fields['problem_category'].required = True # FIXME
@@ -165,18 +182,6 @@ def AddCategorization(request):
 						cat_form.fields['problem_symptom'].required = True
 					elif(request.POST.get('fix_text')==''):
 						cat_form.fields['problem_fix'].required = True  
-
-		if not ProblemCategory.objects.filter(category=request.POST.get('category_text')).exists() and len(request.POST.get('category_text')):
-			ProblemCategory.objects.create(category=request.POST.get('category_text'),description=request.POST.get('category_description')) 
-
-		if not ProblemCause.objects.filter(cause=request.POST.get('cause_text')).exists() and len(request.POST.get('cause_text'))>=1:
-			ProblemCause.objects.create(cause=request.POST.get('cause_text'), description=request.POST.get('cause_description'))
-
-		if not ProblemFix.objects.filter(fix=request.POST.get('fix_text')).exists() and len(request.POST.get('fix_text'))>=1:
-			ProblemFix.objects.create(fix=request.POST.get('fix_text'), description=request.POST.get('fix_description'))
-
-		if not ProblemSymptom.objects.filter(symptom=request.POST.get('symptom_text')).exists() and len(request.POST.get('symptom_text'))>=1:
-			ProblemSymptom.objects.create(symptom=request.POST.get('symptom_text'), description=request.POST.get('symptom_description'))
 
 		if cat_form.is_valid(): # FIXME: Can't really rely on Django to tell you this really because the validation is dynamic.
 			categorization = cat_form.save(commit=False)
