@@ -26,6 +26,7 @@ from bootstrap_modal_forms.generic import BSModalCreateView
 from django.db.models import Max
 from django.utils.html import format_html
 import re
+from django.core.exceptions import ValidationError
 
 
 def index(request):
@@ -140,98 +141,59 @@ def categorizations_by_userID(request):
 @login_required
 def AddCategorization(request):
 	param_sha = request.GET.get('commit', '')
-	sha_commits=Commit(sha=param_sha)
+	sha_commits = Commit(sha=param_sha)
 	project = Commit.objects.values('project').filter(sha=param_sha)[0]
 	general_url = "https://github.com/"+str(project['project'])+"/search?q="+str(sha_commits)
 	commit_url = "https://github.com/"+str(project['project'])+"/commit/"+str(sha_commits)
 
 	if request.method == 'POST':
 		request.POST = request.POST.copy()
-		if not ProblemCategory.objects.filter(category=request.POST.get('category_text')).exists() and len(request.POST.get('category_text'))>=1:
-			pb = ProblemCategory.objects.create(category=request.POST.get('category_text'),description=request.POST.get('category_description'))
-			request.POST['problem_category'] = request.POST.get(pb.id)
-
-		if not ProblemCause.objects.filter(cause=request.POST.get('cause_text')).exists() and len(request.POST.get('cause_text'))>=1:
-			pc = ProblemCause.objects.create(cause=request.POST.get('cause_text'), description=request.POST.get('cause_description'))
-			request.POST['problem_cause'] = request.POST.get(pc.id)
-
-		if not ProblemFix.objects.filter(fix=request.POST.get('fix_text')).exists() and len(request.POST.get('fix_text'))>=1:
-			pf = ProblemFix.objects.create(fix=request.POST.get('fix_text'), description=request.POST.get('fix_description'))
-			request.POST['problem_fix'] = request.POST.get(pf.id)
-
-		if not ProblemSymptom.objects.filter(symptom=request.POST.get('symptom_text')).exists() and len(request.POST.get('symptom_text'))>=1:
-			ps = ProblemSymptom.objects.create(symptom=request.POST.get('symptom_text'), description=request.POST.get('symptom_description'))
-			request.POST['problem_symptom'] = request.POST.get(ps.id)
+		cat_form = CategorizationForm(request.POST.get('category_text'), request.POST.get('category_description'), \
+						request.POST.get('cause_text'), request.POST.get('cause_description'), \
+						request.POST.get('fix_text'), request.POST.get('fix_description'), \
+						request.POST.get('symptom_text'), request.POST.get('symptom_description'), \
+						request.POST, sha=sha_commits, user=request.user)	
 		
-		cat_form = CategorizationForm(request.POST, sha=sha_commits, user=request.user)
+		if not ProblemCategory.objects.filter(category=request.POST.get('category_text')).exists() and len(request.POST.get('category_text'))>=1 and (request.POST.get('problem_category') == None or request.POST.get('problem_category') == ''):
+			pb = ProblemCategory.objects.create(category=request.POST.get('category_text'),description=request.POST.get('category_description'))
+			request.POST['problem_category'] = pb.id
+			cat_form.category_text = ''
 
-		# if this is a tf.function fix and did not enter a new problem category name.
-		if request.POST.get('is_func_fix')== 'on' and request.POST.get('category_text') == '':
-			# In this case, we need to check that they have entered a non-blank problem category from the dropdown menu selection.
-			# If the dropdown menu selection is blank.
-			if request.POST.get('problem_category') == '':
-				# Now, we have a problem. It's a tf.function fix and we are missing a problem category. We have to fail the validation.
-				# TODO: valid = False. You would raise a ValidationError in your validator.
-				cat_form.fields['problem_category'].required = True # FIXME
-				
-			if(not((request.POST.get('problem_category') == '' or request.POST.get('category_text') =='') and (request.POST.get('problem_cause') == '' or request.POST.get('cause_text') =='') and (request.POST.get('problem_fix') == '' or request.POST.get('fix_text') =='') and (request.POST.get('problem_symptom') == '' or request.POST.get('symptom_text') == ''))):
-				if(request.POST.get('problem_category') != '1' and request.POST.get('problem_category')!='2' and request.POST.get('problem_category') != '5'):
-					if(request.POST.get('cause_text')==''):
-						cat_form.fields['problem_cause'].required = True 
-					elif(request.POST.get('symptom_text')==''):
-						cat_form.fields['problem_symptom'].required = True
-					elif(request.POST.get('fix_text')==''):
-						cat_form.fields['problem_fix'].required = True  
+		elif ProblemCategory.objects.filter(category=request.POST.get('category_text')).exists() and len(request.POST.get('category_text'))>=1 and (request.POST.get('problem_category') == None or request.POST.get('problem_category') == ''):
+			request.POST['problem_category'] = str(ProblemCategory.objects.get(category=request.POST.get('category_text')).id)
+			cat_form.category_text = ''
 
-		if cat_form.is_valid(): # FIXME: Can't really rely on Django to tell you this really because the validation is dynamic.
+		if not ProblemCause.objects.filter(cause=request.POST.get('cause_text')).exists() and len(request.POST.get('cause_text'))>=1 and (request.POST.get('problem_cause') == None or request.POST.get('problem_cause') == ''):
+			pc = ProblemCause.objects.create(cause=request.POST.get('cause_text'), description=request.POST.get('cause_description'))
+			request.POST['problem_cause'] = pc.id
+			cat_form.cause_text = ''
+
+		elif ProblemCause.objects.filter(cause=request.POST.get('cause_text')).exists() and len(request.POST.get('cause_text'))>=1 and (request.POST.get('problem_cause') == None or request.POST.get('problem_cause') == ''):
+			request.POST['problem_cause'] = str(ProblemCause.objects.get(cause=request.POST.get('cause_text')).id)
+			cat_form.cause_text = ''
+
+		if not ProblemSymptom.objects.filter(symptom=request.POST.get('symptom_text')).exists() and len(request.POST.get('symptom_text'))>=1 and (request.POST.get('problem_symptom') == None or request.POST.get('problem_symptom') == ''):
+			ps = ProblemSymptom.objects.create(symptom=request.POST.get('symptom_text'), description=request.POST.get('symptom_description'))
+			request.POST['problem_symptom'] = ps.id
+			cat_form.symptom_text = ''
+
+		elif ProblemSymptom.objects.filter(symptom=request.POST.get('symptom_text')).exists() and len(request.POST.get('symptom_text'))>=1 and (request.POST.get('problem_symptom') == None or request.POST.get('problem_symptom') == ''):
+			request.POST['problem_symptom'] = str(ProblemSymptom.objects.get(symptom=request.POST.get('symptom_text')).id)
+			cat_form.symptom_text = ''
+
+		if not ProblemFix.objects.filter(fix=request.POST.get('fix_text')).exists() and len(request.POST.get('fix_text'))>=1 and (request.POST.get('problem_fix') == None or request.POST.get('problem_fix') == ''):
+			pf = ProblemFix.objects.create(fix=request.POST.get('fix_text'), description=request.POST.get('fix_description'))
+			request.POST['problem_fix'] = pf.id
+			cat_form.fix_text = ''
+
+		elif ProblemFix.objects.filter(fix=request.POST.get('fix_text')).exists() and len(request.POST.get('fix_text'))>=1 and (request.POST.get('problem_fix') == None or request.POST.get('problem_fix') == ''):
+			request.POST['problem_fix'] = str(ProblemFix.objects.get(fix=request.POST.get('fix_text')).id)
+			cat_form.fix_text = ''
+
+		if cat_form.is_valid(): 
 			categorization = cat_form.save(commit=False)
 			username = User.objects.values('username').filter(id=request.user.id)[0]
 			categorization.categorizer = Categorizer.objects.get(user = username['username'])
-
-			if not cat_form.cleaned_data['problem_category'] and not request.POST.get('category_text'): 
-				categorization.problem_category = None
-			elif not cat_form.cleaned_data['problem_category']:
-				problem_category = ProblemCategory.objects.values('id').filter(category=request.POST.get('category_text'))[0]
-				problem_category_id = problem_category['id']
-				categorization.problem_category=ProblemCategory.objects.get(id=problem_category_id)
-			else: 
-				problem_category = ProblemCategory.objects.values('id').filter(category=cat_form.cleaned_data['problem_category'])[0]
-				problem_category_id = problem_category['id']
-				categorization.problem_category=ProblemCategory.objects.get(id=problem_category_id)
-
-			if not cat_form.cleaned_data['problem_cause'] and not request.POST.get('cause_text'): 
-				categorization.problem_cause = None
-			elif not cat_form.cleaned_data['problem_cause']:
-				problem_cause = ProblemCause.objects.values('id').filter(cause=request.POST.get('cause_text'))[0]
-				problem_cause_id = problem_cause['id']
-				categorization.problem_cause=ProblemCause.objects.get(id=problem_cause_id)
-			else: 
-				problem_cause = ProblemCause.objects.values('id').filter(cause=cat_form.cleaned_data['problem_cause'])[0]
-				problem_cause_id = problem_cause['id']
-				categorization.problem_cause=ProblemCause.objects.get(id=problem_cause_id)
-
-			if not cat_form.cleaned_data['problem_fix'] and not request.POST.get('fix_text'): 
-				categorization.problem_fix = None
-			elif not cat_form.cleaned_data['problem_fix']:
-				print(request.POST.get('fix_text'))
-				problem_fix = ProblemFix.objects.values('id').filter(fix=request.POST.get('fix_text'))[0]
-				problem_fix_id = problem_fix['id']
-				categorization.problem_fix=ProblemFix.objects.get(id=problem_fix_id)
-			else:
-				problem_fix = ProblemFix.objects.values('id').filter(fix=cat_form.cleaned_data['problem_fix'])[0]
-				problem_fix_id = problem_fix['id']
-				categorization.problem_fix=ProblemFix.objects.get(id=problem_fix_id)
-
-			if not cat_form.cleaned_data['problem_symptom'] and not request.POST.get('symptom_text'): 
-				categorization.problem_symptom = None
-			elif not cat_form.cleaned_data['problem_symptom']: 
-				problem_symptom = ProblemSymptom.objects.values('id').filter(symptom=request.POST.get('symptom_text'))[0]
-				problem_symptom_id = problem_symptom['id']
-				categorization.problem_symptom=ProblemSymptom.objects.get(id=problem_symptom_id)
-			else: 
-				problem_symptom = ProblemSymptom.objects.values('id').filter(symptom=cat_form.cleaned_data['problem_symptom'])[0]
-				problem_symptom_id = problem_symptom['id']
-				categorization.problem_symptom=ProblemSymptom.objects.get(id=problem_symptom_id)
 
 			# At this point, we have a good form submission. Let's save the categorization.
 			categorization.sha = sha_commits
@@ -240,10 +202,15 @@ def AddCategorization(request):
 			# Render the succcess message.
 			return HttpResponseRedirect(reverse('ponder:success_categorization', kwargs={'pk': param_sha}))
 		else: # otherwise, we have a problem.
-			print(cat_form.errors)
+			print(cat_form.errors.as_data())
+					
 	else: # It is not a POST.
 		# We just create the form.
-		cat_form = CategorizationForm(request.POST, sha=sha_commits, user = request.user)
+		cat_form = CategorizationForm(request.POST.get('category_text'), request.POST.get('category_description'), \
+						request.POST.get('cause_text'), request.POST.get('cause_description'), \
+						request.POST.get('fix_text'), request.POST.get('fix_description'), \
+						request.POST.get('symptom_text'), request.POST.get('symptom_description'), \
+						request.POST, sha=sha_commits, user=request.user)
 
 	context = {
 		'cat_form': cat_form,
