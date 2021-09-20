@@ -24,6 +24,14 @@
           margin: auto 0 0;
           height: 56px;
         }
+        }
+        .error{
+          margin: 10px 0px;
+          padding: 5px;
+          width: 100%;
+          font-size: medium;
+          color: #D8000C;          
+        }
       </style>
     {% endblock stylesheets %}
 
@@ -63,11 +71,17 @@
             {% for hidden_field in cat_form.hidden_fields %}
               {{ hidden_field }}
             {% endfor %}
+            {% if cat_form.errors %}
+              <div class="error">{{cat_form.non_field_errors}}</div>
+            {% endif %}
             {% for field in cat_form.visible_fields %}
               <div class="form-group">
                 {{ field.label_tag }}
                 {% if field.name == "is_func_fix" or field.name == "should_discuss" %}
                 {% render_field field %}
+                {% if field.name == "is_func_fix" and cat_form.errors.is_func_fix|length%}
+                  <div class="error">{{cat_form.errors.is_func_fix}}</div>
+                {% endif %}
                 {% else %}
                   {% render_field field class="form-control" %}
                   {% if field.name == "problem_category" %}
@@ -77,6 +91,9 @@
                       </div>
                     </div>
                     <p>Or, create new category: <input name="category_text" type="text"/>Description:<input name="category_description" type="text"/></p>
+                  {% if cat_form.errors.problem_category|length %}
+                    <div class="error">{{cat_form.errors.problem_category}}</div>
+                  {% endif %}
                   {% endif %}  
                   {% if field.name == "problem_cause" %}
                     <div class="modal fade" tabindex="-1" role="dialog" id="modal">
@@ -85,6 +102,9 @@
                       </div>
                     </div>
                     <p>Or, create new cause: <input name="cause_text" type="text"/>Description:<input name="cause_description" type="text"/></p>
+                  {% if cat_form.errors.problem_cause|length%}
+                  <div class="error">{{cat_form.errors.problem_cause}}</div>
+                  {% endif %}
                   {% endif %}
                   {% if field.name == "problem_fix" %}
                     <div class="modal fade" tabindex="-1" role="dialog" id="modal">
@@ -93,6 +113,9 @@
                       </div>
                     </div>
                     <p>Or, create new fix: <input name="fix_text" type="text"/>Description:<input name="fix_description" type="text"/></p>
+                   {% if cat_form.errors.problem_fix|length%}
+                  <div class="error">{{cat_form.errors.problem_fix}}</div>
+                  {% endif %}
                   {% endif %}  
                   {% if field.name == "problem_symptom" %}
                     <div class="modal fade" tabindex="-1" role="dialog" id="modal">
@@ -101,6 +124,9 @@
                       </div>
                     </div>
                   <p>Or, create new symptom: <input name="symptom_text" type="text"/>Description:<input name="symptom_description" type="text"/></p>
+                   {% if cat_form.errors.problem_symptom|length%}
+                  <div class="error">{{cat_form.errors.problem_symptom}}</div>
+                  {% endif %}
                   {% endif %}  
                 {% endif %} 
                 {% if field.help_text %}
