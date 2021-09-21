@@ -31,11 +31,13 @@ class AddCategorizationFormTests(TestCase):
         #self.newCategorization = Categorization.objects.all()[0]
 
     def test_sha_not_null(self):
-        form = CategorizationForm(sha=None, data={}, user='testUser')
+        form = CategorizationForm(category_text='', category_description='', cause_text='', cause_description='',fix_text='',fix_description='', \
+            symptom_text='', symptom_description='',sha=None, data={}, user='testUser')
         self.assertFalse(form.is_valid()) # The form should not be valid because sha is null
 
     def test_categorizer_not_null(self):
-        form = CategorizationForm(sha='0000000', data={}, user=None)
+        form = CategorizationForm(category_text='', category_description='', cause_text='', cause_description='',fix_text='',fix_description='', \
+            symptom_text='',symptom_description='',sha='0000000', data={}, user=None)
         self.assertFalse(form.is_valid()) # The form should not be valid because categorizer is null
 
     #Test that all the fields in test data exist in the form
@@ -52,7 +54,8 @@ class AddCategorizationFormTests(TestCase):
             "fix_comment": "test",
             "should_discuss": True
         }
-        form = CategorizationForm(sha='0000000', data=data, user='testUser')
+        form = CategorizationForm(category_text='', category_description='', cause_text='', cause_description='',fix_text='',fix_description='', \
+            symptom_text='', symptom_description='',sha='0000000', data=data, user='testUser')
         for field in data:
             self.assertIn(field, form.data)
     
@@ -70,32 +73,37 @@ class AddCategorizationFormTests(TestCase):
             "fix_comment": "test",
             "should_discuss": True
         }
-        form = CategorizationForm(sha='0000000', data=data, user='testUser')
+        form = CategorizationForm(category_text='', category_description='', cause_text='', cause_description='',fix_text='',fix_description='', \
+            symptom_text='', symptom_description='',sha='0000000', data=data, user='testUser')
         for field in data:
             self.assertEqual(data[field], form.data[field])
 
     # Check constraint is at https://gist.github.com/khatchad/09f0c8d1ca6e0f23b0b9bbf5c62ac8f9#file-commit_categorizations-sql-L32.
     #If the func fix is null, then we don't need any of the other fields populated.
     def test_null_func_fix(self):
-        form = CategorizationForm(sha='0000000', data={"is_func_fix": None}, user='testUser')
+        form = CategorizationForm(category_text='', category_description='', cause_text='', cause_description='',fix_text='',fix_description='', \
+            symptom_text='', symptom_description='',sha='0000000', data={"is_func_fix": None}, user='testUser')
         self.assertTrue(form.is_valid()) # The form should be valid.
         self.assertNotIn("is_func_fix", form.errors) # There should be no errors.
 
     #If the id of the problem category is 1, then we don't need any of the other fields populated.
     def test_problem_category_id_1(self):
-        form = CategorizationForm(sha='0000000', data={"problem_category": "1"}, user='testUser')
+        form = CategorizationForm(category_text='', category_description='', cause_text='', cause_description='',fix_text='',fix_description='', \
+            symptom_text='', symptom_description='',sha='0000000', data={"is_func_fix": True, "problem_category": "1"}, user='testUser')
         self.assertTrue(form.is_valid()) # The form should be valid.
         self.assertNotIn("problem_category", form.errors) # There should be no errors.
 
     #If the id of the problem category is 2, then we don't need any of the other fields populated.
     def test_problem_category_id_2(self):
-        form = CategorizationForm(sha='0000000', data={"problem_category": "2"}, user='testUser')
+        form = CategorizationForm(category_text='', category_description='', cause_text='', cause_description='',fix_text='',fix_description='', \
+            symptom_text='', symptom_description='',sha='0000000', data={"is_func_fix": True, "problem_category": "2"}, user='testUser')
         self.assertTrue(form.is_valid()) # The form should be valid.
         self.assertNotIn("problem_category", form.errors) # There should be no errors.
 
     #If the id of the problem category is 5, then we don't need any of the other fields populated.
     def test_problem_category_id_5(self):
-        form = CategorizationForm(sha='0000000', data={"problem_category": "5"}, user='testUser')
+        form = CategorizationForm(category_text='', category_description='', cause_text='', cause_description='',fix_text='',fix_description='', \
+            symptom_text='', symptom_description='',sha='0000000', data={"is_func_fix": True, "problem_category": "5"}, user='testUser')
         self.assertTrue(form.is_valid()) # The form should be valid.
         self.assertNotIn("problem_category", form.errors) # There should be no errors.
  
@@ -114,7 +122,8 @@ class AddCategorizationFormTests(TestCase):
             "problem_fix": "1",
             "should_discuss": True
         }
-        form = CategorizationForm(sha='0000000', data=data, user='testUser')
+        form = CategorizationForm(category_text='', category_description='', cause_text='', cause_description='',fix_text='',fix_description='', \
+            symptom_text='', symptom_description='',sha='0000000', data=data, user='testUser')
         self.assertTrue(form.is_valid()) # The form should be valid
         self.assertEqual(form.errors, {}) # There should be no errors
 
@@ -127,9 +136,10 @@ class AddCategorizationFormTests(TestCase):
             "problem_fix": "1",
             "should_discuss": True
         }
-        form = CategorizationForm(sha='0000000', data=data, user='testUser')
+        form = CategorizationForm(category_text='', category_description='', cause_text='', cause_description='',fix_text='',fix_description='', \
+            symptom_text='', symptom_description='',sha='0000000', data=data, user='testUser')
         self.assertFalse(form.is_valid()) # The form should not be valid because is func fix is not null and problem category is null
-        self.assertEqual(form.errors["problem_category"], ["Problem category can not be null."])
+        self.assertEqual(form.errors["problem_category"], ['This field is required. Select an existing problem category or enter a new one.'])
     
     #Case when is func fix is not null, problem caretegory id is not 1, 2 or 5, and problem cause is missing
     def test_problem_cause_not_null(self):
@@ -140,9 +150,10 @@ class AddCategorizationFormTests(TestCase):
             "problem_fix": "1",
             "should_discuss": True
         }
-        form = CategorizationForm(sha='0000000', data=data, user='testUser')
+        form = CategorizationForm(category_text='', category_description='', cause_text='', cause_description='',fix_text='',fix_description='', \
+            symptom_text='', symptom_description='',sha='0000000', data=data, user='testUser')
         self.assertFalse(form.is_valid()) # The form should not be valid because problem cause is missing
-        self.assertEqual(form.errors["problem_cause"], ["Problem cause can not be null."])
+        self.assertEqual(form.errors["problem_cause"], ['This field is required. Select an existing problem cause or enter a new one.'])
 
     #Case when is func fix is not null, problem caretegory id is not 1, 2 or 5, and problem symptom is missing
     def test_problem_symptom_not_null(self):
@@ -153,9 +164,10 @@ class AddCategorizationFormTests(TestCase):
             "problem_fix": "1",
             "should_discuss": True
         }
-        form = CategorizationForm(sha='0000000', data=data, user='testUser')
+        form = CategorizationForm(category_text='', category_description='', cause_text='', cause_description='',fix_text='',fix_description='', \
+            symptom_text='', symptom_description='',sha='0000000', data=data, user='testUser')
         self.assertFalse(form.is_valid()) # The form should not be valid because problem symptom is missing
-        self.assertEqual(form.errors["problem_symptom"], ["Problem symptom can not be null."])
+        self.assertEqual(form.errors["problem_symptom"], ['This field is required. Select an existing problem symptom or enter a new one.'])
 
     #Case when is func fix is not null, problem caretegory id is not 1, 2 or 5, and problem fix is missing
     def test_problem_fix_not_null(self):
@@ -166,9 +178,10 @@ class AddCategorizationFormTests(TestCase):
             "problem_symptom": "1",
             "should_discuss": True
         }
-        form = CategorizationForm(sha='0000000', data=data, user='testUser')
+        form = CategorizationForm(category_text='', category_description='', cause_text='', cause_description='',fix_text='',fix_description='', \
+            symptom_text='', symptom_description='',sha='0000000', data=data, user='testUser')
         self.assertFalse(form.is_valid()) # The form should not be valid because problem fix is missing
-        self.assertEqual(form.errors["problem_fix"], ["Problem fix can not be null."])
+        self.assertEqual(form.errors["problem_fix"], ['This field is required. Select an existing problem fix or enter a new one.'])
 
     #Case when is func fix is not null, problem caretegory id is not 1, 2 or 5, and should discuss is missing
     def test_should_discuss_not_null(self):
@@ -179,6 +192,7 @@ class AddCategorizationFormTests(TestCase):
             "problem_symptom": "1",
             "problem_fix": "1"
         }
-        form = CategorizationForm(sha='0000000', data=data, user='testUser')
+        form = CategorizationForm(category_text='', category_description='', cause_text='', cause_description='',fix_text='',fix_description='', \
+            symptom_text='', symptom_description='',sha='0000000', data=data, user='testUser')
         self.assertFalse(form.is_valid()) # The form should not be valid because should dicuss is missing
         self.assertEqual(form.errors["should_dicuss"], ["Should_discuss can not be null."])
