@@ -196,3 +196,32 @@ class AddCategorizationFormTests(TestCase):
             symptom_text='', symptom_description='',sha='0000000', data=data, user='testUser')
         self.assertFalse(form.is_valid()) # The form should not be valid because should dicuss is missing
         self.assertEqual(form.errors["should_dicuss"], ["Should_discuss can not be null."])
+
+    #issue: https://github.com/ponder-lab/Imperative-DL-Study-Web-App/issues/103
+    #Case when an existing category is selected and a new category is entered
+    def test_problem_category_not_selected_and_entered(self):
+        form = CategorizationForm(category_text='test', category_description='', cause_text='', cause_description='',fix_text='',fix_description='', \
+            symptom_text='', symptom_description='',sha='0000000', data={"is_func_fix": True, "problem_category": "1"}, user='testUser')
+        self.assertFalse(form.is_valid()) # The form should not be valid.
+        self.assertEqual(form.errors["problem_category"], ["Choose only one option. Either select an existing problem category or enter a new one."])
+
+    #Case when an existing problem cause is selected and a new problem cause is entered
+    def test_problem_cause_not_selected_and_entered(self):
+        form = CategorizationForm(category_text='', category_description='', cause_text='test', cause_description='',fix_text='',fix_description='', \
+            symptom_text='', symptom_description='',sha='0000000', data={"is_func_fix": True, "problem_cause": "1"}, user='testUser')
+        self.assertFalse(form.is_valid()) # The form should not be valid.
+        self.assertEqual(form.errors["problem_cause"], ["Choose only one option. Either select an existing problem cause or enter a new one."])
+
+    #Case when an existing problem symptom is selected and a new problem symptom is entered
+    def test_problem_symptom_not_selected_and_entered(self):
+        form = CategorizationForm(category_text='', category_description='', cause_text='', cause_description='',fix_text='',fix_description='', \
+            symptom_text='test', symptom_description='',sha='0000000', data={"is_func_fix": True, "problem_symptom": "1"}, user='testUser')
+        self.assertFalse(form.is_valid()) # The form should not be valid.
+        self.assertEqual(form.errors["problem_symptom"], ["Choose only one option. Either select an existing problem symptom or enter a new one."])
+
+    #Case when an existing problem fix is selected and a new problem fix is entered
+    def test_problem_fix_not_selected_and_entered(self):
+        form = CategorizationForm(category_text='', category_description='', cause_text='', cause_description='',fix_text='test',fix_description='', \
+            symptom_text='', symptom_description='',sha='0000000', data={"is_func_fix": True, "problem_fix": "1"}, user='testUser')
+        self.assertFalse(form.is_valid()) # The form should not be valid.
+        self.assertEqual(form.errors["problem_fix"], ["Choose only one option. Either select an existing problem fix or enter a new one."])
