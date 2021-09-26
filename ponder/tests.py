@@ -3,7 +3,6 @@ import django
 django.setup()
 
 from ponder.models import Categorization, Categorizer, Commit, Dataset, ProblemCategory, ProblemCause, ProblemSymptom, ProblemFix
-#from django.test import Client
 from django.contrib.auth.models import User
 from ponder.forms import CategorizationForm
 # Create your tests here.
@@ -11,10 +10,6 @@ from ponder.forms import CategorizationForm
 class AddCategorizationFormTests(TestCase):
     @classmethod
     def setUpTestData(self):
-        #user = User.objects.create_user(username='testUser', password='testPassword')
-        #newCategorizer = Categorizer.objects.create(name='test', initials='t', user='testUser')
-        #newDataset = Dataset.objects.create()
-        #newCommit = Commit.objects.create(sha='00f703fb6796b52c8f925ff105f058981f91cb02', dataset=newDataset)
         newCategory1 = ProblemCategory.objects.create(category='category1', description='test')
         newCategory2 = ProblemCategory.objects.create(category='category2', description='test')
         newCategory3 = ProblemCategory.objects.create(category='category3', description='test')
@@ -23,12 +18,6 @@ class AddCategorizationFormTests(TestCase):
         newCause = ProblemCause.objects.create(cause='test', description='test')
         newSymptom = ProblemSymptom.objects.create(symptom='test', description='test')
         newFix = ProblemFix.objects.create(fix='test', description='test')
-        #self.data = test_cases[0]
-        #self.client = Client()
-        #self.client.login(username='testUser', password='testPassword')
-        #self.form = CategorizationForm(data=self.data, sha='00f703fb6796b52c8f925ff105f058981f91cb02', user='testUser')
-        #self.client.post("/ponder/categorizations/add?commit=00f703fb6796b52c8f925ff105f058981f91cb02", self.data)
-        #self.newCategorization = Categorization.objects.all()[0]
 
     def test_sha_not_null(self):
         form = CategorizationForm(category_text='', category_description='', cause_text='', cause_description='',fix_text='',fix_description='', \
