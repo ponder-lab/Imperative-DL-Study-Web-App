@@ -225,3 +225,17 @@ class AddCategorizationFormTests(TestCase):
             symptom_text='', symptom_description='',sha='0000000', data={"is_func_fix": True, "problem_fix": "1"}, user='testUser')
         self.assertFalse(form.is_valid()) # The form should not be valid.
         self.assertEqual(form.errors["problem_fix"], ["Choose only one option. Either select an existing problem fix or enter a new one."])
+
+    #Case when there is a problem category but func fix is false
+    def test_category_not_null_and_func_fix_null(self):
+        form = CategorizationForm(category_text='', category_description='', cause_text='', cause_description='',fix_text='test',fix_description='', \
+            symptom_text='', symptom_description='',sha='0000000', data={"is_func_fix": False, "problem_category": "1"}, user='testUser')
+        self.assertFalse(form.is_valid()) # The form should not be valid.
+        self.assertEqual(form.errors["is_func_fix"], ["This field should be checked. An existing problem category indicates a bug fix."])
+    
+    #Case when there is a problem category text but func fix is false
+    def test_category_text_not_null_and_func_fix_null(self):
+        form = CategorizationForm(category_text='test', category_description='', cause_text='', cause_description='',fix_text='test',fix_description='', \
+            symptom_text='', symptom_description='',sha='0000000', data={"is_func_fix": False}, user='testUser')
+        self.assertFalse(form.is_valid()) # The form should not be valid.
+        self.assertEqual(form.errors["is_func_fix"], ["This field should be checked. An existing problem category indicates a bug fix."])
