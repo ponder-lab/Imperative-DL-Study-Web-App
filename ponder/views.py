@@ -5,7 +5,7 @@ from django.http import Http404
 from ponder.forms import UserForm, CategorizationForm
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.views.generic import ListView
 from django_tables2 import SingleTableView
 from .tables import Categorizations_FilterTable, BugFixes_FilterTable, CategorizationsTable, BugFixesTable, CategorizersTable, CommitDetailsTable, CommitsTable, DatasetsTable, ProblemCategoriesTable, ProblemCausesTable, ProblemFixesTable, ProblemSymptomsTable
@@ -19,7 +19,7 @@ from django_tables2 import RequestConfig
 from django.views.generic.base import TemplateView
 from django.views.generic import ListView, CreateView, UpdateView
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 from bootstrap_modal_forms.generic import BSModalCreateView
@@ -27,15 +27,26 @@ from django.db.models import Max
 from django.utils.html import format_html
 import re
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import Group
 
 
 def index(request):
 	user = request.user.username
+	if request.user.pk in [1, 11, 14]:
+		groups = ['Admin', 'Reconciler', 'Categorizer']
+	else:
+		groups = ['Categorizer']
+
+	if 'role' in request.GET:
+		selected_role = request.GET['role']
+		gp = Group.objects.get(name=selected_role)
+		request.user.groups.clear()
+		request.user.groups.add(gp)
 	if Categorizer.objects.values_list('id', flat=True).filter(user=user).exists():
 		parts = ['Commits','Categorizations','Bug Fixes']
 	else:
 		parts = ['Commits','Bug Fixes']
-	context = {'projects': parts}
+	context = {'projects': parts, 'groups': groups}
 	return render(request, 'ponder/index.html', context)
 
 @login_required
@@ -61,6 +72,7 @@ def activateLinks(text):
         return result
 
 @login_required
+@permission_required('ponder.view_bugfix', login_url='/ponder/forbidden/')
 def categorizations_by_bugFixID(request):
 	try:
 		s = request.path_info
@@ -111,6 +123,7 @@ def categorizations_by_bugFixID(request):
 		return HttpResponse('<h1>Page Not Found </h1> <h2>Bug Fix does not exist</h2>', status=404)
 
 @login_required
+@permission_required('ponder.view_categorization', login_url='/ponder/forbidden/')
 def categorizations_by_userID(request):
 	user = request.user.username
 	categorizerID = Categorizer.objects.values_list('id', flat=True).filter(user=user)
@@ -139,6 +152,7 @@ def categorizations_by_userID(request):
 		return HttpResponse('<h1>Page Not Found </h1> <h2>Categorizations cannot be found or viewed</h2>', status=404)
 
 @login_required
+@permission_required(['ponder.add_categorization', 'ponder.add_problemcategory', 'ponder.add_problemcause'], login_url='/ponder/forbidden/')
 def AddCategorization(request):
 	param_sha = request.GET.get('commit', '')
 	sha_commits = Commit(sha=param_sha)
@@ -223,10 +237,15 @@ def AddCategorization(request):
 	return render(request,'ponder/categorizations.html',context)
 
 @login_required
+@permission_required('ponder.add_categorization', login_url='/ponder/forbidden/')
 def success_categorization(request, pk):
 	template = 'ponder/success_form.html'
 	context = {'sha': pk}
 	return render(request, template, context)
+
+@login_required
+def permission_denied(request):
+	return HttpResponse('<h1>Permission denied</h1> <h2>You have no permission to view or edit this content</h2>', status=403)
 
 def user_login(request):
 	if request.method == 'POST':
@@ -246,15 +265,17 @@ def user_login(request):
 	else:
 		return render(request, 'ponder/login.html', {})
 
-class CommitsTableView(LoginRequiredMixin, SingleTableMixin, FilterView):
+class CommitsTableView(LoginRequiredMixin, PermissionRequiredMixin, SingleTableMixin, FilterView):
 	login_url = 'ponder:user_login'
+	permission_required = 'ponder.view_commit'
 	model = Commit
 	table_class = CommitsTable
 	template_name = 'ponder/commits_table.html'
 	filterset_class = RoundFilter
 
-class CommitDetailsTableView(LoginRequiredMixin, SingleTableView):
+class CommitDetailsTableView(LoginRequiredMixin, PermissionRequiredMixin, SingleTableView):
 	login_url = 'ponder:user_login'
+	permission_required = 'ponder.view_commitdetail'
 	model = CommitDetail
 	table_class = CommitDetailsTable
 	template_name = 'ponder/commit_details_table.html'
@@ -268,7 +289,8 @@ class CommitDetailsTableView(LoginRequiredMixin, SingleTableView):
 		context['sha'] = Commit.objects.values('sha').filter(id=self.kwargs['pk'])[0]['sha']
 		return context
 
-class BugFixesTableView(LoginRequiredMixin, SingleTableView):
+class BugFixesTableView(LoginRequiredMixin, PermissionRequiredMixin, SingleTableView):
+	permission_required = 'ponder.view_bugfix'
 	model = BugFix
 	table_class = BugFixesTable
 	template_name = 'ponder/bugfixes_table.html'
