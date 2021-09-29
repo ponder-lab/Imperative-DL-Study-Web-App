@@ -63,6 +63,12 @@ class CategorizationForm(forms.ModelForm):
 		if self['is_func_fix'].value() == False:
 			if (self['problem_category'].value() != None and self['problem_category'].value() != '') or (self.category_text != '' and self.category_text != None):
 				raise ValidationError("This field should be checked. An existing problem category indicates a bug fix.")
+			if (self['problem_cause'].value() != None and self['problem_cause'].value() != '') or (self.cause_text != '' and self.cause_text != None):
+				raise ValidationError("This field should be checked. An existing problem cause indicates a bug fix.")
+			if (self['problem_symptom'].value() != None and self['problem_symptom'].value() != '') or (self.symptom_text != '' and self.symptom_text != None):
+				raise ValidationError("This field should be checked. An existing problem symptom indicates a bug fix.")
+			if (self['problem_fix'].value() != None and self['problem_fix'].value() != '') or (self.fix_text != '' and self.fix_text != None):
+				raise ValidationError("This field should be checked. An existing problem fix indicates a bug fix.")
 		return self.cleaned_data['is_func_fix']
 
 	def clean_problem_category(self):
