@@ -1,6 +1,10 @@
 {% extends "ponder/base.html" %}
 {% load static %}
 {% block body_block %}
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+      <script src="bootstrap.bundle.min.js / bootstrap.bundle.js"></script>
 <div class="container">
   <div class="jumbotron">
     <a href="/" class="ponder-logo">
@@ -9,6 +13,17 @@
     <center></center><h1>Welcome to the Ponder's Web App !</h1></center>
     {% if user.is_authenticated %}
         <h2>Hello, {{ user.username }}! </h2>
+          <div class="dropdown" style="float: right; width: 200px;">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 200px; height: 40px; font-size: 18px; float: right; margin: -45px 10px; border-style: dotted; border-radius: 3px; background-color: white;">
+              <span class="selection">Select your role</span>
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              {% for group in groups %}
+               <li><a class="dropdown-item" href="{% url 'ponder:index' %}?role={{group}}" style="font-size: 16px;">{{group}}</a></li>
+              {% endfor %}          
+            </ul>
+          </div>
     {% else %}
         <h2>Login if you'd like to</h2>
     {% endif %}
