@@ -18,7 +18,9 @@ class AddCategorizationFormTests(TestCase):
         newCause = ProblemCause.objects.create(cause='test', description='test')
         newSymptom = ProblemSymptom.objects.create(symptom='test', description='test')
         newFix = ProblemFix.objects.create(fix='test', description='test')
-
+    '''
+    # These 2 tests should not be part of the insertion form validation. The validity of the sha and the user can be tested when the 
+    # commits table and the categorizations table are rendered, respectively.
     def test_sha_not_null(self):
         form = CategorizationForm(category_text='', category_description='', cause_text='', cause_description='',fix_text='',fix_description='', \
             symptom_text='', symptom_description='',sha=None, data={}, user='testUser')
@@ -28,7 +30,7 @@ class AddCategorizationFormTests(TestCase):
         form = CategorizationForm(category_text='', category_description='', cause_text='', cause_description='',fix_text='',fix_description='', \
             symptom_text='',symptom_description='',sha='0000000', data={}, user=None)
         self.assertFalse(form.is_valid()) # The form should not be valid because categorizer is null
-
+    '''
     #Test that all the fields in test data exist in the form
     def test_all_test_data_fields_exist_in_form(self):
         data = {
