@@ -75,6 +75,8 @@ class Categorizations_FilterTable(tables.Table):
 	problem_symptom = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_symptom.description}})
 	problem_fix = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_fix.description}})
 	Round = TemplateColumn('{{}}')
+	_ = tables.TemplateColumn('<a href=\"{% url \'ponder:update_categorization\'%}?user={{user.id}}&id={{record.id}}&commit={{record.sha}}\" class="btn btn-info btn-sm">Update</a>')
+	__ = tables.TemplateColumn('<a href=\"{% url \'ponder:delete_categorization\'%}?user={{user.id}}&id={{record.id}}\" onclick=\"return confirm(\'Are you sure you want to delete this categorization?\');\" class="btn btn-danger btn-sm">Delete</a>')
 	class Meta:
 		model = Categorization
 		template_name = "django_tables2/bootstrap-responsive.html"

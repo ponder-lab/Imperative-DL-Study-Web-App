@@ -143,6 +143,13 @@ def categorizations_by_userID(request):
 	maxRound = Commit.objects.aggregate(Max('rounds'))['rounds__max']
 	listOfRounds = range(1, maxRound + 1)
 	table = Categorizations_FilterTable(categories)
+	if not request.user.has_perm('ponder.change_categorization') and not request.user.has_perm('ponder.delete_categorization'):
+		table = Categorizations_FilterTable(categories, exclude=('_', '__'))
+	elif not request.user.has_perm('ponder.change_categorization'):	
+		table = Categorizations_FilterTable(categories, exclude=('_',))
+	elif not request.user.has_perm('ponder.delete_categorization'):	
+		table = Categorizations_FilterTable(categories, exclude=('__',))
+		
 	table.order_by = "id"
 	table.paginate(page=request.GET.get("page", 1), per_page=25)
 	userID = request.GET['user']
@@ -151,6 +158,42 @@ def categorizations_by_userID(request):
 	else:
 		return HttpResponse('<h1>Page Not Found </h1> <h2>Categorizations cannot be found or viewed</h2>', status=404)
 
+def add_category(request, form):
+	if not ProblemCategory.objects.filter(category=request.POST.get('category_text')).exists() and len(request.POST.get('category_text'))>=1 and (request.POST.get('problem_category') == None or request.POST.get('problem_category') == ''):
+		pb = ProblemCategory.objects.create(category=request.POST.get('category_text'),description=request.POST.get('category_description'))
+		request.POST['problem_category'] = pb.id
+		form.category_text = ''
+
+	elif ProblemCategory.objects.filter(category=request.POST.get('category_text')).exists() and len(request.POST.get('category_text'))>=1 and (request.POST.get('problem_category') == None or request.POST.get('problem_category') == ''):
+		request.POST['problem_category'] = str(ProblemCategory.objects.get(category=request.POST.get('category_text')).id)
+		form.category_text = ''
+
+	if not ProblemCause.objects.filter(cause=request.POST.get('cause_text')).exists() and len(request.POST.get('cause_text'))>=1 and (request.POST.get('problem_cause') == None or request.POST.get('problem_cause') == ''):
+		pc = ProblemCause.objects.create(cause=request.POST.get('cause_text'), description=request.POST.get('cause_description'))
+		request.POST['problem_cause'] = pc.id
+		form.cause_text = ''
+
+	elif ProblemCause.objects.filter(cause=request.POST.get('cause_text')).exists() and len(request.POST.get('cause_text'))>=1 and (request.POST.get('problem_cause') == None or request.POST.get('problem_cause') == ''):
+		request.POST['problem_cause'] = str(ProblemCause.objects.get(cause=request.POST.get('cause_text')).id)
+		form.cause_text = ''
+
+	if not ProblemSymptom.objects.filter(symptom=request.POST.get('symptom_text')).exists() and len(request.POST.get('symptom_text'))>=1 and (request.POST.get('problem_symptom') == None or request.POST.get('problem_symptom') == ''):
+		ps = ProblemSymptom.objects.create(symptom=request.POST.get('symptom_text'), description=request.POST.get('symptom_description'))
+		request.POST['problem_symptom'] = ps.id
+		form.symptom_text = ''
+
+	elif ProblemSymptom.objects.filter(symptom=request.POST.get('symptom_text')).exists() and len(request.POST.get('symptom_text'))>=1 and (request.POST.get('problem_symptom') == None or request.POST.get('problem_symptom') == ''):
+		request.POST['problem_symptom'] = str(ProblemSymptom.objects.get(symptom=request.POST.get('symptom_text')).id)
+		form.symptom_text = ''
+
+	if not ProblemFix.objects.filter(fix=request.POST.get('fix_text')).exists() and len(request.POST.get('fix_text'))>=1 and (request.POST.get('problem_fix') == None or request.POST.get('problem_fix') == ''):
+		pf = ProblemFix.objects.create(fix=request.POST.get('fix_text'), description=request.POST.get('fix_description'))
+		request.POST['problem_fix'] = pf.id
+		form.fix_text = ''
+
+	elif ProblemFix.objects.filter(fix=request.POST.get('fix_text')).exists() and len(request.POST.get('fix_text'))>=1 and (request.POST.get('problem_fix') == None or request.POST.get('problem_fix') == ''):
+		request.POST['problem_fix'] = str(ProblemFix.objects.get(fix=request.POST.get('fix_text')).id)
+		form.fix_text = ''
 @login_required
 @permission_required(['ponder.add_categorization', 'ponder.add_problemcategory', 'ponder.add_problemcause'], login_url='/ponder/forbidden/')
 def AddCategorization(request):
@@ -168,42 +211,7 @@ def AddCategorization(request):
 						request.POST.get('symptom_text'), request.POST.get('symptom_description'), \
 						request.POST, sha=sha_commits, user=request.user)	
 		
-		if not ProblemCategory.objects.filter(category=request.POST.get('category_text')).exists() and len(request.POST.get('category_text'))>=1 and (request.POST.get('problem_category') == None or request.POST.get('problem_category') == ''):
-			pb = ProblemCategory.objects.create(category=request.POST.get('category_text'),description=request.POST.get('category_description'))
-			request.POST['problem_category'] = pb.id
-			cat_form.category_text = ''
-
-		elif ProblemCategory.objects.filter(category=request.POST.get('category_text')).exists() and len(request.POST.get('category_text'))>=1 and (request.POST.get('problem_category') == None or request.POST.get('problem_category') == ''):
-			request.POST['problem_category'] = str(ProblemCategory.objects.get(category=request.POST.get('category_text')).id)
-			cat_form.category_text = ''
-
-		if not ProblemCause.objects.filter(cause=request.POST.get('cause_text')).exists() and len(request.POST.get('cause_text'))>=1 and (request.POST.get('problem_cause') == None or request.POST.get('problem_cause') == ''):
-			pc = ProblemCause.objects.create(cause=request.POST.get('cause_text'), description=request.POST.get('cause_description'))
-			request.POST['problem_cause'] = pc.id
-			cat_form.cause_text = ''
-
-		elif ProblemCause.objects.filter(cause=request.POST.get('cause_text')).exists() and len(request.POST.get('cause_text'))>=1 and (request.POST.get('problem_cause') == None or request.POST.get('problem_cause') == ''):
-			request.POST['problem_cause'] = str(ProblemCause.objects.get(cause=request.POST.get('cause_text')).id)
-			cat_form.cause_text = ''
-
-		if not ProblemSymptom.objects.filter(symptom=request.POST.get('symptom_text')).exists() and len(request.POST.get('symptom_text'))>=1 and (request.POST.get('problem_symptom') == None or request.POST.get('problem_symptom') == ''):
-			ps = ProblemSymptom.objects.create(symptom=request.POST.get('symptom_text'), description=request.POST.get('symptom_description'))
-			request.POST['problem_symptom'] = ps.id
-			cat_form.symptom_text = ''
-
-		elif ProblemSymptom.objects.filter(symptom=request.POST.get('symptom_text')).exists() and len(request.POST.get('symptom_text'))>=1 and (request.POST.get('problem_symptom') == None or request.POST.get('problem_symptom') == ''):
-			request.POST['problem_symptom'] = str(ProblemSymptom.objects.get(symptom=request.POST.get('symptom_text')).id)
-			cat_form.symptom_text = ''
-
-		if not ProblemFix.objects.filter(fix=request.POST.get('fix_text')).exists() and len(request.POST.get('fix_text'))>=1 and (request.POST.get('problem_fix') == None or request.POST.get('problem_fix') == ''):
-			pf = ProblemFix.objects.create(fix=request.POST.get('fix_text'), description=request.POST.get('fix_description'))
-			request.POST['problem_fix'] = pf.id
-			cat_form.fix_text = ''
-
-		elif ProblemFix.objects.filter(fix=request.POST.get('fix_text')).exists() and len(request.POST.get('fix_text'))>=1 and (request.POST.get('problem_fix') == None or request.POST.get('problem_fix') == ''):
-			request.POST['problem_fix'] = str(ProblemFix.objects.get(fix=request.POST.get('fix_text')).id)
-			cat_form.fix_text = ''
-
+		add_category(request, cat_form)
 		if cat_form.is_valid(): 
 			categorization = cat_form.save(commit=False)
 			username = User.objects.values('username').filter(id=request.user.id)[0]
@@ -242,6 +250,46 @@ def success_categorization(request, pk):
 	template = 'ponder/success_form.html'
 	context = {'sha': pk}
 	return render(request, template, context)
+
+@login_required
+@permission_required('ponder.change_categorization', login_url='/ponder/forbidden/')
+def update_categorization(request):   
+	form_update = Categorization.objects.get(id=request.GET['id'])
+	sha = request.GET['commit']
+	user = request.GET['user']
+	sha_commits = Commit(sha=sha)
+	project = Commit.objects.values('project').filter(sha=sha)[0]
+	general_url = "https://github.com/"+str(project['project'])+"/search?q="+str(sha)
+	commit_url = "https://github.com/"+str(project['project'])+"/commit/"+str(sha)
+	cat_form = CategorizationForm('', '', '', '', '', '', '', '', sha=sha, user=user, instance=form_update)
+	
+	if request.method == 'POST':
+		request.POST = request.POST.copy()
+		cat_form = CategorizationForm(request.POST.get('category_text'), request.POST.get('category_description'), \
+						request.POST.get('cause_text'), request.POST.get('cause_description'), \
+						request.POST.get('fix_text'), request.POST.get('fix_description'), \
+						request.POST.get('symptom_text'), request.POST.get('symptom_description'), \
+						request.POST, sha=sha, user=user, instance=form_update)
+		add_category(request, cat_form)
+	
+		if cat_form.is_valid():	
+			cat_form.save()
+			return HttpResponseRedirect('/ponder/categorizations?user=' + str(request.user.id))
+		else:
+			print(cat_form.errors.as_data())
+	
+	context = {'cat_form': cat_form,
+				'sha': sha_commits,
+				'general_url': general_url,
+				'commit_url': commit_url}
+	return render(request, 'ponder/categorizations.html', context)
+
+@login_required
+@permission_required('ponder.delete_categorization', login_url='/ponder/forbidden/')
+def delete_categorization(request):
+	item = Categorization.objects.get(id=request.GET['id'])
+	item.delete()
+	return HttpResponseRedirect('/ponder/categorizations?user=' + str(request.user.id))
 
 @login_required
 def permission_denied(request):
