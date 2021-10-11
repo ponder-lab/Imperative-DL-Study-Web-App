@@ -61,54 +61,62 @@ class CategorizationForm(forms.ModelForm):
 	
 	def clean_is_func_fix(self):
 		if self['is_func_fix'].value() == False:
-			if (self['problem_category'].value() != None and self['problem_category'].value() != '') or (self.category_text != '' and self.category_text != None):
+			if (self['problem_category'].value() != None and self['problem_category'].value() != '') or (self.category_text != '' and self.category_text != None and any(c.isalnum() for c in self.category_text)):
 				raise ValidationError("This field should be checked. An existing problem category indicates a bug fix.")
-			if (self['problem_cause'].value() != None and self['problem_cause'].value() != '') or (self.cause_text != '' and self.cause_text != None):
+			if (self['problem_cause'].value() != None and self['problem_cause'].value() != '') or (self.cause_text != '' and self.cause_text != None and any(c.isalnum() for c in self.cause_text)):
 				raise ValidationError("This field should be checked. An existing problem cause indicates a bug fix.")
-			if (self['problem_symptom'].value() != None and self['problem_symptom'].value() != '') or (self.symptom_text != '' and self.symptom_text != None):
+			if (self['problem_symptom'].value() != None and self['problem_symptom'].value() != '') or (self.symptom_text != '' and self.symptom_text != None and any(c.isalnum() for c in self.symptom_text)):
 				raise ValidationError("This field should be checked. An existing problem symptom indicates a bug fix.")
-			if (self['problem_fix'].value() != None and self['problem_fix'].value() != '') or (self.fix_text != '' and self.fix_text != None):
+			if (self['problem_fix'].value() != None and self['problem_fix'].value() != '') or (self.fix_text != '' and self.fix_text != None and any(c.isalnum() for c in self.fix_text)):
 				raise ValidationError("This field should be checked. An existing problem fix indicates a bug fix.")
 		return self.cleaned_data['is_func_fix']
 
 	def clean_problem_category(self):
-		if self['is_func_fix'].value() == True: 
-			if (self['problem_category'].value() != None and self['problem_category'].value() != '') and (self.category_text != '' and self.category_text != None):
+		if self['is_func_fix'].value() == True:
+			if (self['problem_category'].value() == '' or self['problem_category'].value() == None) and len(self.category_text)>=1 and not any(c.isalnum() for c in self.category_text):
+				raise ValidationError("Invalid characters. Please enter a valid category")
+			elif (self['problem_category'].value() != None and self['problem_category'].value() != '') and (self.category_text != '' and self.category_text != None and any(c.isalnum() for c in self.category_text)):
 				raise ValidationError("Choose only one option. Either select an existing problem category or enter a new one.")
-			elif (self['problem_category'].value() == '' or self['problem_category'].value() == None) and (self.category_text == '' or self.category_text == None):
+			elif (self['problem_category'].value() == '' or self['problem_category'].value() == None) and (self.category_text == '' or self.category_text == None or not any(c.isalnum() for c in self.category_text)):
 				raise ValidationError("This field is required. Select an existing problem category or enter a new one.")
 		return self.cleaned_data['problem_category']
 
 	def clean_problem_cause(self):
 		if self['is_func_fix'].value() == True:
-			if (self['problem_cause'].value() != None and self['problem_cause'].value() != '') and (self.cause_text != '' and self.cause_text != None):
+			if (self['problem_cause'].value() == '' or self['problem_cause'].value() == None) and len(self.cause_text)>=1 and not any(c.isalnum() for c in self.cause_text):
+				raise ValidationError("Invalid characters. Please enter a valid category")
+			elif (self['problem_cause'].value() != None and self['problem_cause'].value() != '') and (self.cause_text != '' and self.cause_text != None and any(c.isalnum() for c in self.cause_text)):
 				raise ValidationError("Choose only one option. Either select an existing problem cause or enter a new one.")
 			if self['problem_category'].value() == '1' or self['problem_category'].value() == '2' or self['problem_category'].value() == '5':
 				pass
-			elif (self['problem_category'].value() != None and self['problem_category'].value() != '') or (self.category_text != '' and self.category_text != None):
-				if (self['problem_cause'].value() == '' or self['problem_cause'].value() == None) and (self.cause_text == '' or self.cause_text == None):
+			elif (self['problem_category'].value() != None and self['problem_category'].value() != '') or (self.category_text != '' and self.category_text != None and any(c.isalnum() for c in self.category_text)):
+				if (self['problem_cause'].value() == '' or self['problem_cause'].value() == None) and (self.cause_text == '' or self.cause_text == None or not any(c.isalnum() for c in self.cause_text)):
 					raise ValidationError("This field is required. Select an existing problem cause or enter a new one.")		
 		return self.cleaned_data['problem_cause']
 
 	def clean_problem_symptom(self):
 		if self['is_func_fix'].value() == True:
-			if (self['problem_symptom'].value() != None and self['problem_symptom'].value() != '') and (self.symptom_text != '' and self.symptom_text != None):
+			if (self['problem_symptom'].value() == '' or self['problem_symptom'].value() == None) and len(self.symptom_text)>=1 and not any(c.isalnum() for c in self.symptom_text):
+				raise ValidationError("Invalid characters. Please enter a valid category")
+			elif (self['problem_symptom'].value() != None and self['problem_symptom'].value() != '') and (self.symptom_text != '' and self.symptom_text != None and any(c.isalnum() for c in self.symptom_text)):
 				raise ValidationError("Choose only one option. Either select an existing problem symptom or enter a new one.")
 			if self['problem_category'].value() == '1' or self['problem_category'].value() == '2' or self['problem_category'].value() == '5':
 				pass
-			elif (self['problem_category'].value() != None and self['problem_category'].value() != '') or (self.category_text != '' and self.category_text != None):
-				if (self['problem_symptom'].value() == '' or self['problem_symptom'].value() == None) and (self.symptom_text == '' or self.symptom_text == None):
+			elif (self['problem_category'].value() != None and self['problem_category'].value() != '') or (self.category_text != '' and self.category_text != None and any(c.isalnum() for c in self.category_text)):
+				if (self['problem_symptom'].value() == '' or self['problem_symptom'].value() == None) and (self.symptom_text == '' or self.symptom_text == None or not any(c.isalnum() for c in self.symptom_text)):
 					raise ValidationError("This field is required. Select an existing problem symptom or enter a new one.")
 		return self.cleaned_data['problem_symptom']
 
 	def clean_problem_fix(self):
 		if self['is_func_fix'].value() == True:
-			if (self['problem_fix'].value() != None and self['problem_fix'].value() != '') and (self.fix_text != '' and self.fix_text != None):
+			if (self['problem_fix'].value() == '' or self['problem_fix'].value() == None) and len(self.fix_text)>=1 and not any(c.isalnum() for c in self.fix_text):
+				raise ValidationError("Invalid characters. Please enter a valid category")
+			elif (self['problem_fix'].value() != None and self['problem_fix'].value() != '') and (self.fix_text != '' and self.fix_text != None and any(c.isalnum() for c in self.fix_text)):
 				raise ValidationError("Choose only one option. Either select an existing problem fix or enter a new one.")
 			if self['problem_category'].value() == '1' or self['problem_category'].value() == '2' or self['problem_category'].value() == '5':
 				pass
-			elif (self['problem_category'].value() != None and self['problem_category'].value() != '') or (self.category_text != '' and self.category_text != None):
-				if (self['problem_fix'].value() == '' or self['problem_fix'].value() == None) and (self.fix_text == '' or self.fix_text == None):
+			elif (self['problem_category'].value() != None and self['problem_category'].value() != '') or (self.category_text != '' and self.category_text != None and any(c.isalnum() for c in self.category_text)):
+				if (self['problem_fix'].value() == '' or self['problem_fix'].value() == None) and (self.fix_text == '' or self.fix_text == None or not any(c.isalnum() for c in self.fix_text)):
 					raise ValidationError("This field is required. Select an existing problem fix or enter a new one.")
 		return self.cleaned_data['problem_fix']
 
