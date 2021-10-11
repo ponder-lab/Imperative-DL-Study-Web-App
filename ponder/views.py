@@ -159,7 +159,7 @@ def categorizations_by_userID(request):
 		return HttpResponse('<h1>Page Not Found </h1> <h2>Categorizations cannot be found or viewed</h2>', status=404)
 
 def add_category(request, form):
-	if not ProblemCategory.objects.filter(category=request.POST.get('category_text')).exists() and len(request.POST.get('category_text'))>=1 and (request.POST.get('problem_category') == None or request.POST.get('problem_category') == ''):
+	if not ProblemCategory.objects.filter(category=request.POST.get('category_text')).exists() and len(request.POST.get('category_text'))>=1 and any(c.isalnum() for c in request.POST.get('category_text')) and (request.POST.get('problem_category') == None or request.POST.get('problem_category') == ''):
 		pb = ProblemCategory.objects.create(category=request.POST.get('category_text'),description=request.POST.get('category_description'))
 		request.POST['problem_category'] = pb.id
 		form.category_text = ''
@@ -168,7 +168,7 @@ def add_category(request, form):
 		request.POST['problem_category'] = str(ProblemCategory.objects.get(category=request.POST.get('category_text')).id)
 		form.category_text = ''
 
-	if not ProblemCause.objects.filter(cause=request.POST.get('cause_text')).exists() and len(request.POST.get('cause_text'))>=1 and (request.POST.get('problem_cause') == None or request.POST.get('problem_cause') == ''):
+	if not ProblemCause.objects.filter(cause=request.POST.get('cause_text')).exists() and len(request.POST.get('cause_text'))>=1 and any(c.isalnum() for c in request.POST.get('cause_text')) and (request.POST.get('problem_cause') == None or request.POST.get('problem_cause') == ''):
 		pc = ProblemCause.objects.create(cause=request.POST.get('cause_text'), description=request.POST.get('cause_description'))
 		request.POST['problem_cause'] = pc.id
 		form.cause_text = ''
@@ -177,7 +177,7 @@ def add_category(request, form):
 		request.POST['problem_cause'] = str(ProblemCause.objects.get(cause=request.POST.get('cause_text')).id)
 		form.cause_text = ''
 
-	if not ProblemSymptom.objects.filter(symptom=request.POST.get('symptom_text')).exists() and len(request.POST.get('symptom_text'))>=1 and (request.POST.get('problem_symptom') == None or request.POST.get('problem_symptom') == ''):
+	if not ProblemSymptom.objects.filter(symptom=request.POST.get('symptom_text')).exists() and len(request.POST.get('symptom_text'))>=1 and any(c.isalnum() for c in request.POST.get('symptom_text')) and (request.POST.get('problem_symptom') == None or request.POST.get('problem_symptom') == ''):
 		ps = ProblemSymptom.objects.create(symptom=request.POST.get('symptom_text'), description=request.POST.get('symptom_description'))
 		request.POST['problem_symptom'] = ps.id
 		form.symptom_text = ''
@@ -186,7 +186,7 @@ def add_category(request, form):
 		request.POST['problem_symptom'] = str(ProblemSymptom.objects.get(symptom=request.POST.get('symptom_text')).id)
 		form.symptom_text = ''
 
-	if not ProblemFix.objects.filter(fix=request.POST.get('fix_text')).exists() and len(request.POST.get('fix_text'))>=1 and (request.POST.get('problem_fix') == None or request.POST.get('problem_fix') == ''):
+	if not ProblemFix.objects.filter(fix=request.POST.get('fix_text')).exists() and len(request.POST.get('fix_text'))>=1 and any(c.isalnum() for c in request.POST.get('fix_text')) and (request.POST.get('problem_fix') == None or request.POST.get('problem_fix') == ''):
 		pf = ProblemFix.objects.create(fix=request.POST.get('fix_text'), description=request.POST.get('fix_description'))
 		request.POST['problem_fix'] = pf.id
 		form.fix_text = ''
