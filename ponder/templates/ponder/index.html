@@ -32,6 +32,7 @@
 <center><h1>Categorizations Page for {{ user.username }}:</h1></center>
 <div class="row">
   {% for project in projects %}
+      {% if project == "Commits" and perms.ponder.view_commit or project == "Categorizations" and perms.ponder.view_categorization or project == "Bug Fixes" and perms.ponder.view_bugfix %}
       <div class="col-md-4">
           <div class="card mb-2">
               <div class="card-body">
@@ -58,6 +59,7 @@
               </div>
           </div>
       </div>
+      {% endif %}
   {% endfor %}
 {% endif %}
 </div>
