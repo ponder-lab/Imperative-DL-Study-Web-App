@@ -66,6 +66,10 @@ class CommitsTable(tables.Table):
 		template_name = "django_tables2/bootstrap-responsive.html"
 		sequence = ('go_to_details','project', 'sha', 'author', 'commit_date', 'dataset', 'rounds', 'add_form')
 
+	def before_render(self, request):
+		if not request.user.has_perm('ponder.add_categorization') or not request.user.has_perm('ponder.add_problemcategory') or not request.user.has_perm('ponder.add_problemcause'):
+			self.columns.hide('add_form')
+
 class Categorizations_FilterTable(tables.Table):
 	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}})
 	bug_fix = tables.Column(linkify=True)
