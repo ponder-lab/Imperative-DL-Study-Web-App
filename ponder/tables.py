@@ -81,6 +81,13 @@ class Categorizations_FilterTable(tables.Table):
 		model = Categorization
 		template_name = "django_tables2/bootstrap-responsive.html"
 		
+	def before_render(self, request):
+		if not request.user.has_perm('ponder.change_categorization'):
+			self.columns.hide('_')
+
+		if not request.user.has_perm('ponder.delete_categorization'):	
+			self.columns.hide('__')
+		
 	def render_Round(self, record):
 		rounds = Commit.objects.values_list('rounds', flat=True).filter(sha=record.sha)[0]
 		return rounds
