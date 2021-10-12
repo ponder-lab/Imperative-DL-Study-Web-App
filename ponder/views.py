@@ -143,13 +143,6 @@ def categorizations_by_userID(request):
 	maxRound = Commit.objects.aggregate(Max('rounds'))['rounds__max']
 	listOfRounds = range(1, maxRound + 1)
 	table = Categorizations_FilterTable(categories)
-	if not request.user.has_perm('ponder.change_categorization') and not request.user.has_perm('ponder.delete_categorization'):
-		table = Categorizations_FilterTable(categories, exclude=('_', '__'))
-	elif not request.user.has_perm('ponder.change_categorization'):	
-		table = Categorizations_FilterTable(categories, exclude=('_',))
-	elif not request.user.has_perm('ponder.delete_categorization'):	
-		table = Categorizations_FilterTable(categories, exclude=('__',))
-		
 	table.order_by = "id"
 	table.paginate(page=request.GET.get("page", 1), per_page=25)
 	userID = request.GET['user']
