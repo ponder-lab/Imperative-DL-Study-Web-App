@@ -1,4 +1,5 @@
 # Imperative-DL-Study-Web-App
+![Django CI](https://github.com/ponder-lab/Imperative-DL-Study-Web-App/actions/workflows/django.yml/badge.svg)
 
 Web App for the Imperative DL Study
 https://fathomless-inlet-57767.herokuapp.com
