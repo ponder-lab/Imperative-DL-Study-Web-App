@@ -91,6 +91,9 @@ DATABASES = {
         'PASSWORD': '3d94000c',
         'HOST': 'us-cdbr-east-03.cleardb.com',
       #  'OPTIONS': {'ssl_mode': 'DISABLED'}
+      'TEST': {
+            'MIRROR': 'default',
+        },
     }
 }
 
