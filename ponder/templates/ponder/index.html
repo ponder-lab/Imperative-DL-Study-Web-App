@@ -15,7 +15,11 @@
         <h2>Hello, {{ user.username }}! </h2>
           <div class="dropdown" style="float: right; width: 200px;">
             <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 200px; height: 40px; font-size: 18px; float: right; margin: -45px 10px; border-style: dotted; border-radius: 3px; background-color: white;">
-              <span class="selection">Select your role</span>
+              {% if user.groups.all %}
+                <span class="selection">{{ user.groups.all|first }}</span>
+              {% else %}
+                <span class="selection">Select your role</span>
+              {% endif %}
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
