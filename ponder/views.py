@@ -130,26 +130,78 @@ def categorizations_by_userID(request):
 	try:
 		name = list(categorizerID)[0]
 	except:
-		return HttpResponse('<h1>Page Not Found </h1> <h2>You have no access to this page</h2>', status=404)	
-	categories = Categorization.objects.filter(categorizer=name)
-	rounds = request.GET.get('rounds', '')
-	if rounds.isnumeric():
-		qs = Commit.objects.filter(rounds=rounds)
-		categories = []
-		for p in qs:
-			categories += Categorization.objects.filter(sha=p.sha, categorizer=name)
-	elif rounds != '':
-		categories = []
-	maxRound = Commit.objects.aggregate(Max('rounds'))['rounds__max']
-	listOfRounds = range(1, maxRound + 1)
-	table = Categorizations_FilterTable(categories)
-	table.order_by = "id"
-	table.paginate(page=request.GET.get("page", 1), per_page=25)
-	userID = request.GET['user']
-	if userID == str(request.user.id):
-		return render(request, 'ponder/categorizations_by_userID.html', {"table":table, "listOfRounds":listOfRounds})
+		return HttpResponse('<h1>Page Not Found </h1> <h2>You have no access to this page</h2>', status=404)
+
+	filter_by_round = Commit.objects.values_list('rounds', flat=True)
+	filter_by_round = list(set(filter_by_round))
+	filter_by_round.remove(None)
+
+	if request.user.groups.all()[0].name == "Categorizer":
+		categories = Categorization.objects.filter(categorizer=name)
+		try:
+			userID = request.GET['user']
+		except:
+			return HttpResponse('<h1>Page Not Found </h1> <h2>Categorizations cannot be found or viewed</h2>', status=404)
+
+		if userID == str(request.user.id):
+			try:
+				r = request.GET['round']
+				qs = Commit.objects.filter(rounds=r)
+				query = []
+				for p in qs:
+					query += Categorization.objects.filter(sha=p.sha, categorizer=name)
+				table = Categorizations_FilterTable(query)
+			except:
+				table = Categorizations_FilterTable(categories)
+			table.order_by = "id"
+			table.paginate(page=request.GET.get("page", 1), per_page=25)
+			return render(request, 'ponder/categorizations_by_userID.html', {"table": table, "rounds": filter_by_round})
+		else:
+			return HttpResponse('<h1>Page Not Found </h1> <h2>Categorizations cannot be found or viewed</h2>', status=404)
 	else:
-		return HttpResponse('<h1>Page Not Found </h1> <h2>Categorizations cannot be found or viewed</h2>', status=404)
+		allCategorizations = Categorization.objects.all()
+		user = User.objects.all()
+		filter_by_user = list(set(user))
+		try:
+			r = request.GET['round']
+			userID = request.GET['user']
+			name = User.objects.filter(id=userID)
+			name = str(list(set(name))[0])
+			categorizer = Categorizer.objects.values_list(flat=True).filter(user=name)
+			categorizerID = list(set(categorizer))[0]	
+			qs = Commit.objects.filter(rounds=r)
+			query = []
+			for p in qs:
+				query += Categorization.objects.filter(sha=p.sha, categorizer=categorizerID)
+			table_by_round_userID = Categorizations_FilterTable(query)
+		except:
+			table_by_round_userID = Categorizations_FilterTable(allCategorizations)
+		table_by_round_userID.order_by = "id"
+		table_by_round_userID.paginate(page=request.GET.get("page", 1), per_page=25)
+		try:
+			r = request.GET['round']
+			qs = Commit.objects.filter(rounds=r)
+			query = []
+			for p in qs:
+				query += Categorization.objects.filter(sha=p.sha)
+			table_by_round= Categorizations_FilterTable(query)
+		except:
+			table_by_round = Categorizations_FilterTable(allCategorizations)
+		table_by_round.order_by = "id"
+		table_by_round.paginate(page=request.GET.get("page", 1), per_page=25)
+		try:
+			userID = request.GET['user']
+			name = User.objects.filter(id=userID)
+			name = str(list(set(name))[0])
+			categorizer = Categorizer.objects.values_list(flat=True).filter(user=name)
+			categorizerID = list(set(categorizer))[0]
+			categorizations = Categorization.objects.filter(categorizer=categorizerID)
+			table_by_userID = Categorizations_FilterTable(categorizations)		
+		except:
+			table_by_userID = Categorizations_FilterTable(allCategorizations)		
+		table_by_userID.order_by = "id"
+		table_by_userID.paginate(page=request.GET.get("page", 1), per_page=25)
+		return render(request, 'ponder/categorizations_by_userID.html', {"table_by_userID": table_by_userID, "table_by_round": table_by_round, "table_by_round_userID": table_by_round_userID, "rounds": filter_by_round, "users": filter_by_user})
 
 def add_category(request, form):
 	if not ProblemCategory.objects.filter(category=request.POST.get('category_text')).exists() and len(request.POST.get('category_text'))>=1 and any(c.isalnum() for c in request.POST.get('category_text')) and (request.POST.get('problem_category') == None or request.POST.get('problem_category') == ''):
