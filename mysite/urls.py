@@ -5,13 +5,13 @@ from ponder import views
 from django.conf import settings
 
 urlpatterns = [
-    url(r'^ponder/forbidden/', views.permission_denied, name='permission_denied'),
+    url(r'^forbidden/', views.permission_denied, name='permission_denied'),
     path('admin/', admin.site.urls),
     url(r'^$',views.index,name='index'),
     url(r'^special/',views.special,name='special'),
-    url(r'^ponder/',include('ponder.urls')),
+    url(r'^',include('ponder.urls')),
     url(r'^logout/$', views.user_logout, name='logout'),
-    url(r'^ponder/bug_fixes/', views.categorizations_by_bugFixID, name='id'),
+    url(r'^bug_fixes/', views.categorizations_by_bugFixID, name='id'),
 ]
 
 if settings.DEBUG:
