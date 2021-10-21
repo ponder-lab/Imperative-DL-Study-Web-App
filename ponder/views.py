@@ -72,11 +72,11 @@ def activateLinks(text):
         return result
 
 @login_required
-@permission_required('ponder.view_bugfix', login_url='/ponder/forbidden/')
+@permission_required('ponder.view_bugfix', login_url='/forbidden/')
 def categorizations_by_bugFixID(request):
 	try:
 		s = request.path_info
-		s = s. replace('/ponder/bug_fixes/', '')
+		s = s. replace('/bug_fixes/', '')
 		s = s. replace('/', '')
 		id_value = int(s)
 		id_qs = BugFix.objects.filter(id=id_value)
@@ -123,7 +123,7 @@ def categorizations_by_bugFixID(request):
 		return HttpResponse('<h1>Page Not Found </h1> <h2>Bug Fix does not exist</h2>', status=404)
 
 @login_required
-@permission_required('ponder.view_categorization', login_url='/ponder/forbidden/')
+@permission_required('ponder.view_categorization', login_url='/forbidden/')
 def categorizations_by_userID(request):
 	user = request.user.username
 	categorizerID = Categorizer.objects.values_list('id', flat=True).filter(user=user)
@@ -240,7 +240,7 @@ def add_category(request, form):
 		request.POST['problem_fix'] = str(ProblemFix.objects.get(fix=request.POST.get('fix_text')).id)
 		form.fix_text = ''
 @login_required
-@permission_required(['ponder.add_categorization', 'ponder.add_problemcategory', 'ponder.add_problemcause'], login_url='/ponder/forbidden/')
+@permission_required(['ponder.add_categorization', 'ponder.add_problemcategory', 'ponder.add_problemcause'], login_url='/forbidden/')
 def AddCategorization(request):
 	param_sha = request.GET.get('commit', '')
 	sha_commits = Commit(sha=param_sha)
@@ -290,14 +290,14 @@ def AddCategorization(request):
 	return render(request,'ponder/categorizations.html',context)
 
 @login_required
-@permission_required('ponder.add_categorization', login_url='/ponder/forbidden/')
+@permission_required('ponder.add_categorization', login_url='/forbidden/')
 def success_categorization(request, pk):
 	template = 'ponder/success_form.html'
 	context = {'sha': pk}
 	return render(request, template, context)
 
 @login_required
-@permission_required('ponder.change_categorization', login_url='/ponder/forbidden/')
+@permission_required('ponder.change_categorization', login_url='/forbidden/')
 def update_categorization(request):   
 	form_update = Categorization.objects.get(id=request.GET['id'])
 	sha = request.GET['commit']
@@ -319,7 +319,7 @@ def update_categorization(request):
 	
 		if cat_form.is_valid():	
 			cat_form.save()
-			return HttpResponseRedirect('/ponder/categorizations?user=' + str(request.user.id))
+			return HttpResponseRedirect('/categorizations?user=' + str(request.user.id))
 		else:
 			print(cat_form.errors.as_data())
 	
@@ -330,11 +330,11 @@ def update_categorization(request):
 	return render(request, 'ponder/categorizations.html', context)
 
 @login_required
-@permission_required('ponder.delete_categorization', login_url='/ponder/forbidden/')
+@permission_required('ponder.delete_categorization', login_url='/forbidden/')
 def delete_categorization(request):
 	item = Categorization.objects.get(id=request.GET['id'])
 	item.delete()
-	return HttpResponseRedirect('/ponder/categorizations?user=' + str(request.user.id))
+	return HttpResponseRedirect('/categorizations?user=' + str(request.user.id))
 
 @login_required
 def permission_denied(request):
