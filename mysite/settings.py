@@ -156,7 +156,7 @@ STATICFILES_DIRS = [STATIC_DIR,]
 
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
-LOGIN_URL = '/ponder/user_login/'
+LOGIN_URL = '/user_login/'
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
