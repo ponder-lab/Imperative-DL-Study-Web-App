@@ -108,8 +108,9 @@ The host, password and username that we used above to connect to our Heroku DB c
 python manage.py test ponder --settings=mysite.test_settings
 ```
 
-### Roles
-https://github.com/ponder-lab/Imperative-DL-Study-Web-App/wiki/Roles/7976c2923eca98e9c6a6128f0fb53dde9c45ef2e 
+## User Roles
+
+The app has a complex relationship between different kinds of users. The roles are described in our [wiki](https://github.com/ponder-lab/Imperative-DL-Study-Web-App/wiki/Roles).
 
 ## Admin Account
 
