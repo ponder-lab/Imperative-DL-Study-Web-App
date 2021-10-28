@@ -26,15 +26,13 @@ https://fathomless-inlet-57767.herokuapp.com
 - On Windows or Mac systems, install Docker Desktop. It includes Docker Engine, Docker CLI client and Docker Compose.
 - For information on how to install Docker Compose on Linux systems, the instructions are listed in this page: https://docs.docker.com/compose/install/
 - The Docker directory currently includes only two files:
-  - Dockerfile
-  - docker-compose.yml	
-
+  - `Dockerfile`
+  - `docker-compose.yml`	
 - Include the following to the above directory:
-  - manage.py
-  - mysite
-  - ponder
-  - requirements.txt
-
+  - `manage.py`
+  - `mysite`
+  - `ponder`
+  - `requirements.txt`
 - This should be the final Docker directory tree: 
 ```bash
     .
@@ -64,12 +62,10 @@ https://fathomless-inlet-57767.herokuapp.com
     └── requirements.txt
     
 ```
-
 To build the Docker image:
-
 - In the terminal, go to the top level directory and run the  command: `docker-compose up`
 - This will build the image on Docker Desktop with multiple containers (web and db containers). Go to http://localhost:8000/ in your browser to view the running app. 
-- You need to add localhost to ALLOWED HOSTS in the settings.py file.
+- You need to add localhost to `ALLOWED_HOSTS` in the `settings.py` file.
 - To shutdown the services, type `CTRL-C` in the same shell or run `docker-compose down` from another shell.
 
 ### Local DB
@@ -102,7 +98,7 @@ mysqldump --no-tablespaces --column-statistics=0 --host=us-cdbr-east-03.cleardb.
 The host, password and username that we used above to connect to our Heroku DB can all be found in our `settings.py` in case it changes in the future.
 
 ### Test Database
-1) In `mysite/test_settings.py`, configure the `DATABASE` dictionary values to connect to your local database.
+1) In `mysite/test_settings.py`, configure the `DATABASES` dictionary values to connect to your local database.
 2) Use this command to run the tests:
 ```bash
 python manage.py test ponder --settings=mysite.test_settings
