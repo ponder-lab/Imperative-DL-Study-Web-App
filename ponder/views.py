@@ -9,7 +9,6 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.views.generic import ListView
 from django_tables2 import SingleTableView
 from .tables import Categorizations_FilterTable, BugFixes_FilterTable, CategorizationsTable, BugFixesTable, CategorizersTable, CommitDetailsTable, CommitsTable, DatasetsTable, ProblemCategoriesTable, ProblemCausesTable, ProblemFixesTable, ProblemSymptomsTable
-from .filters import RoundFilter
 from django.apps import apps
 from django.contrib import admin
 from django.contrib.admin.sites import AlreadyRegistered
@@ -347,24 +346,37 @@ def user_login(request):
 		user = authenticate(username=username, password=password)
 		if user:
 			if user.is_active:
-								login(request,user)
-								return HttpResponseRedirect(reverse('index'))
+				login(request,user)
+				return HttpResponseRedirect(reverse('index'))
 			else:
-								return HttpResponse("Your account was inactive.")
+				return HttpResponse("Your account was inactive.")
 		else:
-						print("Someone tried to login and failed.")
-						print("They used username: {} and password: {}".format(username,password))
-						return HttpResponse("Invalid login details given")
+			print("Someone tried to login and failed.")
+			print("They used username: {} and password: {}".format(username,password))
+			return HttpResponse("Invalid login details given")
 	else:
 		return render(request, 'ponder/login.html', {})
 
-class CommitsTableView(LoginRequiredMixin, PermissionRequiredMixin, SingleTableMixin, FilterView):
-	login_url = 'ponder:user_login'
-	permission_required = 'ponder.view_commit'
-	model = Commit
-	table_class = CommitsTable
-	template_name = 'ponder/commits_table.html'
-	filterset_class = RoundFilter
+@login_required
+@permission_required('ponder.view_commit', login_url='/forbidden/')
+def CommitsTableView(request):
+	filter_by_round = Commit.objects.values_list('rounds', flat=True)
+	filter_by_round = list(set(filter_by_round))
+	commits = Commit.objects.all()
+
+	try:
+		r = request.GET['round']
+		qs = Commit.objects.filter(rounds=r)
+		query = []
+		for p in qs:
+			query += Commit.objects.filter(sha=p.sha)
+		table = CommitsTable(query)
+	except:
+		table = CommitsTable(commits)
+		
+	table.order_by = "id"
+	table.paginate(page=request.GET.get("page", 1), per_page=25)
+	return render(request, 'ponder/commits_table.html', {"table": table, "rounds": filter_by_round})
 
 class CommitDetailsTableView(LoginRequiredMixin, PermissionRequiredMixin, SingleTableView):
 	login_url = 'ponder:user_login'
