@@ -99,18 +99,26 @@ def categorizations_by_bugFixID(request):
 			should_discuss = '✔'
 		try:
 			pb_category = obj.problem_category
+			if pb_category == None:
+				pb_category = '-'
 		except:
 			pb_category = '—'
 		try:
 			pb_cause = obj.problem_cause
+			if pb_cause == None:
+				pb_cause = '-'
 		except:
 			pb_cause = '—'
 		try:
 			pb_symptom = obj.problem_symptom
+			if pb_symptom == None:
+				pb_symptom = '-'
 		except:
 			pb_symptom = '—'
 		try:
 			pb_fix = obj.problem_fix
+			if pb_fix == None:
+				pb_fix = '-'
 		except:
 			pb_fix = '—'
 			
