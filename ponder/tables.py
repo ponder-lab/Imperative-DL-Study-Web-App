@@ -23,10 +23,10 @@ class CategorizationsTable(tables.Table):
 class BugFixesTable(tables.Table):
 	id = tables.Column(linkify=lambda record: record.get_id())
 	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}})
-	problem_category = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_category.description}})
-	problem_cause = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_cause.description}})
-	problem_symptom = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_symptom.description}})
-	problem_fix = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_fix.description}})
+	problem_category = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_category.description if record.problem_category != None else None}})
+	problem_cause = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_cause.description if record.problem_cause != None else None}})
+	problem_symptom = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_symptom.description if record.problem_symptom != None else None}})
+	problem_fix = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_fix.description if record.problem_fix != None else None}})
 	class Meta:
 		model = BugFix
 		template_name = "django_tables2/bootstrap-responsive.html"
@@ -74,10 +74,10 @@ class Categorizations_FilterTable(tables.Table):
 	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}})
 	bug_fix = tables.Column(linkify=True)
 	categorizer = tables.Column(linkify=lambda record: record.email_categorizer())
-	problem_category = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_category.description}})
-	problem_cause = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_cause.description}})
-	problem_symptom = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_symptom.description}})
-	problem_fix = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_fix.description}})
+	problem_category = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_category.description if record.problem_category != None else None}})
+	problem_cause = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_cause.description if record.problem_cause != None else None}})
+	problem_symptom = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_symptom.description if record.problem_symptom != None else None}})
+	problem_fix = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_fix.description if record.problem_fix != None else None}})
 	Round = TemplateColumn('{{}}')
 	_ = tables.TemplateColumn('<a href=\"{% url \'ponder:update_categorization\'%}?user={{user.id}}&id={{record.id}}&commit={{record.sha}}\" class="btn btn-info btn-sm">Update</a>')
 	__ = tables.TemplateColumn('<a href=\"{% url \'ponder:delete_categorization\'%}?user={{user.id}}&id={{record.id}}\" onclick=\"return confirm(\'Are you sure you want to delete this categorization?\');\" class="btn btn-danger btn-sm">Delete</a>')
@@ -114,10 +114,10 @@ class Categorizations_FilterTable(tables.Table):
 class BugFixes_FilterTable(tables.Table):
 	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}})
 	categorizer = tables.Column(linkify=lambda record: record.email_categorizer())
-	problem_category = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_category.description}})
-	problem_cause = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_cause.description}})
-	problem_symptom = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_symptom.description}})
-	problem_fix = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_fix.description}})
+	problem_category = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_category.description if record.problem_category != None else None}})
+	problem_cause = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_cause.description if record.problem_cause != None else None}})
+	problem_symptom = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_symptom.description if record.problem_symptom != None else None}})
+	problem_fix = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_fix.description if record.problem_fix != None else None}})
 	class Meta:
 		model = Categorization
 		exclude = ('bug_fix',)
