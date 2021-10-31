@@ -21,53 +21,6 @@ https://fathomless-inlet-57767.herokuapp.com
 - Debug: If the above `localhost:8000` page throws an access error, consider adding `localhost` to `ALLOWED_HOSTS` in the `settings.py` file.
 - Debug: If you run into error regarding `STATIC_ROOT` see: https://github.com/OpenToAllCTF/OTA-University/issues/9 suggestion to change `STATIC_ROOT` assignment to just `/static/`
 
-### Docker
-- Docker Compose should be installed to build the app's container image. 
-- On Windows or Mac systems, install Docker Desktop. It includes Docker Engine, Docker CLI client and Docker Compose.
-- For information on how to install Docker Compose on Linux systems, the instructions are listed in this page: https://docs.docker.com/compose/install/
-- The Docker directory currently includes only two files:
-  - `Dockerfile`
-  - `docker-compose.yml`	
-- Include the following to the above directory:
-  - `manage.py`
-  - `mysite`
-  - `ponder`
-  - `requirements.txt`
-- This should be the final Docker directory tree: 
-```bash
-    .
-    ├── Dockerfile
-    ├── docker-compose.yml
-    ├── manage.py
-    ├── mysite
-    │   ├── __pycache__
-    │   ├── asgi.py
-    │   ├── settings.py
-    │   ├── urls.py
-    │   └── wsgi.py
-    ├── ponder
-    │   ├── __pycache__
-    │   ├── admin.py
-    │   ├── apps.py
-    │   ├── filters.py
-    │   ├── forms.py
-    │   ├── migrations
-    │   ├── models.py
-    │   ├── static
-    │   ├── tables.py
-    │   ├── templates
-    │   ├── tests.py
-    │   ├── urls.py
-    │   └── views.py
-    └── requirements.txt
-    
-```
-To build the Docker image:
-- In the terminal, go to the top level directory and run the  command: `docker-compose up`
-- This will build the image on Docker Desktop with multiple containers (web and db containers). Go to http://localhost:8000/ in your browser to view the running app. 
-- You need to add localhost to `ALLOWED_HOSTS` in the `settings.py` file.
-- To shutdown the services, type `CTRL-C` in the same shell or run `docker-compose down` from another shell.
-
 ### Local DB
 The app by default connects to our Heroku DB using the settings provided in `settings.py`. Run the below command to get a mysql dump of our latest DB from Heroku.
 
@@ -97,12 +50,68 @@ mysqldump --no-tablespaces --column-statistics=0 --host=us-cdbr-east-03.cleardb.
 
 The host, password and username that we used above to connect to our Heroku DB can all be found in our `settings.py` in case it changes in the future.
 
-### Test Database
-1) In `mysite/test_settings.py`, configure the `DATABASES` dictionary values to connect to your local database.
-2) Use this command to run the tests:
+### Testing
+Use this command to run the tests in `tests.py`:
 ```bash
-python manage.py test ponder --settings=mysite.test_settings
+python manage.py test
 ```
+## Populate Database with Initial Data
+1) To dump initial data from a specific database into a fixture, use the `dumpdata` command:
+```bash
+python manage.py dumpdata --exclude=auth.permission --exclude=contenttypes > ponder/fixtures/data.json
+```
+2) Fixtures can be JSON, XML, or YAML files. For YAML fixtures, `pip install PyYAML`.
+3) Run data migrations using the `loaddata` command:
+```bash
+python manage.py loaddata data.json
+```
+4) Then configure the group permissions from the Admin page.
+## Docker Image
+- Docker Compose should be installed to build the app's container image. 
+- On Windows or Mac systems, install Docker Desktop. It includes Docker Engine, Docker CLI client and Docker Compose.
+- For information on how to install Docker Compose on Linux systems, the instructions are listed in this page: https://docs.docker.com/compose/install/
+- The Docker directory currently includes only two files:
+  - `Dockerfile`
+  - `docker-compose.yml`	
+- Include the following to the above directory:
+  - `manage.py`
+  - `mysite`
+  - `ponder`
+  - `requirements.txt`
+- This should be the final Docker directory tree: 
+```bash
+.
+├── Dockerfile
+├── docker-compose.yml
+├── manage.py
+├── mysite
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── asgi.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+└── ponder
+    ├── __init__.py
+    ├── __pycache__
+    ├── admin.py
+    ├── apps.py
+    ├── fixtures
+    ├── forms.py
+    ├── migrations
+    ├── models.py
+    ├── static
+    ├── tables.py
+    ├── templates
+    ├── tests.py
+    ├── urls.py
+    └── views.py   
+```
+To build the Docker image:
+- In the terminal, go to the top level directory and run the  command: `docker-compose up`
+- This will build the image on Docker Desktop with multiple containers (web and db containers). Go to http://localhost:8000/ in your browser to view the running app. 
+- You need to add localhost to `ALLOWED_HOSTS` in the `settings.py` file.
+- To shutdown the services, type `CTRL-C` in the same shell or run `docker-compose down` from another shell.
 
 ## User Roles
 
