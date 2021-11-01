@@ -2,141 +2,155 @@
 {% load static %}
 {% block content %}
 {% load widget_tweaks %}
+
 <head>
   <title>Categorization Form</title>
   {% block stylesheets %}
-      <!-- Bootstrap CSS -->
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-      <!-- Font awesome CSS -->
-      <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
-      <!-- Custom CSS -->
-      <style media="screen">
-        .invalid {
-          color: #dc3545;
-          font-size: 80%;
-        }
-        body {
-          display: flex;
-          flex-direction: column;
-          min-height: 100vh;
-        }
-        .footer {
-          margin: auto 0 0;
-          height: 56px;
-        }
-        .error{
-          margin: 10px 0px;
-          padding: 5px;
-          width: 100%;
-          font-size: medium;
-          color: #D8000C;         
-        }
-      </style>
-    {% endblock stylesheets %}
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <!-- Font awesome CSS -->
+  <link rel="stylesheet" href="{% static 'assets/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+  <!-- Custom CSS -->
+  <style media="screen">
+    .invalid {
+      color: #dc3545;
+      font-size: 80%;
+    }
 
-    <nav class="navbar navbar-default navbar-static-top">
-      <div class="container">
-        <ul class="nav navbar-nav">{# PONDER Home Link# / Admin Link#}
-          <li><a class="navbar-brand" href="{% url 'index' %}">PONDER</a></li>
-          <li><a class="navbar-link" href="{% url 'admin:index' %}">Admin</a></li>
-          {% if user.is_authenticated %}
-            <li><a href="{% url 'logout' %}">Logout</a></li>
-          {% else %}
-            <li><a class="navbar-link" href="{% url 'ponder:user_login' %}">Login</a></li>
-          {% endif %}</ul>
-      </div>
-    </nav>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .footer {
+      margin: auto 0 0;
+      height: 56px;
+    }
+
+    .error {
+      margin: 10px 0px;
+      padding: 5px;
+      width: 100%;
+      font-size: medium;
+      color: #D8000C;
+    }
+  </style>
+  {% endblock stylesheets %}
+
+  <nav class="navbar navbar-default navbar-static-top">
+    <div class="container">
+      <ul class="nav navbar-nav">{# PONDER Home Link# / Admin Link#}
+        <li><a class="navbar-brand" href="{% url 'index' %}">PONDER</a></li>
+        <li><a class="navbar-link" href="{% url 'admin:index' %}">Admin</a></li>
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'logout' %}">Logout</a></li>
+        {% else %}
+        <li><a class="navbar-link" href="{% url 'ponder:user_login' %}">Login</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
 </head>
+
 <body>
   {% block scripts %}
-      <script src="{% static 'assets/js/jquery-3.2.1.min.js' %}"></script>
-      <script src="{% static 'assets/js/popper.min.js' %}"></script>
-      <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
-      <!-- You can alternatively load the minified version -->
-      <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
+  <script src="{% static 'assets/js/jquery-3.2.1.min.js' %}"></script>
+  <script src="{% static 'assets/js/popper.min.js' %}"></script>
+  <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+  <!-- You can alternatively load the minified version -->
+  <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
   {% endblock scripts %}
   <div class="card-body">
     <div class="container">
       <div class="jumbotron">
         <h1>Categorization Form</h1>
-          <h3>Fill categorization for {{ sha }}.</h3>
-          <div style = "height: 20px"></div>
-          <a style="background-color: lightblue; box-shadow: 0 1px 0 blue; color: white; padding: .5em .5em;position: relative;text-decoration: none;color:black;" href={{commit_url}}>Specific commit</a>
-          <a style="background-color: lightblue; box-shadow: 0 1px 0 blue; color: white; padding: .5em .5em;position: relative;text-decoration: none;color:black;" href={{general_url}}>General Sha Search</a>
-          <div style = "height: 20px"></div>
-          <h5>The buttons above take you to specific commit link for the sha, and the general search of the sha in the project.</h5>
-          <form enctype="multipart/form-data" method="POST">
-            {% csrf_token %}
-            {% for hidden_field in cat_form.hidden_fields %}
-              {{ hidden_field }}
-            {% endfor %}
-            {% if cat_form.errors %}
-              <div class="error">{{cat_form.non_field_errors}}</div>
+        <h3>Fill categorization for {{ sha }}.</h3>
+        <div style="height: 20px"></div>
+        <a style="background-color: lightblue; box-shadow: 0 1px 0 blue; color: white; padding: .5em .5em;position: relative;text-decoration: none;color:black;"
+          href={{commit_url}}>Specific commit</a>
+        <a style="background-color: lightblue; box-shadow: 0 1px 0 blue; color: white; padding: .5em .5em;position: relative;text-decoration: none;color:black;"
+          href={{general_url}}>General Sha Search</a>
+        <div style="height: 20px"></div>
+        <h5>The buttons above take you to specific commit link for the sha, and the general search of the sha in the
+          project.</h5>
+        <form enctype="multipart/form-data" method="POST">
+          {% csrf_token %}
+          {% for hidden_field in cat_form.hidden_fields %}
+          {{ hidden_field }}
+          {% endfor %}
+          {% if cat_form.errors %}
+          <div class="error">{{cat_form.non_field_errors}}</div>
+          {% endif %}
+          {% for field in cat_form.visible_fields %}
+          <div class="form-group">
+            {{ field.label_tag }}
+            {% if field.name == "is_func_fix" or field.name == "should_discuss" %}
+            {% render_field field %}
+            {% if field.name == "is_func_fix" and cat_form.errors.is_func_fix|length%}
+            <div class="error">{{cat_form.errors.is_func_fix}}</div>
             {% endif %}
-            {% for field in cat_form.visible_fields %}
-              <div class="form-group">
-                {{ field.label_tag }}
-                {% if field.name == "is_func_fix" or field.name == "should_discuss" %}
-                {% render_field field %}
-                {% if field.name == "is_func_fix" and cat_form.errors.is_func_fix|length%}
-                  <div class="error">{{cat_form.errors.is_func_fix}}</div>
-                {% endif %}
-                {% else %}
-                  {% render_field field class="form-control" %}
-                  {% if field.name == "problem_category" %}
-                    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
-                      <div class="modal-dialog" role="document">
-                        <div class="modal-content"></div>
-                      </div>
-                    </div>
-                    <p>Or, create new category: <input name="category_text" type="text"/>Description:<input name="category_description" type="text"/></p>
-                  {% if cat_form.errors.problem_category|length %}
-                    <div class="error">{{cat_form.errors.problem_category}}</div>
-                  {% endif %}
-                  {% endif %}  
-                  {% if field.name == "problem_cause" %}
-                    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
-                      <div class="modal-dialog" role="document">
-                        <div class="modal-content"></div>
-                      </div>
-                    </div>
-                    <p>Or, create new cause: <input name="cause_text" type="text"/>Description:<input name="cause_description" type="text"/></p>
-                  {% if cat_form.errors.problem_cause|length%}
-                  <div class="error">{{cat_form.errors.problem_cause}}</div>
-                  {% endif %}
-                  {% endif %}
-                  {% if field.name == "problem_fix" %}
-                    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
-                      <div class="modal-dialog" role="document">
-                        <div class="modal-content"></div>
-                      </div>
-                    </div>
-                    <p>Or, create new fix: <input name="fix_text" type="text"/>Description:<input name="fix_description" type="text"/></p>
-                   {% if cat_form.errors.problem_fix|length%}
-                  <div class="error">{{cat_form.errors.problem_fix}}</div>
-                  {% endif %}
-                  {% endif %}  
-                  {% if field.name == "problem_symptom" %}
-                    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
-                      <div class="modal-dialog" role="document">
-                        <div class="modal-content"></div>
-                      </div>
-                    </div>
-                  <p>Or, create new symptom: <input name="symptom_text" type="text"/>Description:<input name="symptom_description" type="text"/></p>
-                   {% if cat_form.errors.problem_symptom|length%}
-                  <div class="error">{{cat_form.errors.problem_symptom}}</div>
-                  {% endif %}
-                  {% endif %}  
-                {% endif %} 
-                {% if field.help_text %}
-                    <small class="form-text text-muted">{{ field.help_text }}</small>
-                {% endif %}
+            {% else %}
+            {% render_field field class="form-control" %}
+            {% if field.name == "problem_category" %}
+            <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content"></div>
               </div>
-            {% endfor %}
-            <input type="submit" name="" value="Submit">
-          </form>
+            </div>
+            <p>Or, create new category: <input name="category_text" type="text" />Description:<input
+                name="category_description" type="text" /></p>
+            {% if cat_form.errors.problem_category|length %}
+            <div class="error">{{cat_form.errors.problem_category}}</div>
+            {% endif %}
+            {% endif %}
+            {% if field.name == "problem_cause" %}
+            <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content"></div>
+              </div>
+            </div>
+            <p>Or, create new cause: <input name="cause_text" type="text" />Description:<input name="cause_description"
+                type="text" /></p>
+            {% if cat_form.errors.problem_cause|length%}
+            <div class="error">{{cat_form.errors.problem_cause}}</div>
+            {% endif %}
+            {% endif %}
+            {% if field.name == "problem_fix" %}
+            <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content"></div>
+              </div>
+            </div>
+            <p>Or, create new fix: <input name="fix_text" type="text" />Description:<input name="fix_description"
+                type="text" /></p>
+            {% if cat_form.errors.problem_fix|length%}
+            <div class="error">{{cat_form.errors.problem_fix}}</div>
+            {% endif %}
+            {% endif %}
+            {% if field.name == "problem_symptom" %}
+            <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content"></div>
+              </div>
+            </div>
+            <p>Or, create new symptom: <input name="symptom_text" type="text" />Description:<input
+                name="symptom_description" type="text" /></p>
+            {% if cat_form.errors.problem_symptom|length%}
+            <div class="error">{{cat_form.errors.problem_symptom}}</div>
+            {% endif %}
+            {% endif %}
+            {% endif %}
+            {% if field.help_text %}
+            <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% endif %}
+          </div>
+          {% endfor %}
+          <input type="submit" name="" value="Submit">
+        </form>
       </div>
-    </div> 
+    </div>
   </div>
 </body>
 {% endblock content %}

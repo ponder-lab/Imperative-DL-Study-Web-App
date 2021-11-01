@@ -54,21 +54,22 @@ class CommitDetailsTable(tables.Table):
 		template_name = "django_tables2/bootstrap-responsive.html"
 
 class CommitsTable(tables.Table):
-	add_form = TemplateColumn(template_name='ponder/add_a_categorization.html')
-	go_to_details = TemplateColumn(template_name='ponder/go_to_details.html', verbose_name="ID")
 	project = tables.Column(linkify=lambda record: record.get_project(), attrs={"a": {"target": "_blank"}})
 	author = tables.Column(linkify=lambda record: record.email_author())
 	sha = tables.Column(linkify=lambda record: record.get_commit(), attrs={"a": {"target": "_blank"}})
 	dataset = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.dataset.description}})
+	go_to_details = tables.TemplateColumn('<a href=\"{% url \'ponder:commits_details\' record.id %}\">{{record.id}}</a>', verbose_name="ID")
+	_ = tables.TemplateColumn('<a class="btn btn-info btn-sm" href=\"{% url \'ponder:categorizations_add\' %}?commit={{record.sha}}\">Add categorization</a>')
+
 	class Meta:
 		model = Commit
 		exclude = ('author_email','id')
 		template_name = "django_tables2/bootstrap-responsive.html"
-		sequence = ('go_to_details','project', 'sha', 'author', 'commit_date', 'dataset', 'rounds', 'add_form')
+		sequence = ('go_to_details','project', 'sha', 'author', 'commit_date', 'dataset', 'rounds', '_')
 
 	def before_render(self, request):
 		if not request.user.has_perm('ponder.add_categorization') or not request.user.has_perm('ponder.add_problemcategory') or not request.user.has_perm('ponder.add_problemcause'):
-			self.columns.hide('add_form')
+			self.columns.hide('_')
 
 class Categorizations_FilterTable(tables.Table):
 	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}})
@@ -78,7 +79,7 @@ class Categorizations_FilterTable(tables.Table):
 	problem_cause = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_cause.description if record.problem_cause != None else None}})
 	problem_symptom = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_symptom.description if record.problem_symptom != None else None}})
 	problem_fix = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_fix.description if record.problem_fix != None else None}})
-	Round = TemplateColumn('{{}}')
+	Round = tables.TemplateColumn('{{}}')
 	_ = tables.TemplateColumn('<a href=\"{% url \'ponder:update_categorization\'%}?user={{user.id}}&id={{record.id}}&commit={{record.sha}}\" class="btn btn-info btn-sm">Update</a>')
 	__ = tables.TemplateColumn('<a href=\"{% url \'ponder:delete_categorization\'%}?user={{user.id}}&id={{record.id}}\" onclick=\"return confirm(\'Are you sure you want to delete this categorization?\');\" class="btn btn-danger btn-sm">Delete</a>')
 	class Meta:

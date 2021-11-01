@@ -36,20 +36,18 @@
 				<div class="container-fluid">
 					<div class="navbar-header">
 						{% ifnotequal user.groups.all.0.name "Categorizer" %}
-						<a class="navbar-brand"
-							style="font-size: 25px; font-family: Helvetica; color: #337ab7; width: 1200px;">Categorizations
+						<a class="navbar-brand" href="{% url 'ponder:categorizations_filter' %}"
+							style="font-size: 25px; font-family: Helvetica; color: #337ab7; width: 1350px;">Categorizations
 							for all users </a>
 						{% else %}
-						<a class="navbar-brand"
-							style="font-size: 25px; font-family: Helvetica; color: #337ab7; width: 1400px;">Categorizations
+						<a class="navbar-brand" href="{% url 'ponder:categorizations_filter' %}?user={{user.id}}"
+							style="font-size: 25px; font-family: Helvetica; color: #337ab7; width: 1550px;">Categorizations
 							for {{user.username}}</a>
 						{% endifnotequal %}
 					</div>
 					<div>
 						<ul class="nav navbar-nav">
 							{% ifnotequal user.groups.all.0.name "Categorizer" %}
-							<li class="active"><a href="{% url 'ponder:categorizations_filter' %}"
-									style="font-size: 17px;">All Categorizations</a></li>
 							<li class="dropdown">
 								<a class="dropdown-toggle" data-toggle="dropdown" href="#"
 									style="font-size: 17px;">Filter by categorizer
@@ -69,8 +67,6 @@
 								</ul>
 							</li>
 							{% else %}
-							<li class="active"><a href="{% url 'ponder:categorizations_filter' %}?user={{user.id}}"
-									style="font-size: 17px;">All Categorizations</a></li>
 							{% endifnotequal %}
 							<li class="dropdown">
 								<a class="dropdown-toggle" data-toggle="dropdown" href="#"
