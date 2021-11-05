@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import m2m_changed, pre_delete
+from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 
 class BugFix(models.Model):
@@ -74,15 +74,8 @@ class Categorizer(models.Model):
 
 	@receiver(m2m_changed)
 	def create_user(sender, instance, **kwags):
-		if instance.groups.filter(name='Categorizer').exists() and not Categorizer.objects.filter(name=instance.username).exists():
-			Categorizer.objects.create(name=instance.username, initials=instance.username[:2], user=instance.username)
-		elif Categorizer.objects.filter(name=instance.username).exists():
-			Categorizer.objects.filter(user=instance).delete()
-	
-	@receiver(pre_delete, sender=User)
-	def delete_user(sender, instance, **kwags):
-		if Categorizer.objects.filter(name=instance.username).exists():
-			Categorizer.objects.filter(user=instance.username).delete()
+		if instance.groups.filter(name='Categorizer').exists() and not Categorizer.objects.filter(user=instance).exists():
+			Categorizer.objects.create(name=instance.username, initials=instance.username[:2], user=instance)
 
 class CommitDetail(models.Model):
 	sha = models.CharField(max_length=40, blank=False, null=False)
