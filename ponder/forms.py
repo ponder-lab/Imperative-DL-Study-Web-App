@@ -123,3 +123,8 @@ class CategorizationForm(forms.ModelForm):
 	def clean(self):
 		if self.errors.as_data() != {}:
 			self.add_error(None, ("There was a problem submitting the form. Please enter valid input values."))
+
+class CategorizerInfoForm(forms.ModelForm):
+	class Meta():
+		model = Categorizer
+		fields = ('name','initials')
