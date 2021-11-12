@@ -17,5 +17,5 @@ urlpatterns=[
     url('categorizations', views.categorizations_by_userID, name='categorizations_filter'),
     path('success_categorization/<str:pk>', views.success_categorization, name='success_categorization'),
     path('forbidden/', views.permission_denied, name='permission_denied'),
-    path('categorizer_info/', views.categorizer_info, name='categorizer_info'),
+    path('categorizers/new', views.AddCategorizer, name='categorizers_add'),
 ]
