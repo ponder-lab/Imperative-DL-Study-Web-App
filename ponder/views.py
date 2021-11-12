@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Categorization, User, BugFix, Categorizer, CommitDetail, Commit, Dataset, ProblemCategory, ProblemCause, ProblemFix, ProblemSymptom
 from django.http import Http404
-from ponder.forms import UserForm, CategorizationForm, CategorizerInfoForm
+from ponder.forms import UserForm, CategorizationForm, CategorizerForm
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required, permission_required
@@ -355,8 +355,8 @@ def user_login(request):
 		if user:
 			if user.is_active:
 				login(request,user)
-				#if user.groups.filter(name='Categorizer').exists() and not Categorizer.objects.filter(username=username).exist():
-				#	return HttpResponseRedirect(reverse('categorizer_info'))
+				if user.groups.filter(name='Categorizer').exists() and not Categorizer.objects.filter(user=user).exists():
+					return HttpResponseRedirect('/categorizers/new')
 				return HttpResponseRedirect(reverse('index'))
 			else:
 				return HttpResponse("Your account was inactive.")
@@ -367,19 +367,20 @@ def user_login(request):
 	else:
 		return render(request, 'ponder/login.html', {})
 
-#@login_required
-def categorizer_info(request):
+@login_required
+@permission_required(['ponder.add_categorization', 'ponder.add_problemcategory', 'ponder.add_problemcause'], login_url='/forbidden/')
+def AddCategorizer(request):
 	if request.method == 'POST':
-		form = CategorizerInfoForm(request.POST)
+		form = CategorizerForm(request.POST)
 		if form.is_valid():
 			categorizer = form.save(commit=False)
 			# commit=False prevents Django from sending this to the database
-			categorizer.username = request.user
+			categorizer.user = request.user
 			categorizer.save() #now this can be sent to the database
 		return HttpResponseRedirect(reverse('index'))
 	else:
-		form = CategorizerInfoForm()
-		return render(request, 'ponder/categorizer_info.html', {"form": form})
+		form = CategorizerForm()
+		return render(request, 'ponder/categorizers.html', {"form": form})
 
 @login_required
 @permission_required('ponder.view_commit', login_url='/forbidden/')
