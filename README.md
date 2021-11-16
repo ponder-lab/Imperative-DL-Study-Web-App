@@ -67,6 +67,7 @@ Use this command to run the tests in `tests.py`:
 ```bash
 python manage.py test
 ```
+Tests that require a database will run on a separate test database. Make sure that the `USER` in `settings.py` is granted privileges to create a database.
 ## Docker Image
 - Docker Compose should be installed to build the app's container image. 
 - On Windows or Mac systems, install Docker Desktop. It includes Docker Engine, Docker CLI client and Docker Compose.
