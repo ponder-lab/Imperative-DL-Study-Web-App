@@ -62,7 +62,8 @@ class Categorization(models.Model):
 class Categorizer(models.Model):
 	name = models.CharField(unique=True, max_length=254)
 	initials = models.CharField(unique=True, max_length=3)
-	user = models.CharField(max_length=254)
+	#user = models.CharField(max_length=254)
+	user = models.OneToOneField(User, on_delete=models.DO_NOTHING,)
 
 	class Meta:
 		db_table = 'categorizers'
