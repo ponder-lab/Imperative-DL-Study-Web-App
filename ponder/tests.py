@@ -5,6 +5,8 @@ django.setup()
 from ponder.models import Categorization, Categorizer, Commit, Dataset, ProblemCategory, ProblemCause, ProblemSymptom, ProblemFix
 from django.contrib.auth.models import User
 from ponder.forms import CategorizationForm
+
+from django.db import IntegrityError
 # Create your tests here.
 
 class AddCategorizationFormTests(TestCase):
@@ -231,3 +233,37 @@ class AddCategorizationFormTests(TestCase):
             symptom_text='', symptom_description='',sha='0000000', data={"is_func_fix": False}, user='testUser')
         self.assertFalse(form.is_valid()) # The form should not be valid.
         self.assertEqual(form.errors["is_func_fix"], ["This field should be checked. An existing problem category indicates a bug fix."])
+
+class CategorizerTests(TestCase):
+    @classmethod
+    def setUpTestData(self):
+        self.user1 = User.objects.create_user(username='testUser1', password='testpassword')
+        self.user2 = User.objects.create_user(username='testUser2', password='testpassword')
+    
+    #case when a new categorizer is being added when the given name already exists in the table
+    def test_same_name(self):
+        Categorizer.objects.all().delete()
+        Categorizer.objects.create(name='John Smith', initials='JS', user=self.user1)
+        #second categorizer is inserted with the same name and different initials and username.
+        Categorizer.objects.create(name='John Smith', initials='AB', user=self.user2)
+        #both testUser1 and testUser2 with the name "John Smith" should be in the table because two categorziers can have the same name
+        self.assertTrue(Categorizer.objects.filter(user='testUser1').exists())
+        self.assertTrue(Categorizer.objects.filter(user='testUser2').exists())
+
+    #case when a new categorizer is being added when the given initial already exists in the table
+    def test_same_initials(self):
+        Categorizer.objects.all().delete()
+        Categorizer.objects.create(name='John Smith', initials='JS', user=self.user1)
+        #second categorizer is inserted with the same initials and different name and username.
+        Categorizer.objects.create(name='Jane Scott', initials='JS', user=self.user2)
+        #both testUser1 and testUser2 with the initials "JS" should be in the table because two categorziers can have the same initials
+        self.assertTrue(Categorizer.objects.filter(user='testUser1').exists())
+        self.assertTrue(Categorizer.objects.filter(user='testUser2').exists())
+
+    #case when a new categorizer is being added when the given user already exists in the table
+    def test_same_user(self):
+        Categorizer.objects.all().delete()
+        Categorizer.objects.create(name='John Smith', initials='JS', user=self.user1)
+        #the same user is inserted again with different name and initials
+        #expecting an exaception when Categorizer.objects.create(name='Michelle Reed', initials='MR', user=self.user1) is called
+        self.assertRaises(IntegrityError, Categorizer.objects.create, name='Michelle Reed', initials='MR', user=self.user1)
