@@ -237,20 +237,26 @@ class AddCategorizationFormTests(TestCase):
 class CategorizerTests(TestCase):
     @classmethod
     def setUpTestData(self):
+        # Create two new Django users.
         self.user1 = User.objects.create_user(username='testUser1', password='testpassword')
         self.user2 = User.objects.create_user(username='testUser2', password='testpassword')
     
-    #case when a new categorizer is being added when the given name already exists in the table
+    # Case when a new categorizer is being added when the given name already exists in the table.
     def test_same_name(self):
+        # Make sure there are no other categorizers.
         Categorizer.objects.all().delete()
+        
+        # Create a categorizer John Smith.
         Categorizer.objects.create(name='John Smith', initials='JS', user=self.user1)
-        #second categorizer is inserted with the same name and different initials and username.
+        
+        # Second categorizer is inserted with the same name and different initials and username.
         Categorizer.objects.create(name='John Smith', initials='AB', user=self.user2)
-        #both testUser1 and testUser2 with the name "John Smith" should be in the table because two categorziers can have the same name
+        
+        # Both testUser1 and testUser2 with the name "John Smith" should be in the table because two categorziers can have the same name
         self.assertTrue(Categorizer.objects.filter(user='testUser1').exists())
         self.assertTrue(Categorizer.objects.filter(user='testUser2').exists())
 
-    #case when a new categorizer is being added when the given initial already exists in the table
+    # case when a new categorizer is being added when the given initial already exists in the table
     def test_same_initials(self):
         Categorizer.objects.all().delete()
         Categorizer.objects.create(name='John Smith', initials='JS', user=self.user1)
