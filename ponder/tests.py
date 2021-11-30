@@ -7,7 +7,6 @@ from django.contrib.auth.models import User
 from ponder.forms import CategorizationForm
 
 from django.db import IntegrityError
-# Create your tests here.
 
 class AddCategorizationFormTests(TestCase):
     '''
