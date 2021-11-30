@@ -256,15 +256,23 @@ class CategorizerTests(TestCase):
         self.assertTrue(Categorizer.objects.filter(user='testUser1').exists())
         self.assertTrue(Categorizer.objects.filter(user='testUser2').exists())
 
-    # case when a new categorizer is being added when the given initial already exists in the table
+    # Case when a new categorizer is being added when the given initial already exists in the table.
     def test_same_initials(self):
+        # Make sure there are no other categorizers.
         Categorizer.objects.all().delete()
+        
+        # Create a categorizer John Smith.
         Categorizer.objects.create(name='John Smith', initials='JS', user=self.user1)
-        #second categorizer is inserted with the same initials and different name and username.
+        
+        # Second categorizer is inserted with the same initials and different name and username.
         Categorizer.objects.create(name='Jane Scott', initials='JS', user=self.user2)
-        #both testUser1 and testUser2 with the initials "JS" should be in the table because two categorziers can have the same initials
+        
+        # Exception here because the two users have the same initials.
+        self.assertRaises(IntegrityError, Categorizer.objects.create, name='Jane Scott', initials='JS', user=self.user2)
+        
+        # testUser1 with the initials "JS" should be in the table but not testUser2 because two categorziers can't have the same initials.
         self.assertTrue(Categorizer.objects.filter(user='testUser1').exists())
-        self.assertTrue(Categorizer.objects.filter(user='testUser2').exists())
+        self.assertFalse(Categorizer.objects.filter(user='testUser2').exists())
 
     #case when a new categorizer is being added when the given user already exists in the table
     def test_same_user(self):
