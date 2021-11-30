@@ -10,12 +10,20 @@
     <a href="/" class="ponder-logo">
       <img src="https://images.weserv.nl/?url=cs.hunter.cuny.edu/~Raffi.Khatchadourian99/media/logo.png"> <!-- This is the logo -->
     </a>
-    <center></center><h1>Welcome to the Ponder's Web App !</h1></center>
+    <center></center><h2>Welcome to the Ponder's Web App !</h2></center>
     {% if user.is_authenticated %}
+      {% ifequal user.groups.all.0.name "Admin" %}
+        <h2>Hello, Admin! </h2>
+      {% else %}
         <h2>Hello, {{ user.username }}! </h2>
+      {% endifequal %}
           <div class="dropdown" style="float: right; width: 200px;">
             <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 200px; height: 40px; font-size: 18px; float: right; margin: -45px 10px; border-style: dotted; border-radius: 3px; background-color: white;">
-              <span class="selection">Select your role</span>
+              {% if user.groups.all %}
+                <span class="selection">{{ user.groups.all|first }}</span>
+              {% else %}
+                <span class="selection">Select your role</span>
+              {% endif %}
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -29,9 +37,14 @@
     {% endif %}
   </div>
 {% if user.is_authenticated %}
-<center><h1>Categorizations Page for {{ user.username }}:</h1></center>
+  {% ifequal user.groups.all.0.name "Admin" %}
+    <center><h1>Categorizations Page for Admin</h1></center>
+  {% else %}
+    <center><h1>Categorizations Page for {{ user.username }}</h1></center>
+  {% endifequal %}
 <div class="row">
   {% for project in projects %}
+      {% if project == "Commits" and perms.ponder.view_commit or project == "Categorizations" and perms.ponder.view_categorization or project == "Bug Fixes" and perms.ponder.view_bugfix %}
       <div class="col-md-4">
           <div class="card mb-2">
               <div class="card-body">
@@ -42,12 +55,20 @@
                      class="btn btn-primary">
                       View commits
                     </a>
-                  {% elif project == "Categorizations" %}
+                  {% elif project == "Categorizations"%}
+                  {% ifnotequal user.groups.all.0.name "Categorizer" %}
+                  <p class="card-text">View all categorizations.</p>
+                    <a href="{% url 'ponder:categorizations_filter' %}"
+                     class="btn btn-primary">
+                      View all categorizations
+                    </a>
+                    {% else %}
                     <p class="card-text">View {{ user.username }} categorizations.</p>
                     <a href="{% url 'ponder:categorizations_filter' %}?user={{user.id}}"
                      class="btn btn-primary">
                       View your categorizations
                     </a>
+                    {% endifnotequal %}
                   {% else %}
                   <p class="card-text">View the agreed upon categorizations for each sha.</p>
                     <a href="{% url 'ponder:bugfixes_table' %}"
@@ -58,6 +79,7 @@
               </div>
           </div>
       </div>
+      {% endif %}
   {% endfor %}
 {% endif %}
 </div>

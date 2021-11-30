@@ -5,89 +5,97 @@
 <!DOCTYPE html>
 <html>
 {% block body_block %}
-    <head>
-        <title>Bug Fix Details</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-	    <style>
-		  .container {
-		    width: 100%;
-		    height: 100%;
-		    left: 0;
-		    top: 0;
-		    z-index: 10;
-		  	}
-	  	</style>
-    </head>
-    <body>
-    <div class="container-fluid">
-        <div class="col-lg-6" style="border-style: outset; width: 60%">
-            <table class="table" style="border: 1px; width: 100%">
-              <thead class="thead-warning">
-                <tr>
-                  <th scope="col" style="width: 200px;"><h3>Bug Fix {{id_value}}</h3></th>
-                  <th scope="col"><h3></h3></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Sha</td>
-                  <td><a target="_blank" href="https://github.com/{{project}}/commit/{{sha}}">{{sha}}</a></td>
-                </tr>
-                <tr>
-                  <td>Is function fix?</td>
-                  <td>{{is_func_fix}}</td>
-                </tr>
-                <tr>
-                  <td>Problem category</td>
-                  <td>{{pb_category}}</td>
-                </tr>
-                <tr>
-                  <td>Category comment</td>
-                  <td>{{category_comment}}</td>
-                </tr>
-                <tr>
-                  <td>Problem cause</td>
-                  <td>{{pb_cause}}</td>
-                </tr>
-                <tr>
-                  <td>Cause comment</td>
-                  <td>{{cause_comment}}</td>
-                </tr>
-                <tr>
-                  <td>Problem symptom</td>
-                  <td>{{pb_symptom}}</td>
-                </tr>
-                <tr>
-                  <td>Symptom comment</td>
-                  <td>{{symptom_comment}}</td>
-                </tr>
-                <tr>
-                  <td>Problem fix</td>
-                  <td>{{pb_fix}}</td>
-                </tr>
-                <tr>
-                  <td>Fix comment</td>
-                  <td>{{fix_comment}}</td>
-                </tr>
-                <tr>
-                  <td>Should discuss?</td>
-                  <td>{{should_discuss}}</td>
-                </tr>
-              </tbody>
-            </table>
-        </div>
-    </div>
-    </br>
-	
-    <div class="container">
-      <nav class="navbar navbar-expand-lg bg-light" style="background-color: #e3f2fd;">
-      	<h3 style="font-size: 30px; line-height: 43px; font-family: Helvetica; text-align: center; color: #337ab7;"> Categorizations </h3>
-      </nav>
-    </div>
 
-    <div class="container">
-	{% render_table table %}
+<head>
+  <title>Bug Fix Details</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+  <style>
+    .container {
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      z-index: 10;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="col-lg-6" style="border-style: outset; width: 60%">
+      <table class="table" style="border: 1px; width: 100%">
+        <thead class="thead-warning">
+          <tr>
+            <th scope="col" style="width: 200px;">
+              <h3>Bug Fix {{id_value}}</h3>
+            </th>
+            <th scope="col">
+              <h3></h3>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Sha</td>
+            <td><a target="_blank" href="https://github.com/{{project}}/commit/{{sha}}">{{sha}}</a></td>
+          </tr>
+          <tr>
+            <td>Is function fix?</td>
+            <td>{{is_func_fix}}</td>
+          </tr>
+          <tr>
+            <td>Problem category</td>
+            <td>{{pb_category}}</td>
+          </tr>
+          <tr>
+            <td>Category comment</td>
+            <td>{{category_comment}}</td>
+          </tr>
+          <tr>
+            <td>Problem cause</td>
+            <td>{{pb_cause}}</td>
+          </tr>
+          <tr>
+            <td>Cause comment</td>
+            <td>{{cause_comment}}</td>
+          </tr>
+          <tr>
+            <td>Problem symptom</td>
+            <td>{{pb_symptom}}</td>
+          </tr>
+          <tr>
+            <td>Symptom comment</td>
+            <td>{{symptom_comment}}</td>
+          </tr>
+          <tr>
+            <td>Problem fix</td>
+            <td>{{pb_fix}}</td>
+          </tr>
+          <tr>
+            <td>Fix comment</td>
+            <td>{{fix_comment}}</td>
+          </tr>
+          <tr>
+            <td>Should discuss?</td>
+            <td>{{should_discuss}}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    </body>
+  </div>
+  </br>
+
+  <div class="container">
+    <nav class="navbar navbar-expand-lg bg-light" style="background-color: #e3f2fd;">
+      <h3 style="font-size: 30px; line-height: 43px; font-family: Helvetica; text-align: center; color: #337ab7;">
+        Categorizations </h3>
+    </nav>
+  </div>
+
+  <div class="container">
+    {% render_table table %}
+  </div>
+</body>
+
 </html>
 {% endblock %}

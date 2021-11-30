@@ -5,34 +5,113 @@
 <!DOCTYPE html>
 <html>
 {% block body_block %}
-    <head>
-        <title>Categorizations</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-	    <style>
-		  	.container {
-		    width: 100%;
-		    height: 100%;
-		    left: 0;
-		    top: 0;
-		    z-index: 10;
-		  	}
-	  	</style>
-    </head>
-    <body>
-    	<h3>Categorizations for user: {{user.username}}</h3>
-		<form method="get" class="form form-inline" id="round_form">
-			<input type="hidden" name="user" value="{{user.id}}" />
-			<label for="rounds">Rounds: </label>
-			<select onchange="this.form.submit()" name="rounds" class="form-control" id="id_rounds">
-				<option value="" {% if not request.GET.rounds or not request.GET.rounds.isnumeric %} selected {% endif %}>---------</option>
-				{% for i in listOfRounds %}
-					<option value='{{i}}' {% if request.GET.rounds == i|slugify %} selected {% endif %}>{{i}}</option>
-				{% endfor %}
-			</select>
-		</form>
-		<div class="container">
-        {% render_table table %}
-    	</div>
-    </body>
+
+<head>
+	<title>Categorizations</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	<style>
+		.container {
+			width: 100%;
+			height: 100%;
+			left: 0;
+			top: 0;
+			z-index: 10;
+		}
+
+		.scrollable-menu {
+			height: auto;
+			max-height: 150px;
+			overflow-x: hidden;
+		}
+	</style>
+</head>
+
+<body>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<div class="container">
+		<div>
+			<nav class="navbar navbar-expand-lg bg-light" style="background-color: #e3f2fd;">
+				<div class="container-fluid">
+					<div class="navbar-header">
+						{% ifnotequal user.groups.all.0.name "Categorizer" %}
+						<a class="navbar-brand" href="{% url 'ponder:categorizations_filter' %}"
+							style="font-size: 25px; font-family: Helvetica; color: #337ab7; width: 1350px;">Categorizations
+							for all users </a>
+						{% else %}
+						<a class="navbar-brand" href="{% url 'ponder:categorizations_filter' %}?user={{user.id}}"
+							style="font-size: 25px; font-family: Helvetica; color: #337ab7; width: 1550px;">Categorizations
+							for {{user.username}}</a>
+						{% endifnotequal %}
+					</div>
+					<div>
+						<ul class="nav navbar-nav">
+							{% ifnotequal user.groups.all.0.name "Categorizer" %}
+							<li class="dropdown">
+								<a class="dropdown-toggle" data-toggle="dropdown" href="#"
+									style="font-size: 17px;">Filter by categorizer
+									<span class="caret"></span></a>
+								<ul class="dropdown-menu scrollable-menu" role="menu">
+									{% for item in users %}
+									{% if 'round' in request.GET %}
+									<li><a
+											href="{% url 'ponder:categorizations_filter' %}?user={{item.id}}&round={{request.GET.round}}">{{item}}</a>
+									</li>
+									{% else %}
+									<li><a
+											href="{% url 'ponder:categorizations_filter' %}?user={{item.id}}">{{item}}</a>
+									</li>
+									{% endif %}
+									{% endfor %}
+								</ul>
+							</li>
+							{% else %}
+							{% endifnotequal %}
+							<li class="dropdown">
+								<a class="dropdown-toggle" data-toggle="dropdown" href="#"
+									style="font-size: 17px;">Round
+									<span class="caret"></span></a>
+								<ul class="dropdown-menu scrollable-menu" role="menu">
+									{% for item in rounds %}
+									{% ifnotequal user.groups.all.0.name "Categorizer" %}
+									{% if 'user' in request.GET %}
+									<li><a
+											href="{% url 'ponder:categorizations_filter' %}?user={{request.GET.user}}&round={{item}}">{{item}}</a>
+									</li>
+									{% else %}
+									<li><a href="{% url 'ponder:categorizations_filter' %}?round={{item}}">{{item}}</a>
+									</li>
+									{% endif %}
+									{% else %}
+									<li><a
+											href="{% url 'ponder:categorizations_filter' %}?user={{user.id}}&round={{item}}">{{item}}</a>
+									</li>
+									{% endifnotequal %}
+									{% endfor %}
+								</ul>
+							</li>
+					</div>
+				</div>
+			</nav>
+		</div>
+	</div>
+	<div class="container">
+		{% ifequal user.groups.all.0.name "Categorizer" %}
+		{% render_table table %}
+		{% else %}
+		{% if 'round' in request.GET and 'user' in request.GET %}
+		{% render_table table_by_round_userID %}
+		{% else %}
+		{% if 'round' in request.GET %}
+		{% render_table table_by_round %}
+		{% else %}
+		{% render_table table_by_userID %}
+		{% endif %}
+		{% endif %}
+		{% endifequal %}
+	</div>
+</body>
+
 </html>
 {% endblock %}

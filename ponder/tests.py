@@ -8,6 +8,7 @@ from ponder.forms import CategorizationForm
 # Create your tests here.
 
 class AddCategorizationFormTests(TestCase):
+    '''
     @classmethod
     def setUpTestData(self):
         newCategory1 = ProblemCategory.objects.create(category='category1', description='test')
@@ -18,7 +19,7 @@ class AddCategorizationFormTests(TestCase):
         newCause = ProblemCause.objects.create(cause='test', description='test')
         newSymptom = ProblemSymptom.objects.create(symptom='test', description='test')
         newFix = ProblemFix.objects.create(fix='test', description='test')
-    '''
+    
     # These 2 tests should not be part of the insertion form validation. The validity of the sha and the user can be tested when the 
     # commits table and the categorizations table are rendered, respectively.
     def test_sha_not_null(self):
@@ -173,7 +174,7 @@ class AddCategorizationFormTests(TestCase):
             symptom_text='', symptom_description='',sha='0000000', data=data, user='testUser')
         self.assertFalse(form.is_valid()) # The form should not be valid because problem fix is missing
         self.assertEqual(form.errors["problem_fix"], ['This field is required. Select an existing problem fix or enter a new one.'])
-
+    '''
     #Case when is func fix is not null, problem caretegory id is not 1, 2 or 5, and should discuss is missing
     def test_should_discuss_not_null(self):
         data = {
@@ -187,7 +188,7 @@ class AddCategorizationFormTests(TestCase):
             symptom_text='', symptom_description='',sha='0000000', data=data, user='testUser')
         self.assertFalse(form.is_valid()) # The form should not be valid because should dicuss is missing
         self.assertEqual(form.errors["should_dicuss"], ["Should_discuss can not be null."])
-
+    '''
     #issue: https://github.com/ponder-lab/Imperative-DL-Study-Web-App/issues/103
     #Case when an existing category is selected and a new category is entered
     def test_problem_category_not_selected_and_entered(self):
