@@ -265,8 +265,6 @@ class CategorizerTests(TestCase):
         Categorizer.objects.create(name='John Smith', initials='JS', user=self.user1)
         
         # Second categorizer is inserted with the same initials and different name and username.
-        Categorizer.objects.create(name='Jane Scott', initials='JS', user=self.user2)
-        
         # Exception here because the two users have the same initials.
         self.assertRaises(IntegrityError, Categorizer.objects.create, name='Jane Scott', initials='JS', user=self.user2)
         
@@ -274,10 +272,14 @@ class CategorizerTests(TestCase):
         self.assertTrue(Categorizer.objects.filter(user='testUser1').exists())
         self.assertFalse(Categorizer.objects.filter(user='testUser2').exists())
 
-    #case when a new categorizer is being added when the given user already exists in the table
+    # Case when a new categorizer is being added when the given user already exists in the table
     def test_same_user(self):
+        # Make sure there are no other categorizers.
         Categorizer.objects.all().delete()
+        
+        # Create a categorizer John Smith.
         Categorizer.objects.create(name='John Smith', initials='JS', user=self.user1)
-        #the same user is inserted again with different name and initials
-        #expecting an exaception when Categorizer.objects.create(name='Michelle Reed', initials='MR', user=self.user1) is called
+        
+        # The same user is inserted again with different name and initials.
+        # Expecting an exception because two categorizers can't be related to the same Django user.
         self.assertRaises(IntegrityError, Categorizer.objects.create, name='Michelle Reed', initials='MR', user=self.user1)
