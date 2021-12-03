@@ -4,7 +4,7 @@ django.setup()
 
 from ponder.models import Categorization, Categorizer, Commit, Dataset, ProblemCategory, ProblemCause, ProblemSymptom, ProblemFix
 from django.contrib.auth.models import User
-from ponder.forms import CategorizationForm
+from ponder.forms import CategorizationForm, CategorizerForm
 
 from django.db import IntegrityError
 
@@ -282,3 +282,29 @@ class CategorizerTests(TestCase):
         # The same user is inserted again with different name and initials.
         # Expecting an exception because two categorizers can't be related to the same Django user.
         self.assertRaises(IntegrityError, Categorizer.objects.create, name='Michelle Reed', initials='MR', user=self.user1)
+
+    
+class CategorizerFormTests(TestCase):
+    @classmethod
+    def setUpTestData(self):
+        # Create a new Django user.
+        self.user = User.objects.create_user(username='testUser1', password='testpassword')
+
+    def test_name_exist(self):
+        # Make sure there are no other categorizers.
+        Categorizer.objects.all().delete()
+        # Insert one categorizer into the databse
+        Categorizer.objects.create(name='John Smith', initials='JS', user=self.user)
+        # Create a form that has the same name as the existing categorizer but with different initials
+        form = CategorizerForm({'name':'John Smith', 'initials':'AB'})
+        self.assertTrue(form.is_valid())
+
+    def test_initials_exist(self): 
+        # Make sure there are no other categorizers.
+        Categorizer.objects.all().delete()
+        # Insert one categorizer into the databse
+        Categorizer.objects.create(name='John Smith', initials='JS', user=self.user)
+        # Create a form that has the same name as the existing initials but with different name
+        form = CategorizerForm({'name':'Jane Scott', 'initials':'JS'})
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors["initials"], ["Categorizer with this Initials already exists."])
