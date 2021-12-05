@@ -308,3 +308,17 @@ class CategorizerFormTests(TestCase):
         form = CategorizerForm({'name':'Jane Scott', 'initials':'JS'})
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors["initials"], ["Categorizer with this Initials already exists."])
+
+    def test_name_empty(self):
+        # Make sure there are no other categorizers.
+        Categorizer.objects.all().delete()
+        # Create a form that's missing name
+        form = CategorizerForm({'name': '', 'initials':'JS'})
+        self.assertTrue(form.is_valid())
+
+    def test_name_empty(self):
+        # Make sure there are no other categorizers.
+        Categorizer.objects.all().delete()
+        # Create a form that's missing initials
+        form = CategorizerForm({'name': 'John Smith', 'initials':''})
+        self.assertTrue(form.is_valid())
