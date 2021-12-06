@@ -316,7 +316,7 @@ class CategorizerFormTests(TestCase):
         form = CategorizerForm({'name': '', 'initials':'JS'})
         self.assertTrue(form.is_valid())
 
-    def test_name_empty(self):
+    def test_initials_empty(self):
         # Make sure there are no other categorizers.
         Categorizer.objects.all().delete()
         # Create a form that's missing initials
