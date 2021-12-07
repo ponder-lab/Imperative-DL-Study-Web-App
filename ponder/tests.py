@@ -236,6 +236,8 @@ class AddCategorizationFormTests(TestCase):
 class CategorizerTests(TestCase):
     @classmethod
     def setUpTestData(self):
+        # Make sure the categorization table is empty
+        Categorization.objects.all().delete()
         # Create two new Django users.
         self.user1 = User.objects.create_user(username='testUser1', password='testpassword')
         self.user2 = User.objects.create_user(username='testUser2', password='testpassword')
@@ -266,10 +268,6 @@ class CategorizerTests(TestCase):
         # Second categorizer is inserted with the same initials and different name and username.
         # Exception here because the two users have the same initials.
         self.assertRaises(IntegrityError, Categorizer.objects.create, name='Jane Scott', initials='JS', user=self.user2)
-        
-        # testUser1 with the initials "JS" should be in the table but not testUser2 because two categorziers can't have the same initials.
-        self.assertTrue(Categorizer.objects.filter(user='testUser1').exists())
-        self.assertFalse(Categorizer.objects.filter(user='testUser2').exists())
 
     # Case when a new categorizer is being added when the given user already exists in the table
     def test_same_user(self):
