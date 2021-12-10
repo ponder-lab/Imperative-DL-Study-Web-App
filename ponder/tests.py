@@ -280,7 +280,6 @@ class CategorizerTests(TestCase):
         # The same user is inserted again with different name and initials.
         # Expecting an exception because two categorizers can't be related to the same Django user.
         self.assertRaises(IntegrityError, Categorizer.objects.create, name='Michelle Reed', initials='MR', user=self.user1)
-
     
 class CategorizerFormTests(TestCase):
     @classmethod
@@ -306,7 +305,7 @@ class CategorizerFormTests(TestCase):
         Categorizer.objects.create(name='John Smith', initials='JS', user=self.user)
         # Create a form that has the same name as the existing initials but with different name
         form = CategorizerForm({'name':'Jane Scott', 'initials':'JS'})
-        self.assertFalse(form.is_valid())
+        self.assertFalse(form.is_valid()) # Assert that the form test is invalid.
         self.assertEqual(form.errors["initials"], ["Categorizer with this Initials already exists."])
 
     def test_name_empty(self):
@@ -314,11 +313,11 @@ class CategorizerFormTests(TestCase):
         Categorizer.objects.all().delete()
         # Create a form that's missing name
         form = CategorizerForm({'name': '', 'initials':'JS'})
-        self.assertTrue(form.is_valid())
+        self.assertFalse(form.is_valid())
 
     def test_initials_empty(self):
         # Make sure there are no other categorizers.
         Categorizer.objects.all().delete()
         # Create a form that's missing initials
         form = CategorizerForm({'name': 'John Smith', 'initials':''})
-        self.assertTrue(form.is_valid())
+        self.assertFalse(form.is_valid())
