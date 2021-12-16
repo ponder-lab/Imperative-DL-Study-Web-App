@@ -1,4 +1,4 @@
-django==3.2.9
+django==3.2.8
 mysqlclient
 gunicorn
 django-tables2
