@@ -103,9 +103,8 @@ class AddCategorizationFormTests(TestCase):
     '''
     If the func fix is not null and the problem category is not 1, 2, or 5, then 
     problem cateogry, problem cause, problem symptom, and problem fix, and should
-    dicuss must not be null.
+    dicuss must not be null. Case when all required fields are not null.
     '''
-    #Case when all required fields are not null
     def test_required_fields_not_null(self):
         data = {
             "is_func_fix": True, #not null
