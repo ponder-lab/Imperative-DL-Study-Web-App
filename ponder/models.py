@@ -19,10 +19,10 @@ class BugFix(models.Model):
 
 	def get_id(self):
 		return "%i/" % self.id
-	
+
 	def __str__(self):
 		return "%s" % self.id
-	
+
 	def get_sha(self):
 		project = Commit.objects.values('project').filter(sha=self.sha)[0]
 		return "https://github.com/"+str(project['project'])+"/commit/"+str(self.sha)
@@ -50,10 +50,10 @@ class Categorization(models.Model):
 	def get_sha(self):
 		project = Commit.objects.values('project').filter(sha=self.sha)[0]
 		return "https://github.com/"+str(project['project'])+"/commit/"+str(self.sha)
-	
+
 	def get_absolute_url(self):
                 return "bug_fixes/"+str(self.bug_fix)
-	
+
 	def email_categorizer(self):
                 user = User.objects.get(username=self.categorizer)
                 return "mailto:" + user.email
@@ -62,9 +62,9 @@ class Categorization(models.Model):
 class Categorizer(models.Model):
 	name = models.CharField(max_length=254)
 	initials = models.CharField(unique=True, max_length=3)
-	
+
 	# The Django user this categorizer is related to. User is the Django user.
-	user = models.OneToOneField(User, to_field="username", db_column='user', on_delete=models.DO_NOTHING)
+	user = models.CharField(max_length=254)
 
 	class Meta:
 		db_table = 'categorizers'
@@ -106,10 +106,10 @@ class Commit(models.Model):
 
 	def get_project(self):
 		return "https://github.com/"+str(self.project)
-	
+
 	def email_author(self):
 		return "mailto:" + self.author_email.strip('<>') # remove brackets per #33.
-  
+
 	def get_commit(self):
 		return "https://github.com/"+str(self.project)+"/commit/"+str(self.sha)
 
