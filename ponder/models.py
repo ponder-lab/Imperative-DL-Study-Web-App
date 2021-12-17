@@ -64,7 +64,7 @@ class Categorizer(models.Model):
 	initials = models.CharField(unique=True, max_length=3)
 
 	# The Django user this categorizer is related to. User is the Django user.
-	user = models.CharField(max_length=254)
+	user = models.OneToOneField(User, to_field="username", db_column='user', on_delete=models.DO_NOTHING)
 
 	class Meta:
 		db_table = 'categorizers'
