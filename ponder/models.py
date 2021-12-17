@@ -70,7 +70,7 @@ class Categorizer(models.Model):
 		db_table = 'categorizers'
 
 	def __str__(self):
-		return self.user
+		return str(self.user)
 
 
 class CommitDetail(models.Model):
