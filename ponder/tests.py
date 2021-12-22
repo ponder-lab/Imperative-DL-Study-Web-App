@@ -250,8 +250,12 @@ class CategorizerTests(TestCase):
         # Create a categorizer John Smith.
         Categorizer.objects.create(name='John Smith', initials='JS', user=self.user1)
         
-        # Second categorizer is inserted with the same name and different initials and username.
-        Categorizer.objects.create(name='John Smith', initials='AB', user=self.user2)
+        try:
+            # Second categorizer is inserted with the same name and different initials and username.
+            Categorizer.objects.create(name='John Smith', initials='AB', user=self.user2)
+        except IntegrityError:
+            # Fail the test if there is an interigy error for having duplicate names
+            self.fail()
         
         # Both testUser1 and testUser2 with the name "John Smith" should be in the table because two categorziers can have the same name
         self.assertTrue(Categorizer.objects.filter(user='testUser1').exists())
