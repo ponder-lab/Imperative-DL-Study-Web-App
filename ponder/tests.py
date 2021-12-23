@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 import django
 django.setup()
 
@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from ponder.forms import CategorizationForm
 
 from django.db import IntegrityError
+from django.contrib.auth.models import Group
 
 class AddCategorizationFormTests(TestCase):
     '''
@@ -280,3 +281,23 @@ class CategorizerTests(TestCase):
         # The same user is inserted again with different name and initials.
         # Expecting an exception because two categorizers can't be related to the same Django user.
         self.assertRaises(IntegrityError, Categorizer.objects.create, name='Michelle Reed', initials='MR', user=self.user1)
+
+class CategorizationPageTests(TestCase):
+    @classmethod
+    def setUpTestData(self):
+        # Clear categorization, categorizer and user table
+        Categorization.objects.all().delete()
+        Categorizer.objects.all().delete()
+        User.objects.all().delete()
+        # Create a new Django user
+        self.user = User.objects.create_user(username='testUser', password='testpassword')
+        # Make the user a categorizer
+        self.user.groups.add(Group.objects.get(name='Categorizer'))
+        # Log in as the user
+        self.c = Client()
+        self.c.login(username='testUser', password='testpassword')
+    
+    # Test if accessing the Categorization page is successful
+    def test_access_Categorizations(self):
+        response = self.c.get('/categorizations/?user='+str(self.user.id))
+        self.assertEqual(response.status_code, 404)
