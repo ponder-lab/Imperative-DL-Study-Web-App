@@ -1,4 +1,4 @@
-Django
+django==3.2.8
 mysqlclient
 gunicorn
 django-tables2
@@ -10,3 +10,4 @@ django-debug-toolbar
 django-widget-tweaks
 django-bootstrap-modal-forms
 djangorestframework
+pytz
