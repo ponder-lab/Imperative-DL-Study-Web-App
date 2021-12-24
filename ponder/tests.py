@@ -322,7 +322,7 @@ class CategorizerFormTests(TestCase):
         form = CategorizerForm({'name': 'John Smith', 'initials':''})
         self.assertFalse(form.is_valid())
 
-class CategorizationPageTests(TestCase):
+class ViewTests(TestCase):
     @classmethod
     def setUpTestData(self):
         # Clear categorization, categorizer and user table
@@ -338,6 +338,16 @@ class CategorizationPageTests(TestCase):
         self.c.login(username='testUser', password='testpassword')
     
     # Test if accessing the Categorization page is successful
-    def test_access_Categorizations(self):
+    def test_access_categorizations(self):
+        response = self.c.get('/categorizations/?user='+str(self.user.id))
+        self.assertEqual(response.status_code, 404)
+
+    # Test if accessing the Commit page is successful
+    def test_access_commits(self):
+        response = self.c.get('/categorizations/?user='+str(self.user.id))
+        self.assertEqual(response.status_code, 404)
+
+    # Test if accessing the Bug Fixes page is successful
+    def test_access_bug_fixes(self):
         response = self.c.get('/categorizations/?user='+str(self.user.id))
         self.assertEqual(response.status_code, 404)
