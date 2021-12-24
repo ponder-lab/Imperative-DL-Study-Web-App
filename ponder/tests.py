@@ -332,7 +332,8 @@ class ViewTests(TestCase):
         # Create a new Django user
         self.user = User.objects.create_user(username='testUser', password='testpassword')
         # Make the user a categorizer
-        self.user.groups.add(Group.objects.get(name='Categorizer'))
+        self.user.groups.add(Group.objects.get(name='categorizer'))
+        Categorizer.objects.create(name='test', initials='t', user=self.user)
         # Log in as the user
         self.c = Client()
         self.c.login(username='testUser', password='testpassword')
@@ -340,14 +341,14 @@ class ViewTests(TestCase):
     # Test if accessing the Categorization page is successful
     def test_access_categorizations(self):
         response = self.c.get('/categorizations/?user='+str(self.user.id))
-        self.assertEqual(response.status_code, 404)
-
+        self.assertEqual(response.status_code, 200)
+    
     # Test if accessing the Commit page is successful
     def test_access_commits(self):
-        response = self.c.get('/categorizations/?user='+str(self.user.id))
-        self.assertEqual(response.status_code, 404)
+        response = self.c.get('/commits')
+        self.assertEqual(response.status_code, 200)
 
     # Test if accessing the Bug Fixes page is successful
     def test_access_bug_fixes(self):
-        response = self.c.get('/categorizations/?user='+str(self.user.id))
-        self.assertEqual(response.status_code, 404)
+        response = self.c.get('/bug_fixes/')
+        self.assertEqual(response.status_code, 200)
