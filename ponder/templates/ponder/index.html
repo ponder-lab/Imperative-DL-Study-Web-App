@@ -12,11 +12,11 @@
     </a>
     <center></center><h2>Welcome to the Ponder's Web App !</h2></center>
     {% if user.is_authenticated %}
-      {% ifequal user.groups.all.0.name "Admin" %}
+      {% if user.groups.all.0.name == "Admin" %}
         <h2>Hello, Admin! </h2>
       {% else %}
         <h2>Hello, {{ user.username }}! </h2>
-      {% endifequal %}
+      {% endif %}
           <div class="dropdown" style="float: right; width: 200px;">
             <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 200px; height: 40px; font-size: 18px; float: right; margin: -45px 10px; border-style: dotted; border-radius: 3px; background-color: white;">
               {% if user.groups.all %}
@@ -29,7 +29,7 @@
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               {% for group in groups %}
                <li><a class="dropdown-item" href="{% url 'ponder:index' %}?role={{group}}" style="font-size: 16px;">{{group}}</a></li>
-              {% endfor %}          
+              {% endfor %}
             </ul>
           </div>
     {% else %}
@@ -37,11 +37,11 @@
     {% endif %}
   </div>
 {% if user.is_authenticated %}
-  {% ifequal user.groups.all.0.name "Admin" %}
+  {% if user.groups.all.0.name == "Admin" %}
     <center><h1>Categorizations Page for Admin</h1></center>
   {% else %}
     <center><h1>Categorizations Page for {{ user.username }}</h1></center>
-  {% endifequal %}
+  {% endif %}
 <div class="row">
   {% for project in projects %}
       {% if project == "Commits" and perms.ponder.view_commit or project == "Categorizations" and perms.ponder.view_categorization or project == "Bug Fixes" and perms.ponder.view_bugfix %}
@@ -56,7 +56,7 @@
                       View commits
                     </a>
                   {% elif project == "Categorizations"%}
-                  {% ifnotequal user.groups.all.0.name "Categorizer" %}
+                  {% if user.groups.all.0.name != "Categorizer" %}
                   <p class="card-text">View all categorizations.</p>
                     <a href="{% url 'ponder:categorizations_filter' %}"
                      class="btn btn-primary">
@@ -68,7 +68,7 @@
                      class="btn btn-primary">
                       View your categorizations
                     </a>
-                    {% endifnotequal %}
+                    {% endif %}
                   {% else %}
                   <p class="card-text">View the agreed upon categorizations for each sha.</p>
                     <a href="{% url 'ponder:bugfixes_table' %}"
