@@ -401,6 +401,7 @@ def CommitsTableView(request):
 		
 	table.order_by = "id"
 	table.paginate(page=request.GET.get("page", 1), per_page=25)
+	table.columns['sha'].column.verbose_name = "SHA"
 	return render(request, 'ponder/commits_table.html', {"table": table, "rounds": filter_by_round})
 
 class CommitDetailsTableView(LoginRequiredMixin, PermissionRequiredMixin, SingleTableView):
