@@ -6,7 +6,14 @@ https://fathomless-inlet-57767.herokuapp.com
 
 ## Setup/Run Instructions
 ### Pre-requisites
-- Ensure Django is set up: https://docs.djangoproject.com/en/3.1/topics/install/
+
+#### Version Requirements
+```aiignore
+Python 3.13.1
+Pip: 3.13
+Django: 5.1.4
+```
+- Ensure Django is set up: https://docs.djangoproject.com/en/5.1/topics/install/
 - For MySQL databases, ensure mysql is set up: https://dev.mysql.com/doc/refman/8.0/en/installing.html
     - Additionally, also ensure `mysqlclient` is installed (either via Brew or other methods) https://pypi.org/project/mysqlclient/
     - Ensure the below PATH is exported in your environment `export DYLD_LIBRARY_PATH="/usr/local/mysql/lib/"`
@@ -15,15 +22,17 @@ https://fathomless-inlet-57767.herokuapp.com
 ### Run Instructions
 1) Ensure all pre-requisites above are met.
 2) Install dependencies: `pip install -r requirements.txt`
-3) Run the app: `python manage.py runserver`
-4) Navigate to: `localhost:8000` to view the app.
-5) To create an admin account, `python manage.py createsuperuser` and follow instructions to provide account credentials.
+3) Ensure database is set up correctly (both remote and local as needed), see instructions below.
+4) Run the app: `python manage.py runserver`
+5) Navigate to: `localhost:8000` to view the app.
+6) To create an admin account, `python manage.py createsuperuser` and follow instructions to provide account credentials.
 
 - Debug: If the above `localhost:8000` page throws an access error, consider adding `localhost` to `ALLOWED_HOSTS` in the `settings.py` file.
 - Debug: If you run into error regarding `STATIC_ROOT` see: https://github.com/OpenToAllCTF/OTA-University/issues/9 suggestion to change `STATIC_ROOT` assignment to just `/static/`
 
 ### Connect to a database
-1) Create a database and configure the `DATABASES` dictionary in the `settings.py` file to connect to it. 
+1) Create a database and configure the `DATABASES` dictionary in the `settings.py` file to connect to it.
+   2) See steps below to set up a local database if needed.
 2) Run migrations to create the schema using the commands:
 ```bash
 python manage.py makemigrations
