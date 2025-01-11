@@ -14,7 +14,6 @@ on:
       - main
 
 jobs:
-  if: false # Disabling for now, requires DB to connect to for test.
   build:
 
     runs-on: ubuntu-latest
@@ -33,6 +32,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: Run Tests
-      run: |
-        python manage.py test ponder.tests
+# Disabling tests for now as it requires a DB to connect to.
+#    - name: Run Tests
+#      run: |
+#        python manage.py test ponder.tests
