@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class BugFix(models.Model):
-	sha = models.CharField(max_length=40, blank=False, null=False)
+	sha = models.CharField(max_length=40, blank=False, null=False, verbose_name='SHA')
 	is_func_fix = models.BooleanField() # This is a required field.
 	problem_category = models.ForeignKey('ProblemCategory', models.DO_NOTHING, db_column='problem_category', blank=True, null=True)
 	category_comment = models.TextField(blank=True, null=True)
@@ -74,7 +74,7 @@ class Categorizer(models.Model):
 
 
 class CommitDetail(models.Model):
-	sha = models.CharField(max_length=40, blank=False, null=False)
+	sha = models.CharField(max_length=40, blank=False, null=False, verbose_name='SHA')
 	language = models.CharField(max_length=2, blank=True, null=True)
 	file_name = models.CharField(max_length=100, blank=True, null=True)
 	is_test = models.IntegerField(blank=True, null=True)
