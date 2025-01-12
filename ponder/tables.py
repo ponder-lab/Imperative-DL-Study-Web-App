@@ -113,7 +113,7 @@ class Categorizations_FilterTable(tables.Table):
 		return activateLinks(value)
 
 class BugFixes_FilterTable(tables.Table):
-	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}})
+	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}}, verbose_name='SHA')
 	categorizer = tables.Column(linkify=lambda record: record.email_categorizer())
 	problem_category = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_category.description if record.problem_category != None else None}})
 	problem_cause = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_cause.description if record.problem_cause != None else None}})
