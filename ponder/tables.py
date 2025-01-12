@@ -22,7 +22,7 @@ class CategorizationsTable(tables.Table):
 
 class BugFixesTable(tables.Table):
 	id = tables.Column(linkify=lambda record: record.get_id())
-	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}})
+	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}}, verbose_name='SHA')
 	problem_category = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_category.description if record.problem_category != None else None}})
 	problem_cause = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_cause.description if record.problem_cause != None else None}})
 	problem_symptom = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_symptom.description if record.problem_symptom != None else None}})
@@ -56,7 +56,7 @@ class CommitDetailsTable(tables.Table):
 class CommitsTable(tables.Table):
 	project = tables.Column(linkify=lambda record: record.get_project(), attrs={"a": {"target": "_blank"}})
 	author = tables.Column(linkify=lambda record: record.email_author())
-	sha = tables.Column(linkify=lambda record: record.get_commit(), attrs={"a": {"target": "_blank"}})
+	sha = tables.Column(linkify=lambda record: record.get_commit(), attrs={"a": {"target": "_blank"}}, verbose_name='SHA')
 	dataset = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.dataset.description}})
 	go_to_details = tables.TemplateColumn('<a href=\"{% url \'ponder:commits_details\' record.id %}\">{{record.id}}</a>', verbose_name="ID")
 	_ = tables.TemplateColumn('<a class="btn btn-info btn-sm" href=\"{% url \'ponder:categorizations_add\' %}?commit={{record.sha}}\">Add categorization</a>')
@@ -72,7 +72,7 @@ class CommitsTable(tables.Table):
 			self.columns.hide('_')
 
 class Categorizations_FilterTable(tables.Table):
-	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}})
+	sha = tables.Column(linkify=lambda record: record.get_sha(), attrs={"a": {"target": "_blank"}}, verbose_name='SHA')
 	bug_fix = tables.Column(linkify=True)
 	categorizer = tables.Column(linkify=lambda record: record.email_categorizer())
 	problem_category = tables.Column(attrs={'td': {"class": "tooltiptext", "title": lambda record: record.problem_category.description if record.problem_category != None else None}})
