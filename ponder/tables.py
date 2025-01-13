@@ -1,8 +1,11 @@
-import django_tables2 as tables
-from django_tables2 import TemplateColumn
-from .models import Categorization, BugFix, Categorizer, CommitDetail, Commit, Dataset, ProblemCategory, ProblemCause, ProblemFix, ProblemSymptom
-from django.utils.html import format_html
 import re
+
+import django_tables2 as tables
+from django.utils.html import format_html
+
+from .models import Categorization, BugFix, Categorizer, CommitDetail, Commit, Dataset, ProblemCategory, ProblemCause, \
+	ProblemFix, ProblemSymptom
+
 
 def activateLinks(text):
 		pattern = re.compile(r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))")
