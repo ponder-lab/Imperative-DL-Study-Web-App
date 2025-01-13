@@ -1,32 +1,19 @@
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
-from .models import Categorization, User, BugFix, Categorizer, CommitDetail, Commit, Dataset, ProblemCategory, ProblemCause, ProblemFix, ProblemSymptom
-from django.http import Http404
-from ponder.forms import UserForm, CategorizationForm, CategorizerForm
-from django.contrib.auth import authenticate, login, logout
-from django.urls import reverse
-from django.contrib.auth.decorators import login_required, permission_required
-from django.views.generic import ListView
-from django_tables2 import SingleTableView
-from .tables import Categorizations_FilterTable, BugFixes_FilterTable, CategorizationsTable, BugFixesTable, CategorizersTable, CommitDetailsTable, CommitsTable, DatasetsTable, ProblemCategoriesTable, ProblemCausesTable, ProblemFixesTable, ProblemSymptomsTable
-from django.apps import apps
-from django.contrib import admin
-from django.contrib.admin.sites import AlreadyRegistered
-from django_tables2 import views
-from django_tables2 import MultiTableMixin
-from django_tables2 import RequestConfig
-from django.views.generic.base import TemplateView
-from django.views.generic import ListView, CreateView, UpdateView
-from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django_filters.views import FilterView
-from django_tables2.views import SingleTableMixin
-from bootstrap_modal_forms.generic import BSModalCreateView
-from django.db.models import Max
-from django.utils.html import format_html
 import re
-from django.core.exceptions import ValidationError
+
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import Group
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render
+from django.urls import reverse
+from django.utils.html import format_html
+from django_tables2 import SingleTableView
+
+from ponder.forms import CategorizationForm, CategorizerForm
+from .models import Categorization, User, BugFix, Categorizer, CommitDetail, Commit, ProblemCategory, ProblemCause, \
+	ProblemFix, ProblemSymptom
+from .tables import Categorizations_FilterTable, BugFixes_FilterTable, BugFixesTable, CommitDetailsTable, CommitsTable
 
 
 def index(request):

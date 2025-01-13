@@ -1,8 +1,10 @@
 #-*- coding: utf-8 -*-
 from django import forms
-from ponder.models import Categorization, ProblemCategory, ProblemCause, ProblemFix, ProblemSymptom, Commit,Categorizer
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+
+from ponder.models import Categorization, ProblemCategory, ProblemCause, ProblemFix, ProblemSymptom, Categorizer
+
 
 class UserForm(forms.ModelForm):
 	password = forms.CharField(widget=forms.PasswordInput())
