@@ -85,6 +85,7 @@
   </div>
   </br>
 
+  {% if table.rows|length %}
   <div class="container">
     <nav class="navbar navbar-expand-lg bg-light" style="background-color: #e3f2fd;">
       <h3 style="font-size: 30px; line-height: 43px; font-family: Helvetica; text-align: center; color: #337ab7;">
@@ -95,6 +96,7 @@
   <div class="container">
     {% render_table table %}
   </div>
+  {% endif %}
 </body>
 
 </html>
