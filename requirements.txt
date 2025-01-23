@@ -11,3 +11,4 @@ django-widget-tweaks
 django-bootstrap-modal-forms
 djangorestframework
 pytz
+dj-database-url

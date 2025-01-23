@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 ROOT_PATH = Path(__file__).resolve().parent.parent
@@ -30,7 +31,7 @@ SECRET_KEY = '#f)c)#%(9gcx9d27nh_4#1aghrgo$xqgx!kqzk2-()ccwv1mc3'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True # We are currently in dev per #16.
 
-ALLOWED_HOSTS = ['fathomless-inlet-57767.herokuapp.com', 'localhost']
+ALLOWED_HOSTS = ['morning-gorge-51317-02433eb11f03.herokuapp.com', 'localhost']
 
 
 # Application definition
@@ -89,26 +90,31 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# Testing with JawsDB.
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'heroku_4ac11fb2946b4e7',
-    #     'USER': 'be05ffb901b132',
-    #     'PASSWORD': '3d94000c',
-    #     'HOST': 'us-cdbr-east-03.cleardb.com',
-    #   #  'OPTIONS': {'ssl_mode': 'DISABLED'}
-    #   'TEST': {
-    #         'MIRROR': 'default',
-    #     },
-    # },
-    'default': {
-        'ENGINE': 'django.db.backends.mysql', # Or other DBs as needed.
-        'NAME': '<LOCAL_DB_DATABASE_NAME>',
-        'USER': '<LOCAL_DB_USER>',
-        'PASSWORD': '<LOCAL_DB_PASSWORD>',
-        'HOST': '127.0.0.1',
-    }
+    'default': dj_database_url.config(conn_max_age=600)
 }
+
+# DATABASES = {
+#     # 'default': {
+#     #     'ENGINE': 'django.db.backends.mysql',
+#     #     'NAME': 'heroku_4ac11fb2946b4e7',
+#     #     'USER': 'be05ffb901b132',
+#     #     'PASSWORD': '3d94000c',
+#     #     'HOST': 'us-cdbr-east-03.cleardb.com',
+#     #   #  'OPTIONS': {'ssl_mode': 'DISABLED'}
+#     #   'TEST': {
+#     #         'MIRROR': 'default',
+#     #     },
+#     # },
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql', # Or other DBs as needed.
+#         'NAME': '<LOCAL_DB_DATABASE_NAME>',
+#         'USER': '<LOCAL_DB_USER>',
+#         'PASSWORD': '<LOCAL_DB_PASSWORD>',
+#         'HOST': '127.0.0.1',
+#     }
+# }
 
 
 # Password validation
