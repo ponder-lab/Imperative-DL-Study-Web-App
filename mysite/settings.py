@@ -31,7 +31,7 @@ SECRET_KEY = '#f)c)#%(9gcx9d27nh_4#1aghrgo$xqgx!kqzk2-()ccwv1mc3'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True # We are currently in dev per #16.
 
-ALLOWED_HOSTS = ['morning-gorge-51317-02433eb11f03.herokuapp.com', 'localhost']
+ALLOWED_HOSTS = ['tranquil-anchorage-16644-bbe77c4a9151.herokuapp.com', 'localhost']
 
 
 # Application definition
