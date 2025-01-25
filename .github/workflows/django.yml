@@ -32,7 +32,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-# Disabling tests for now as it requires a DB to connect to.
-#    - name: Run Tests
-#      run: |
-#        python manage.py test ponder.tests
+    - name: Run Tests
+      run: |
+        python manage.py test ponder.tests
