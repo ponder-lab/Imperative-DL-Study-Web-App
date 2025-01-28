@@ -1,3 +1,12 @@
+'''
+These are the old/default tests that were database dependent that required DB creation rights to be able to
+create a test database to run these tests against. Marking this file as _OLD to disable running these as part of the CI
+pipeline as our current free hosting setup does not allow for DB creation.
+
+See other tests inside this module for non DB specific unit tests.
+'''
+
+
 from django.test import TestCase, Client
 import django
 django.setup()
