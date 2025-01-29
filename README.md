@@ -110,11 +110,11 @@ Tests that require a database will run on a separate test database. Make sure th
     ├── fixtures
     ├── forms.py
     ├── migrations
+    ├── test
     ├── models.py
     ├── static
     ├── tables.py
     ├── templates
-    ├── tests.py
     ├── urls.py
     └── views.py   
 ```
