@@ -4,17 +4,23 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import Group
+from django_filters import FilterSet
+from django_filters.views import FilterView
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils.html import format_html
-from django_tables2 import SingleTableView
+from django_tables2 import SingleTableView, SingleTableMixin
 
 from ponder.forms import CategorizationForm, CategorizerForm
 from .models import Categorization, User, BugFix, Categorizer, CommitDetail, Commit, ProblemCategory, ProblemCause, \
 	ProblemFix, ProblemSymptom
 from .tables import Categorizations_FilterTable, BugFixes_FilterTable, BugFixesTable, CommitDetailsTable, CommitsTable
 
+class SHAFilter(FilterSet):
+    class Meta:
+        model = BugFix
+        fields = {"sha" }
 
 def index(request):
 	user = request.user.username
@@ -108,7 +114,7 @@ def categorizations_by_bugFixID(request):
 				pb_fix = '-'
 		except:
 			pb_fix = '—'
-			
+
 		context = {'table': table, 'id_value': id_value, 'sha': sha, 'is_func_fix': is_func_fix, 'project': project, \
 				   'category_comment': activateLinks(obj.category_comment), 'cause_comment': activateLinks(obj.cause_comment), 'symptom_comment': activateLinks(obj.symptom_comment), 'fix_comment': activateLinks(obj.fix_comment), \
 				   'pb_category': pb_category, 'pb_cause': pb_cause, 'pb_symptom': pb_symptom, 'pb_fix': pb_fix, 'should_discuss': should_discuss}
@@ -406,8 +412,9 @@ class CommitDetailsTableView(LoginRequiredMixin, PermissionRequiredMixin, Single
 		context['sha'] = Commit.objects.values('sha').filter(id=self.kwargs['pk'])[0]['sha']
 		return context
 
-class BugFixesTableView(LoginRequiredMixin, PermissionRequiredMixin, SingleTableView):
+class BugFixesTableView(LoginRequiredMixin, PermissionRequiredMixin, SingleTableMixin, FilterView):
 	permission_required = 'ponder.view_bugfix'
 	model = BugFix
 	table_class = BugFixesTable
+	filterset_class = SHAFilter
 	template_name = 'ponder/bugfixes_table.html'
