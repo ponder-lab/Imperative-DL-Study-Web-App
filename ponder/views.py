@@ -7,12 +7,12 @@ from django.contrib.auth.models import Group
 from django_filters import FilterSet
 from django_filters.views import FilterView
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.html import format_html
 from django_tables2 import SingleTableView, SingleTableMixin
 
-from ponder.forms import CategorizationForm, CategorizerForm
+from ponder.forms import CategorizationForm, CategorizerForm, UserRegistrationForm
 from .models import Categorization, User, BugFix, Categorizer, CommitDetail, Commit, ProblemCategory, ProblemCause, \
 	ProblemFix, ProblemSymptom
 from .tables import Categorizations_FilterTable, BugFixes_FilterTable, BugFixesTable, CommitDetailsTable, CommitsTable
@@ -40,6 +40,19 @@ def index(request):
 		parts = ['Commits','Bug Fixes']
 	context = {'projects': parts, 'groups': groups}
 	return render(request, 'ponder/index.html', context)
+
+def register(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            new_user = form.save(commit=False)
+            new_user.set_password(form.cleaned_data['password'])
+            new_user.save()
+            login(request, new_user)
+            return redirect('index')
+    else:
+        form = UserRegistrationForm()
+    return render(request, 'ponder/register.html', {'form': form})
 
 @login_required
 def special(request):
