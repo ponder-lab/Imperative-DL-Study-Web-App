@@ -127,12 +127,3 @@ To build the Docker image:
 ## User Roles
 
 The app has a complex relationship between different kinds of users. The roles are described in our [wiki](https://github.com/ponder-lab/Imperative-DL-Study-Web-App/wiki/Roles).
-
-## Admin Account
-
-Field | Value
--- | --
-Username | admin
-Password | umjawaRZ7GY5C7Q
-
-You can use this to register for accounts in the web app that is deployed on Heroku.

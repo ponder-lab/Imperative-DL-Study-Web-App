@@ -20,6 +20,7 @@
         <li><a href="{% url 'logout' %}">Logout</a></li>
         {% else %}
         <li><a class="navbar-link" href="{% url 'ponder:user_login' %}">Login</a></li>
+        <li><a class="navbar-link" href="{% url 'ponder:register' %}">Register</a></li>
         {% endif %}
       </ul>
     </div>

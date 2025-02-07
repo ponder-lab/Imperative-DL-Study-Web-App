@@ -18,4 +18,5 @@ urlpatterns=[
     path('success_categorization/<str:pk>', views.success_categorization, name='success_categorization'),
     path('forbidden/', views.permission_denied, name='permission_denied'),
     path('categorizers/new', views.AddCategorizer, name='categorizers_add'),
+    path('register/', views.register, name='register'),
 ]
