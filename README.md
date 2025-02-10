@@ -24,6 +24,7 @@ Django: 5.1.4
 2) Install dependencies: `pip install -r requirements.txt`
 3) Ensure database is set up correctly (both remote and local as needed), see instructions below.
 4) Run the app: `python manage.py runserver`
+   5) To enable debugging mode, export env variable: `export DJANGO_DEBUG="True"`
 5) Navigate to: `localhost:8000` to view the app.
 6) To create an admin account, `python manage.py createsuperuser` and follow instructions to provide account credentials.
 

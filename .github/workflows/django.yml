@@ -15,6 +15,7 @@ on:
 
 env:
   DATABASE_URL: mysql://dace5c60l5ctt7og:qrmu7nb4hbzjbp0z@r1bsyfx4gbowdsis.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/uoq6lb032iusvpqz
+  DJANGO_DEBUG: 'False'
 
 jobs:
   build:

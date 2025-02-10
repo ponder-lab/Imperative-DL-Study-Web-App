@@ -29,7 +29,8 @@ MEDIA_DIR = os.path.join(BASE_DIR,'media')
 SECRET_KEY = '#f)c)#%(9gcx9d27nh_4#1aghrgo$xqgx!kqzk2-()ccwv1mc3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False # We are currently in dev per #16.
+# Set using DJANGO_DEBUG env variable, defaults to False if not set. Set to 'True' to enable.
+DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['tranquil-anchorage-16644-bbe77c4a9151.herokuapp.com', 'localhost']
 
