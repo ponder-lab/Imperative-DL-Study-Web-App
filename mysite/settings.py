@@ -29,7 +29,8 @@ MEDIA_DIR = os.path.join(BASE_DIR,'media')
 SECRET_KEY = '#f)c)#%(9gcx9d27nh_4#1aghrgo$xqgx!kqzk2-()ccwv1mc3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True # We are currently in dev per #16.
+# Set using DJANGO_DEBUG env variable, defaults to False if not set. Set to 'True' to enable.
+DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['tranquil-anchorage-16644-bbe77c4a9151.herokuapp.com', 'localhost']
 
@@ -91,31 +92,31 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 # Testing with JawsDB.
-DATABASES = {
-    'default': dj_database_url.config(conn_max_age=600)
-}
+# DATABASES = {
+#     'default': dj_database_url.config(conn_max_age=600)
+# }
 
 # Custom DB config.
-# DATABASES = {
-#     # 'default': {
-#     #     'ENGINE': 'django.db.backends.mysql',
-#     #     'NAME': 'heroku_4ac11fb2946b4e7',
-#     #     'USER': 'be05ffb901b132',
-#     #     'PASSWORD': '3d94000c',
-#     #     'HOST': 'us-cdbr-east-03.cleardb.com',
-#     #   #  'OPTIONS': {'ssl_mode': 'DISABLED'}
-#     #   'TEST': {
-#     #         'MIRROR': 'default',
-#     #     },
-#     # },
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql', # Or other DBs as needed.
-#         'NAME': '<LOCAL_DB_DATABASE_NAME>',
-#         'USER': '<LOCAL_DB_USER>',
-#         'PASSWORD': '<LOCAL_DB_PASSWORD>',
-#         'HOST': '127.0.0.1',
-#     }
-# }
+DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'heroku_4ac11fb2946b4e7',
+    #     'USER': 'be05ffb901b132',
+    #     'PASSWORD': '3d94000c',
+    #     'HOST': 'us-cdbr-east-03.cleardb.com',
+    #   #  'OPTIONS': {'ssl_mode': 'DISABLED'}
+    #   'TEST': {
+    #         'MIRROR': 'default',
+    #     },
+    # },
+    'default': {
+        'ENGINE': 'django.db.backends.mysql', # Or other DBs as needed.
+        'NAME': 'ponder',
+        'USER': 'root',
+        'PASSWORD': 'ponderlab',
+        'HOST': '127.0.0.1',
+    }
+}
 
 
 # Password validation
