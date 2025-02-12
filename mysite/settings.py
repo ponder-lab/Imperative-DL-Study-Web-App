@@ -92,31 +92,31 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 # Testing with JawsDB.
-# DATABASES = {
-#     'default': dj_database_url.config(conn_max_age=600)
-# }
+DATABASES = {
+    'default': dj_database_url.config(conn_max_age=600)
+}
 
 # Custom DB config.
-DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'heroku_4ac11fb2946b4e7',
-    #     'USER': 'be05ffb901b132',
-    #     'PASSWORD': '3d94000c',
-    #     'HOST': 'us-cdbr-east-03.cleardb.com',
-    #   #  'OPTIONS': {'ssl_mode': 'DISABLED'}
-    #   'TEST': {
-    #         'MIRROR': 'default',
-    #     },
-    # },
-    'default': {
-        'ENGINE': 'django.db.backends.mysql', # Or other DBs as needed.
-        'NAME': 'ponder',
-        'USER': 'root',
-        'PASSWORD': 'ponderlab',
-        'HOST': '127.0.0.1',
-    }
-}
+# DATABASES = {
+#     # 'default': {
+#     #     'ENGINE': 'django.db.backends.mysql',
+#     #     'NAME': 'heroku_4ac11fb2946b4e7',
+#     #     'USER': 'be05ffb901b132',
+#     #     'PASSWORD': '3d94000c',
+#     #     'HOST': 'us-cdbr-east-03.cleardb.com',
+#     #   #  'OPTIONS': {'ssl_mode': 'DISABLED'}
+#     #   'TEST': {
+#     #         'MIRROR': 'default',
+#     #     },
+#     # },
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql', # Or other DBs as needed.
+#         'NAME': 'ponder',
+#         'USER': 'root',
+#         'PASSWORD': 'ponderlab',
+#         'HOST': '127.0.0.1',
+#     }
+# }
 
 
 # Password validation
